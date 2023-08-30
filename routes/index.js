@@ -10,7 +10,7 @@ const router = express.Router();
 router.use(bodyParser.json());
 router.use(cors()); 
 
-//Route Management
+//Routes Management
 router.post('/api/login', (req, res) => {
   const receivedData = req.body;
   console.log('Received data:', receivedData);
