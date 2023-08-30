@@ -1,13 +1,17 @@
+//imports
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const app = express.Router();
+//Express Router
+const router = express.Router();
 
-app.use(bodyParser.json());
-app.use(cors()); 
+//Middleware
+router.use(bodyParser.json());
+router.use(cors()); 
 
-app.post('/api/login', (req, res) => {
+//Route Management
+router.post('/api/login', (req, res) => {
   const receivedData = req.body;
   console.log('Received data:', receivedData);
 
@@ -19,7 +23,7 @@ app.post('/api/login', (req, res) => {
   res.status(200).json({ message: 'Data received on the server', data: receivedData });
 });
 
-app.post('/api/register', (req, res) => {
+router.post('/api/register', (req, res) => {
   const receivedData = req.body;
   console.log('Received data:', receivedData);
 
@@ -32,5 +36,5 @@ app.post('/api/register', (req, res) => {
   res.status(200).json({ message: 'Data received on the server', data: receivedData });
 });
 
-module.exports = app;
+module.exports = router;
 
