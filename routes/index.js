@@ -6,9 +6,6 @@ const cors = require('cors');
 
 //Express Router
 const router = express.Router();
-//
-const app = express();
-const port = 3001;
 
 //connecting to database
 const client = new Client({
@@ -19,13 +16,14 @@ const client = new Client({
   password: '123',
 });
 
-client.connect()
+client.connect();
 
-app.use(bodyParser.json());
-app.use(cors());
+//Middleware
+router.use(bodyParser.json());
+router.use(cors()); 
 
-//login database
-app.post('/api/login', (req, res) => {
+//Routes Management
+router.post('/api/login', (req, res) => {
   const receivedData = req.body;
   console.log('Received data:', receivedData);
 
@@ -46,9 +44,8 @@ app.post('/api/login', (req, res) => {
   });
 });
 
-//register database
-app.post('/api/register', (req, res) => {
-const receivedData = req.body;
+router.post('/api/register', (req, res) => {
+  const receivedData = req.body;
 console.log('Received data:', receivedData);
 
 // Handle the data on the server as needed
@@ -72,37 +69,6 @@ client.query(insertDetailsSQL,[receivedData.fullname, receivedData.email, receiv
 
   }
 });
-});
-
-
-//Middleware
-router.use(bodyParser.json());
-router.use(cors()); 
-
-//Routes Management
-router.post('/api/login', (req, res) => {
-  const receivedData = req.body;
-  console.log('Received data:', receivedData);
-
-  // Handle the data on the server as needed
-  console.log('Email:', receivedData.email);
-  console.log('Password:', receivedData.password);
-
-  // Send a response back to the client
-  res.status(200).json({ message: 'Data received on the server', data: receivedData });
-});
-
-router.post('/api/register', (req, res) => {
-  const receivedData = req.body;
-  console.log('Received data:', receivedData);
-
-  // Handle the data on the server as needed
-  console.log('Full Name:', receivedData.fullname);
-  console.log('Sutdent Email:', receivedData.email);
-  console.log('Password:', receivedData.password);
-
-  // Send a response back to the client
-  res.status(200).json({ message: 'Data received on the server', data: receivedData });
 });
 
 module.exports = router;
