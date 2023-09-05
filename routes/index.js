@@ -11,7 +11,7 @@ const router = express.Router();
 const client = new Client({
   host: 'localhost',
   port: 5432,
-  database: 'pgAdmin',
+  database: 'Alumni_Space_DB',
   user: 'postgres',
   password: '123',
 });
@@ -27,18 +27,21 @@ router.post('/api/login', (req, res) => {
   const receivedData = req.body;
   console.log('Received data:', receivedData);
 
-  const selectUserSQL = "SELECT * FROM alumni_space_ui WHERE email = $1 AND password = $2";
+  const selectUserSQL = "SELECT fullname FROM alumni_space_ui WHERE email = $1 AND password = $2";
 
-  client.query(selectUserSQL, [receivedData.email, receivedData.password], (err, result) => {
+  client.query(selectUserSQL, [receivedData.email, receivedData.password],function(err, result){
     if (err) {
       console.error('Error during login:', err);
-      res.status(500).json({ message: 'An error occurred during login.' });
+      //res.status(500).json({ message: 'An error occurred during login.' });
   } else {
-      if (result.rows.length === 0) {
-          res.status(401).json({ message: 'Invalid email or password' });
+    //check details
+      if (result.rows.length > 0) {
+        var fullname = result.rows[0].fullname;
+        console.log(fullname + ' has Login successful!');
+        //res.status(200).json({ message: 'Login successful!' });
       } else {
-          console.log('Login successful!');
-          res.status(200).json({ message: 'Login successful!' });
+          //res.status(401).json({ message: 'Invalid email or password' });
+          console.log('Invalid email or password');
       }
   }
   });
