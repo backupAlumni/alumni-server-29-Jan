@@ -97,5 +97,108 @@ client.query(insertDetailsSQL,[receivedData.email, receivedData.password,role ],
 });
 });
 
+
+// Endpoint to initiate a password reset
+app.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+
+  // Check if the email exists in the database
+  try {
+    const { rows } = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'Email not found' });
+    }
+
+    // Generate a reset token and store it in the database
+    const token = generateToken();
+    await pool.query('INSERT INTO password_reset_tokens (email, token) VALUES ($1, $2)', [email, token]);
+
+    // Create a password reset link
+    const resetLink = `http://your-app.com/reset-password?token=${token}`;
+
+    // Send a password reset email to the user
+    sendPasswordResetEmail(email, resetLink);
+
+    res.status(200).json({ message: 'Password reset email sent' });
+  } catch (error) {
+    console.error('Error checking email:', error);
+    res.status(500).json({ message: 'Failed to initiate password reset' });
+  }
+});
+
+
+
+//  reset the password
+// Endpoint to initiate a password reset
+app.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+
+  // Check if the email exists in the database
+  try {
+    const { rows } = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'Email not found' });
+    }
+
+    // Generate a reset token and store it in the database
+    const token = generateToken();
+    await pool.query('INSERT INTO password_reset_tokens (email, token) VALUES ($1, $2)', [email, token]);
+
+    // Create a password reset link
+    const resetLink = `http://your-app.com/reset-password?token=${token}`;
+
+    // Send a password reset email to the user
+    sendPasswordResetEmail(email, resetLink);
+
+    res.status(200).json({ message: 'Password reset email sent' });
+  } catch (error) {
+    console.error('Error checking email:', error);
+    res.status(500).json({ message: 'Failed to initiate password reset' });
+  }
+});
+
+
+// Handle login POST request
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const client = await pool.connect();
+    const result = await client.query('SELECT * FROM users WHERE username = $1 AND password = $2', [username, password]);
+    client.release();
+
+    if (result.rows.length === 1) {
+      const user = result.rows[0];
+      req.session.user = user;
+      res.redirect('/home');
+    } else {
+      res.redirect('/login');
+    }
+  } catch (error) {
+    console.error('Error during login:', error);
+    res.redirect('/login');
+  }
+});
+
+// Homepage (protected route, requires login)
+app.get('/home', (req, res) => {
+  if (req.session.user) {
+    res.render('home.ejs', { user: req.session.user });
+  } else {
+    res.redirect('/login');
+  }
+});
+
+// Logout
+app.get('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/login');
+  });
+});
+
+
+
 module.exports = router;
 
