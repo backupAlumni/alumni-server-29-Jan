@@ -1,6 +1,6 @@
 //imports
 const express = require('express');
-const { Client } = require('pg');
+const mysql = require('mysql'); 
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
@@ -8,12 +8,11 @@ const cors = require('cors');
 const router = express.Router();
 
 //connecting to database
-const client = new Client({
-  host: 'localhost',
-  port: 5432,
-  database: 'Alumni_Space_DB',
-  user: 'postgres',
-  password: '123',
+const client = mysql.createConnection({
+  host: '127.0.0.1',
+  user: 'root',
+  port:"3306",
+  database: 'test',
 });
 
 client.connect();
@@ -27,7 +26,7 @@ router.post('/api/login', (req, res) => {
   const receivedData = req.body;
   console.log('Received data:', receivedData);
 
-  const selectUserSQL = "SELECT fullname FROM alumni_space_ui WHERE email = $1 AND password = $2";
+  const selectUserSQL = "SELECT fullname FROM alumni_space_ui WHERE email = ? AND password = ?";
 
   client.query(selectUserSQL, [receivedData.email, receivedData.password],function(err, result){
     if (err) {
@@ -60,7 +59,7 @@ console.log('Password:', receivedData.password);
 res.status(200).json({ message: 'Data received on the server', data: receivedData });
 
 //DATABASE INTERACTION STARTS HERE
-insertDetailsSQL = "INSERT INTO ALUMNI_SPACE_UI(fullname,email,password) " + " VALUES ($1,$2,$3)";
+insertDetailsSQL = "INSERT INTO ALUMNI_SPACE_UI(fullname,email,password) " + " VALUES (?,?,?)";
 
 // Query insert into Alumni_Space_Account
 client.query(insertDetailsSQL,[receivedData.fullname, receivedData.email, receivedData.password ],function (err, result) {
