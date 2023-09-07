@@ -34,10 +34,10 @@ router.post('/api/login', (req, res) => {
       //res.status(500).json({ message: 'An error occurred during login.' });
   } else {
     //check details
-      if (result.rows.length > 0) {
-        var fullname = result.rows[0].fullname;
+      if (result && result.length > 0) {
+        var fullname = result[0].fullname;
         console.log(fullname + ' has Login successful!');
-        //res.status(200).json({ message: 'Login successful!' });
+        res.status(200).json({ message: 'Login successful!' });
       } else {
           //res.status(401).json({ message: 'Invalid email or password' });
           console.log('Invalid email or password');
