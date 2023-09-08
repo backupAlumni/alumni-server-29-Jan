@@ -2,9 +2,9 @@ Create DATABASE Alumni_Space_DB;
 
 CREATE TABLE ALUMNI_SPACE_UI (
     account_id SERIAL PRIMARY KEY,
-    fullname VARCHAR(20) NOT NULL,
+    fullname VARCHAR(20) NOT NULL
     email VARCHAR(50) NOT NULL UNIQUE, -- Added UNIQUE constraint
-    password VARCHAR(100) NOT NULL
+    password VARCHAR(100) NOT NULL,
 );
 
 CREATE TABLE Alumni_Space_Account (
@@ -19,7 +19,7 @@ CREATE TABLE Tut_Alumni (
     account_id INT REFERENCES Alumni_Space_Account(account_id),
     name VARCHAR(50) NOT NULL,
     surname VARCHAR(50) NOT NULL,
-    date_of_birth DATE,
+    --date_of_birth DATE,
 );
 
 CREATE TABLE Administrator (
@@ -29,6 +29,7 @@ CREATE TABLE Administrator (
     surname VARCHAR(50) NOT NULL,
 );
 
+<<<<<<< Updated upstream
 Create DATABASE Alumni_Space_DB;
 
 CREATE TABLE ALUMNI_SPACE_UI (
@@ -60,6 +61,8 @@ CREATE TABLE Administrator (
     surname VARCHAR(50) NOT NULL,
 );
 
+=======
+>>>>>>> Stashed changes
 --Profile
 
 --Profile
