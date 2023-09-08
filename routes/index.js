@@ -37,10 +37,10 @@ router.post('/api/login', (req, res) => {
       if (result && result.length > 0) {
         var fullname = result[0].fullname;
         console.log(fullname + ' has Login successful!');
-        res.status(200).json({ message: 'Login successful!' });
+        res.status(200).json({ message: 'Login successful!',result });
       } else {
-          //res.status(401).json({ message: 'Invalid email or password' });
-          console.log('Invalid email or password');
+        console.log('Invalid email or password');
+          res.status(401).json({ message: 'Invalid email or password' });
       }
   }
   });
