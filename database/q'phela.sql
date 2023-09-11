@@ -1,12 +1,5 @@
 Create DATABASE Alumni_Space_DB;
 
-CREATE TABLE ALUMNI_SPACE_UI (
-    account_id SERIAL PRIMARY KEY,
-    fullname VARCHAR(20) NOT NULL
-    email VARCHAR(50) NOT NULL UNIQUE, -- Added UNIQUE constraint
-    password VARCHAR(100) NOT NULL,
-);
-
 CREATE TABLE Alumni_Space_Account (
     account_id SERIAL PRIMARY KEY,
     email VARCHAR(100) NOT NULL UNIQUE,
@@ -29,17 +22,15 @@ CREATE TABLE Administrator (
 );
 
 
---Profile
 
 --Profile
-
 CREATE TABLE UserProfile(
     user_id SERIAL PRIMARY KEY,
     contact_no VARCHAR(50) NOT NULL,
-    education VARCHAR(100) NOT NULL,
-    achievement VARCHAR(50) NOT NULL,
+    --education VARCHAR(100) NOT NULL,
+    --achievement VARCHAR(50) NOT NULL,
     skills VARCHAR(50) NOT NULL,
-    experience VARCHAR(50) NOT NULL,
+    --experience VARCHAR(50) NOT NULL,
     enterest VARCHAR(50) NOT NULL,
     bio VARCHAR(50) NOT NULL
 );
