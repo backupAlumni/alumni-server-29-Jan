@@ -1,6 +1,5 @@
 //imports
 const express = require('express');
-const mysql = require('mysql'); 
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
@@ -8,14 +7,8 @@ const cors = require('cors');
 const router = express.Router();
 
 //connecting to database
-const client = mysql.createConnection({
-  host: '127.0.0.1',
-  user: 'root',
-  port:"3306",
-  database: 'test',
-});
 
-client.connect();
+var client = require('../database/database');
 
 //Middleware
 router.use(bodyParser.json());
