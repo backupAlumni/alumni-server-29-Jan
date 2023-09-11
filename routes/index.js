@@ -26,7 +26,8 @@ router.post('/api/login', (req, res) => {
   const receivedData = req.body;
   console.log('Received data:', receivedData);
 
-  const selectUserSQL = "SELECT fullname FROM alumni_space_ui WHERE email = ? AND password = ?";
+  const selectUserSQL = "SELECT account_id, role FROM Alumni_Space_Account WHERE email = ? AND password = ?";
+  var sql;
 
   client.query(selectUserSQL, [receivedData.email, receivedData.password],function(err, result){
     if (err) {
@@ -35,9 +36,30 @@ router.post('/api/login', (req, res) => {
   } else {
     //check details
       if (result && result.length > 0) {
-        var fullname = result[0].fullname;
-        console.log(fullname + ' has Login successful!');
-        res.status(200).json({ message: 'Login successful!',result });
+        //get account info
+        var account_id = result[0].account_id;
+        var role = result[0].role;
+
+        console.log('Account ' + account_id + ' has been found successful!');
+        
+        if(role == "Alumni"){
+            sql = "SELECT name FROM Tut_Alumni where account_id = ?";
+        }else{
+            sql = "";
+        }
+        //query to get user details
+        client.query(sql,[account_id],function(err,result){
+            if(err){
+                throw err;
+            }else{
+                if(result && result.length > 0){
+                    var name = result[0].name;
+                    console.log("name: " + name);
+                    //send to front-end
+                    res.status(200).json({ message: 'Login successful!',result });
+                }
+            }
+        });
       } else {
         console.log('Invalid email or password');
           res.status(401).json({ message: 'Invalid email or password' });
@@ -62,9 +84,9 @@ role = "Alumni";
 if (role == "Alumni") {
   // SQL
   registerQuery =
-      "INSERT INTO Tut_Alumni (name, surname) " +" VALUES (?,?)";
+      "INSERT INTO Tut_Alumni(account_id,name, surname) " +" VALUES (?,?,?)";
 
-  userDetailsFields = [receivedData.fullname, receivedData.surname];
+  userDetailsFields = [null, receivedData.fullname, receivedData.surname];
 } else if (role == "Admin") {
   // SQL
   registerQuery =
@@ -79,16 +101,24 @@ if (role == "Alumni") {
 client.query(insertDetailsSQL,[receivedData.email, receivedData.password,role ],function (err, result) {
   if (err) {
     console.error(err);
-    return res.send("An error occurred during registration.");
+    //return res.send("An error occurred during registration.");
   } else {
     console.log('Account Registration successful!:');
     //inser into relevent table
+
+    //get acc id
+    const accountId = result.insertId;
+    userDetailsFields[0] = accountId;
+
+    console.log(accountId)
+
     client.query(registerQuery, userDetailsFields, function (err, result) {
       if (err) {
           console.error(err);
           //return res.send("An error occurred during registration.");
       } else {
-          res.send("Registration successful!");
+          //res.send("Registration successful!");
+          console.log("Hi");
       }
   });
   }
