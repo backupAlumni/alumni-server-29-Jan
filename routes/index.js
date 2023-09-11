@@ -57,20 +57,18 @@ res.status(200).json({ message: 'Data received on the server', data: receivedDat
 //DATABASE SCRIPTS HERE
 var registerQuery;
 insertDetailsSQL = "INSERT INTO Alumni_Space_Account(email,password,role) " + " VALUES (?,?,?)";
-role == "Alumni";
+role = "Alumni";
 
 if (role == "Alumni") {
   // SQL
   registerQuery =
-      "INSERT INTO Tut_Alumni (name, surname,) " +
-      "VALUES (?,?)";
+      "INSERT INTO Tut_Alumni (name, surname) " +" VALUES (?,?)";
 
   userDetailsFields = [receivedData.fullname, receivedData.surname];
 } else if (role == "Admin") {
   // SQL
   registerQuery =
-      "INSERT INTO Administrator (name, surname) " +
-      "VALUES (?,?)";
+      "INSERT INTO Administrator (name, surname) " +" VALUES (?,?)";
 
   userDetailsFields = [receivedData.fullname, receivedData.surname];
 }
@@ -81,20 +79,21 @@ if (role == "Alumni") {
 client.query(insertDetailsSQL,[receivedData.email, receivedData.password,role ],function (err, result) {
   if (err) {
     console.error(err);
-    res.send("An error occurred during registration.");
+    return res.send("An error occurred during registration.");
   } else {
     console.log('Account Registration successful!:');
     //inser into relevent table
     client.query(registerQuery, userDetailsFields, function (err, result) {
       if (err) {
           console.error(err);
-          res.send("An error occurred during registration.");
+          //return res.send("An error occurred during registration.");
       } else {
           res.send("Registration successful!");
       }
   });
   }
 });
+
 });
 
 module.exports = router;
