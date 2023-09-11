@@ -156,8 +156,6 @@ router.post('/forgot-password', async (req, res) => {
   }
 });
 
-
-
 //  reset the password
 // Endpoint to initiate a password reset
 router.post('/forgot-password', async (req, res) => {
@@ -188,13 +186,13 @@ router.post('/forgot-password', async (req, res) => {
   }
 });
 
-
 // Logout
 router.get('/logout', (req, res) => {
   req.session.destroy(() => {
     res.redirect('/login');
   });
 });
+
 
 // Route to insert a new user profile
 router.post('/api/userprofile', (req, res) => {
@@ -228,7 +226,6 @@ router.post('/api/userprofile', (req, res) => {
     }
   });
 });
-
 
 //updating profile
 router.put('/api/userprofile/:user_id', (req, res) => {
@@ -267,8 +264,6 @@ router.put('/api/userprofile/:user_id', (req, res) => {
     }
   );
 });
-
-
 
 //Get a user profile by user_id
 router.get('/api/userprofile', (req, res) => {
