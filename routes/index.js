@@ -136,7 +136,7 @@ router.post('/forgot-password', async (req, res) => {
 
   // Check if the email exists in the database
   try {
-    const { rows } = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    const { rows } = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
 
     if (rows.length === 0) {
       return res.status(404).json({ message: 'Email not found' });
@@ -144,7 +144,7 @@ router.post('/forgot-password', async (req, res) => {
 
     // Generate a reset token and store it in the database
     const token = generateToken();
-    await pool.query('INSERT INTO password_reset_tokens (email, token) VALUES ($1, $2)', [email, token]);
+    await pool.query('INSERT INTO password_reset_tokens (email, token) VALUES (?,?)', [email, token]);
 
     // Create a password reset link
     const resetLink = `http://your-app.com/reset-password?token=${token}`;
@@ -169,21 +169,26 @@ router.get('/logout', (req, res) => {
 
 // Route to insert a new user profile
 router.post('/api/userprofile', (req, res) => {
-  const receivedData = req.body;
-
+  //const receivedData = req.body;
+  var contact_no = req.body.contact_no;
+  var education = req.body.education;
+  var achievement = req.body.achievement;
+  var skills = req.body.skills;
+  var experience = req.body.experience;
+  var interest = req.body.interest;
+  var bio = req.body.bio;
   // Handle the data on the server as needed
-  console.log('Received data:', receivedData);
+  //console.log('Received data:', receivedData);
 
   // Send a response back to the client
-  res.status(200).json({ message: 'Data received on the server', data: receivedData });
+  //res.status(200).json({ message: 'Data received on the server', data: receivedData });
 
   // SQL query to insert into UserProfile table
-  const insertProfileSQL = `
-    INSERT INTO UserProfile (contact_no, education, achievement, skills, experience, interest, bio)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
-  `;
 
-  const { contact_no, education, achievement, skills, experience, interest, bio } = receivedData;
+  const insertProfileSQL = `
+    INSERT INTO UserProfile (contact_no, education, achievement, skills, experience, enterest, bio) VALUES (?,?,?,?,?,?,?)`;
+  //const {achievement, skills, experience, interest, bio } = receivedData;
+  console.log(receivedData.education);
 
   client.query(insertProfileSQL, [contact_no, education, achievement, skills, experience, interest, bio], (err, result) => {
     if (err) {
@@ -198,8 +203,16 @@ router.post('/api/userprofile', (req, res) => {
 
 //updating profile
 router.put('/api/userprofile/:user_id', (req, res) => {
-  const user_id = req.params.user_id;
+  const user_id = req.body.user_id;
   const updatedData = req.body;
+
+  var contact_no = req.body.contact_no;
+  var education = req.body.education;
+  var achievement = req.body.achievement;
+  var skills = req.body.skills;
+  var experience = req.body.experience;
+  var interest = req.body.interest;
+  var bio = req.body.bio;
 
   // Handle the data on the server as needed
   console.log('Received data for updating profile:', updatedData);
@@ -208,10 +221,9 @@ router.put('/api/userprofile/:user_id', (req, res) => {
   res.status(200).json({ message: 'Data received on the server for updating profile', data: updatedData });
 
   // SQL query to update UserProfile table by user_id
-  const updateProfileSQL = `UPDATE UserProfile SET contact_no = $1, education = $2, achievement = $3, skills = $4, experience = $5, interest = $6, bio = $7
-    WHERE user_id = $8 `;
+  const updateProfileSQL = `UPDATE UserProfile SET contact_no = ?, education = ?, achievement = ?, skills = ?, experience = ?, enterest = ?, bio = ? WHERE user_id = ? `;
 
-  const { contact_no, education, achievement, skills, experience, interest, bio } = updatedData;
+  //const { contact_no, education, achievement, skills, experience, interest, bio } = updatedData;
 
   client.query(
     updateProfileSQL,
@@ -230,22 +242,25 @@ router.put('/api/userprofile/:user_id', (req, res) => {
 
 
 //Get a user profile by user_id
-router.get('/api/userprofile/:user_id', (req, res) => {
-  const user_id = req.params.user_id;
+router.get('/api/userprofile', (req, res) => {
+  //const user_id = req.params.user_id;
+
+  var user_id = req.body.user_id;
 
   // SQL query to retrieve a user profile by user_id
-  const getProfileSQL = `SELECT * FROM UserProfile WHERE user_id = $1`;
+  const getProfileSQL = `SELECT * FROM UserProfile WHERE user_id = ?`;
 
   client.query(getProfileSQL, [user_id], (err, result) => {
     if (err) {
       console.error(err);
       res.status(500).send('An error occurred while fetching the user profile.');
     } else {
-      if (result.rows.length === 0) {
-        res.status(404).send('User profile not found.');
-      } else {
-        const userProfile = result.rows[0];
+      if (result && result.length > 0) {
+        console.log("something");
+        const userProfile = result[0];
         res.status(200).json({ message: 'User profile retrieved successfully', data: userProfile });
+      } else {
+        res.status(404).send('User profile not found.');
       }
     }
   });

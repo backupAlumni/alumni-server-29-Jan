@@ -40,7 +40,7 @@ CREATE TABLE UserProfile(
     achievement VARCHAR(50) NOT NULL,
     skills VARCHAR(50) NOT NULL,
     experience VARCHAR(50) NOT NULL,
-    enterest VARCHAR(50) NOT NULL,
+    interest VARCHAR(50) NOT NULL,
     bio VARCHAR(50) NOT NULL
 );
 
