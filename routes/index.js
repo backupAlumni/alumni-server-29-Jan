@@ -50,25 +50,49 @@ router.post('/api/register', (req, res) => {
   const receivedData = req.body;
 console.log('Received data:', receivedData);
 
-// Handle the data on the server as needed
-console.log('Full Name:', receivedData.fullname);
-console.log('Sutdent Email:', receivedData.email);
-console.log('Password:', receivedData.password);
 
 // Send a response back to the client
 res.status(200).json({ message: 'Data received on the server', data: receivedData });
 
-//DATABASE INTERACTION STARTS HERE
-insertDetailsSQL = "INSERT INTO ALUMNI_SPACE_UI(fullname,email,password) " + " VALUES (?,?,?)";
+//DATABASE SCRIPTS HERE
+var registerQuery;
+insertDetailsSQL = "INSERT INTO Alumni_Space_Account(email,password,role) " + " VALUES (?,?,?)";
+role == "Alumni";
 
+if (role == "Alumni") {
+  // SQL
+  registerQuery =
+      "INSERT INTO Tut_Alumni (name, surname,) " +
+      "VALUES (?,?)";
+
+  userDetailsFields = [receivedData.fullname, receivedData.surname];
+} else if (role == "Admin") {
+  // SQL
+  registerQuery =
+      "INSERT INTO Administrator (name, surname) " +
+      "VALUES (?,?)";
+
+  userDetailsFields = [receivedData.fullname, receivedData.surname];
+}
+
+
+//DATABASE INTERACTION STARTS HERE
 // Query insert into Alumni_Space_Account
-client.query(insertDetailsSQL,[receivedData.fullname, receivedData.email, receivedData.password ],function (err, result) {
+client.query(insertDetailsSQL,[receivedData.email, receivedData.password,role ],function (err, result) {
   if (err) {
     console.error(err);
     res.send("An error occurred during registration.");
   } else {
-    console.log('Registration successful!:');
-
+    console.log('Account Registration successful!:');
+    //inser into relevent table
+    client.query(registerQuery, userDetailsFields, function (err, result) {
+      if (err) {
+          console.error(err);
+          res.send("An error occurred during registration.");
+      } else {
+          res.send("Registration successful!");
+      }
+  });
   }
 });
 });
