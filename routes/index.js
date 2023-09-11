@@ -91,12 +91,12 @@ if (role == "Alumni") {
 
 //DATABASE INTERACTION STARTS HERE
 // Query insert into Alumni_Space_Account
-client.query(insertDetailsSQL,[receivedData.email, receivedData.password,role ],function (err, result) {
+client.query(insertDetailsSQL,[receivedData.email,receivedData.password ,role ],function (err, result) {
   if (err) {
     console.error(err);
     //return res.send("An error occurred during registration.");
   } else {
-    console.log('Account Registration successful!:');
+    console.log('Account for '+ receivedData.fullname + ' '+ receivedData.surname + ' has been Created');
     //inser into relevent table
 
     //get acc id
