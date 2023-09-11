@@ -103,15 +103,13 @@ client.query(insertDetailsSQL,[receivedData.email, receivedData.password,role ],
     const accountId = result.insertId;
     userDetailsFields[0] = accountId;
 
-    console.log(accountId)
-
     client.query(registerQuery, userDetailsFields, function (err, result) {
       if (err) {
           console.error(err);
           //return res.send("An error occurred during registration.");
       } else {
           //res.send("Registration successful!");
-          console.log("Hi");
+            console.log("Registration successful!");
       }
   });
   }
