@@ -10,16 +10,15 @@ CREATE TABLE ALUMNI_SPACE_UI (
 CREATE TABLE Alumni_Space_Account (
     account_id SERIAL PRIMARY KEY,
     email VARCHAR(100) NOT NULL UNIQUE, -- Added UNIQUE constraint
-    password VARCHAR(100) NOT NULL,
-    role VARCHAR(20) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    role VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE Tut_Alumni (
     alumni_id SERIAL PRIMARY KEY,
     account_id INT REFERENCES Alumni_Space_Account(account_id),
     name VARCHAR(50) NOT NULL,
-    surname VARCHAR(50) NOT NULL,
-    date_of_birth DATE,
+    surname VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Administrator (
@@ -35,6 +34,7 @@ CREATE TABLE Administrator (
 
 CREATE TABLE UserProfile(
     user_id SERIAL PRIMARY KEY,
+    account_id INT REFERENCES Alumni_Space_Account(account_id),
     contact_no VARCHAR(50) NOT NULL,
     education VARCHAR(100) NOT NULL,
     achievement VARCHAR(50) NOT NULL,

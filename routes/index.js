@@ -109,7 +109,16 @@ client.query(insertDetailsSQL,[receivedData.email,receivedData.password ,role ],
           //return res.send("An error occurred during registration.");
       } else {
           //res.send("Registration successful!");
-            console.log("Registration successful!");
+          console.log("Registration successful!");
+
+          //create profile for user
+          client.query("INSERT INTO UserProfile(account_id) " + " VALUES(?)",[accountId],function(err,result){
+            if(err){
+              throw err;
+            }else{
+              console.log("Profile for User " + receivedData.fullname + ' '+ receivedData.surname + ' has been Generated');
+            }
+          });
       }
   });
   }
