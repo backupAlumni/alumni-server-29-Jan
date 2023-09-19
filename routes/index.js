@@ -288,5 +288,65 @@ router.get('/api/userprofile', (req, res) => {
   });
 });
 
+
+// Route to insert a new job
+router.post('/api/newjob', (req, res) => {
+
+    var job_title = req.body.job_title;
+    var company = req.body.company;
+    var location = req.body.location;
+    var deadline = req.body.deadline;
+    var account_id = req.body.account_id;
+    var content_type = req.body.content_type;
+
+    console.log(job_title);
+    console.log(company);
+    console.log(location);
+    console.log(deadline);
+    console.log(account_id);
+    console.log(content_type);
+   
+  // Handle the data on the server as needed
+
+  // SQL query to insert into Jobs table
+  const insertJobSQL = `INSERT INTO user (job_title, company, location, deadline, account_id, content_type) VALUES (?, ?, ?, ?, ?, ?)`;
+
+  client.query(
+    insertJobSQL,
+    [job_title, company, location, deadline, account_id, content_type],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('An error occurred during job insertion.');
+      } else {
+        console.log('Job inserted successfully!');
+        res.status(200).json({ message: 'Job inserted successfully!' });
+      }
+    }
+  );
+});
+
+
+//updating jobs
+router.put('/api/Jobs/:job_id', (req, res) => {
+  const job_id = req.params.job_id;
+  const { account_id, content_type, job_title, company, location, deadline, id} = req.body;
+
+  // SQL query to update Jobs table by job_id*****96
+  const updateJobSQL = `UPDATE User SET account_id = ?, content_type = ?, job_title = ?, company = ?, location = ?, deadline = ?  WHERE id = ?`;
+
+  const values = [account_id, content_type, job_title, company, location, deadline, id];
+
+  client.query(updateJobSQL, values, (err, result) => {
+    if (err) {
+      console.error('Error updating job:', err);
+      res.status(500).send('An error occurred during job update.');
+    } else {
+      console.log('Job updated successfully!');
+      res.status(200).json({ message: 'Job updated successfully' });
+    }
+  });
+});
+
 module.exports = router;
 
