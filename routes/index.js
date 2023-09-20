@@ -298,6 +298,7 @@ router.post('/api/newjob', (req, res) => {
     var deadline = req.body.deadline;
     var account_id = req.body.account_id;
     var content_type = req.body.content_type;
+    var date_posted = req.body.date_posted;
 
     console.log(job_title);
     console.log(company);
@@ -305,15 +306,16 @@ router.post('/api/newjob', (req, res) => {
     console.log(deadline);
     console.log(account_id);
     console.log(content_type);
+    console.log(date_posted);
    
   // Handle the data on the server as needed
 
   // SQL query to insert into Jobs table
-  const insertJobSQL = `INSERT INTO user (job_title, company, location, deadline, account_id, content_type) VALUES (?, ?, ?, ?, ?, ?)`;
+  const insertJobSQL = `INSERT INTO user (job_title, company, location, deadline, account_id, content_type, date_posted) VALUES (?, ?, ?, ?, ?, ?,?)`;
 
   client.query(
     insertJobSQL,
-    [job_title, company, location, deadline, account_id, content_type],
+    [job_title, company, location, deadline, account_id, content_type, date_posted],
     (err, result) => {
       if (err) {
         console.error(err);
@@ -330,12 +332,12 @@ router.post('/api/newjob', (req, res) => {
 //updating jobs
 router.put('/api/Jobs/:job_id', (req, res) => {
   const job_id = req.params.job_id;
-  const { account_id, content_type, job_title, company, location, deadline, id} = req.body;
+  const { account_id, content_type, job_title, company, location, deadline, date_posted} = req.body;
 
   // SQL query to update Jobs table by job_id*****96
-  const updateJobSQL = `UPDATE User SET account_id = ?, content_type = ?, job_title = ?, company = ?, location = ?, deadline = ?  WHERE id = ?`;
+  const updateJobSQL = `UPDATE User SET account_id = ?, content_type = ?, job_title = ?, company = ?, location = ?, deadline = ?, date_posted = ?  WHERE job_id = ?`;
 
-  const values = [account_id, content_type, job_title, company, location, deadline, id];
+  const values = [account_id, content_type, job_title, company, location, deadline,date_posted, job_id];
 
   client.query(updateJobSQL, values, (err, result) => {
     if (err) {
@@ -346,6 +348,55 @@ router.put('/api/Jobs/:job_id', (req, res) => {
       res.status(200).json({ message: 'Job updated successfully' });
     }
   });
+});
+
+
+//getting job by its id
+
+router.get('/api/job/:id', (req, res) => {
+  const jobId = req.body.id;
+  console.log(jobId);
+
+  // SQL query to select a job by its ID
+  const selectJobSQL = 'SELECT * FROM User WHERE job_id = ?';
+
+  client.query(selectJobSQL, [jobId], (err, result) => {
+     if (err) {
+      console.error(err);
+      res.status(500).send('An error occurred while fetching the job id.');
+    } else {
+      if (result && result.length > 0) {
+        //console.log("something");
+        const user = result[0];
+        res.status(200).json({ message: 'Job id retrieved successfully', data: user });
+      } else {
+        res.status(404).send('Job not found.');
+      }
+    }
+  });
+});
+
+//selecting all jobs
+
+router.get('/api/jobs', (req, res) => {
+  
+  // SQL query to select all jobs
+  const selectAllJobsSQL = 'SELECT * FROM Jobs';
+
+  client.query(selectJobSQL,(err, result) => {
+    if (err) {
+     console.error(err);
+     res.status(500).send('An error occurred while fetching jobs.');
+   } else {
+     if (result && result.length > 0) {
+       //console.log("something");
+       const user = result[0];
+       res.status(200).json({ message: 'Jobs retrieved successfully', data: user });
+     } else {
+       res.status(404).send('Job not found.');
+     }
+   }
+ });
 });
 
 module.exports = router;
