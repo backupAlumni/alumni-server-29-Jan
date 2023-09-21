@@ -311,7 +311,7 @@ router.post('/api/newjob', (req, res) => {
   // Handle the data on the server as needed
 
   // SQL query to insert into Jobs table
-  const insertJobSQL = `INSERT INTO user (job_title, company, location, deadline, account_id, content_type, date_posted) VALUES (?, ?, ?, ?, ?, ?,?)`;
+  const insertJobSQL = `INSERT INTO Users (job_title, company, location, deadline, account_id, content_type, date_posted) VALUES (?, ?, ?, ?, ?, ?,?)`;
 
   client.query(
     insertJobSQL,
@@ -331,23 +331,39 @@ router.post('/api/newjob', (req, res) => {
 
 //updating jobs
 router.put('/api/Jobs/:job_id', (req, res) => {
-  const job_id = req.params.job_id;
-  const { account_id, content_type, job_title, company, location, deadline, date_posted} = req.body;
+  const job_id = req.body.job_id;
+  const receivedData = req.body;
 
-  // SQL query to update Jobs table by job_id*****96
-  const updateJobSQL = `UPDATE User SET account_id = ?, content_type = ?, job_title = ?, company = ?, location = ?, deadline = ?, date_posted = ?  WHERE job_id = ?`;
+  var account_id = req.body.account_id;
+  var content_type = req.body.content_type;
+  var job_title = req.body.job_title;
+  var company = req.body.company;
+  var location = req.body.location;
+  var deadline = req.body.deadline;
+  var date_posted = req.body.date_posted;
 
-  const values = [account_id, content_type, job_title, company, location, deadline,date_posted, job_id];
+  // Handle the data on the server as needed
+  console.log('Received data for updating job:', receivedData);
 
-  client.query(updateJobSQL, values, (err, result) => {
-    if (err) {
-      console.error('Error updating job:', err);
-      res.status(500).send('An error occurred during job update.');
-    } else {
-      console.log('Job updated successfully!');
-      res.status(200).json({ message: 'Job updated successfully' });
+  // Send a response back to the client
+  res.status(200).json({ message: 'Data received on the server for updating job', data: receivedData });
+
+  // SQL query to update Job table by job_id
+  const updateJobSQL = `UPDATE Users SET account_id = ?, content_type = ?, job_title = ?, company = ?, location = ?, deadline = ?, date_posted = ? WHERE job_id = ? `;
+
+
+  client.query(
+    updateJobSQL,
+    [account_id,content_type,job_title,company,location,deadline,date_posted,job_id],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('An error occurred during job update.');
+      } else {
+        console.log('Job updated successfully!');
+      }
     }
-  });
+  );
 });
 
 
@@ -358,7 +374,7 @@ router.get('/api/job/:id', (req, res) => {
   console.log(jobId);
 
   // SQL query to select a job by its ID
-  const selectJobSQL = 'SELECT * FROM User WHERE job_id = ?';
+  const selectJobSQL = 'SELECT * FROM Users WHERE job_id = ?';
 
   client.query(selectJobSQL, [jobId], (err, result) => {
      if (err) {
@@ -379,25 +395,19 @@ router.get('/api/job/:id', (req, res) => {
 //selecting all jobs
 
 router.get('/api/jobs', (req, res) => {
-  
   // SQL query to select all jobs
-  const selectAllJobsSQL = 'SELECT * FROM Jobs';
+  const selectAllJobsSQL = 'SELECT * FROM Users'; 
 
-  client.query(selectJobSQL,(err, result) => {
+  client.query(selectAllJobsSQL, (err, result) => {
     if (err) {
-     console.error(err);
-     res.status(500).send('An error occurred while fetching jobs.');
-   } else {
-     if (result && result.length > 0) {
-       //console.log("something");
-       const user = result[0];
-       res.status(200).json({ message: 'Jobs retrieved successfully', data: user });
-     } else {
-       res.status(404).send('Job not found.');
-     }
-   }
- });
+      console.error(err);
+      res.status(500).send('An error occurred while fetching jobs.');
+    } else {
+      if (result && result.length > 0) {
+      res.status(200).json({ jobs: result });
+    }
+  }
+  });
 });
-
 module.exports = router;
 
