@@ -13,7 +13,7 @@ const { password } = require('pg/lib/defaults');
 
 //Middleware
 router.use(bodyParser.json());
-router.use(cors()); 
+router.use(cors());
 
 //Routes Management
 router.post('/api/login', (req, res) => {
@@ -23,139 +23,113 @@ router.post('/api/login', (req, res) => {
   const selectUserSQL = "SELECT account_id, role FROM Alumni_Space_Account WHERE email = ? AND password = ?";
   var sql;
 
-  client.query(selectUserSQL, [receivedData.email, receivedData.password],function(err, result){
+  client.query(selectUserSQL, [receivedData.email, receivedData.password], function (err, result) {
     if (err) {
       console.error('Error during login:', err);
       //res.status(500).json({ message: 'An error occurred during login.' });
-  } else {
-    //check details
+    } else {
+      //check details
       if (result && result.length > 0) {
         //get account info
         var account_id = result[0].account_id;
         var role = result[0].role;
 
         console.log('Account ' + account_id + ' has been found successful!');
-        
-        if(role == "Alumni"){
-            sql = "SELECT name FROM Tut_Alumni where account_id = ?";
-        }else{
-            sql = "";
+
+        if (role == "Alumni") {
+          sql = "SELECT name FROM Tut_Alumni where account_id = ?";
+        } else {
+          sql = "";
         }
         //query to get user details
-        client.query(sql,[account_id],function(err,result){
-            if(err){
-                throw err;
-            }else{
-                if(result && result.length > 0){
-                    var name = result[0].name;
-                    console.log("name: " + name);
-                    //send to front-end
-                    res.status(200).json({ message: 'Login successful!',result });
-                }
+        client.query(sql, [account_id], function (err, result) {
+          if (err) {
+            throw err;
+          } else {
+            if (result && result.length > 0) {
+              var name = result[0].name;
+              console.log("name: " + name);
+              //send to front-end
+              res.status(200).json({ message: 'Login successful!', result });
+            } else {
+              console.log('Invalid email or password');
+              res.status(401).json({ message: 'Invalid email or password' });
             }
+          }
         });
       } else {
         console.log('Invalid email or password');
-          res.status(401).json({ message: 'Invalid email or password' });
+        res.status(401).json({ message: 'Invalid email or password' });
       }
-  }
+    }
   });
 });
 
 router.post('/api/register', (req, res) => {
   const receivedData = req.body;
-console.log('Received data:', receivedData);
+  console.log('Received data:', receivedData);
 
 
-// Send a response back to the client
-res.status(200).json({ message: 'Data received on the server', data: receivedData });
+  // Send a response back to the client
+  res.status(200).json({ message: 'Data received on the server', data: receivedData });
 
-//DATABASE SCRIPTS HERE
-var registerQuery;
-insertDetailsSQL = "INSERT INTO Alumni_Space_Account(email,password,role) " + " VALUES (?,?,?)";
-role = "Alumni";
+  //DATABASE SCRIPTS HERE
+  var registerQuery;
+  insertDetailsSQL = "INSERT INTO Alumni_Space_Account(email,password,role) " + " VALUES (?,?,?)";
+  role = "Alumni";
 
-if (role == "Alumni") {
-  // SQL
-  registerQuery =
-      "INSERT INTO Tut_Alumni(account_id,name, surname) " +" VALUES (?,?,?)";
+  if (role == "Alumni") {
+    // SQL
+    registerQuery =
+      "INSERT INTO Tut_Alumni(account_id,name, surname) " + " VALUES (?,?,?)";
 
-  userDetailsFields = [null, receivedData.fullname, receivedData.surname];
-} else if (role == "Admin") {
-  // SQL
-  registerQuery =
-      "INSERT INTO Administrator (name, surname) " +" VALUES (?,?)";
+    userDetailsFields = [null, receivedData.fullname, receivedData.surname];
+  } else if (role == "Admin") {
+    // SQL
+    registerQuery =
+      "INSERT INTO Administrator (name, surname) " + " VALUES (?,?)";
 
-  userDetailsFields = [receivedData.fullname, receivedData.surname];
-}
+    userDetailsFields = [receivedData.fullname, receivedData.surname];
+  }
 
 
-//DATABASE INTERACTION STARTS HERE
-// Query insert into Alumni_Space_Account
-client.query(insertDetailsSQL,[receivedData.email,receivedData.password ,role ],function (err, result) {
-  if (err) {
-    console.error(err);
-    //return res.send("An error occurred during registration.");
-  } else {
-    console.log('Account for '+ receivedData.fullname + ' '+ receivedData.surname + ' has been Created');
-    //inser into relevent table
+  //DATABASE INTERACTION STARTS HERE
+  // Query insert into Alumni_Space_Account
+  client.query(insertDetailsSQL, [receivedData.email, receivedData.password, role], function (err, result) {
+    if (err) {
+      console.error(err);
+      //return res.send("An error occurred during registration.");
+    } else {
+      console.log('Account for ' + receivedData.fullname + ' ' + receivedData.surname + ' has been Created');
+      //inser into relevent table
 
-    //get acc id
-    const accountId = result.insertId;
-    userDetailsFields[0] = accountId;
+      //get acc id
+      const accountId = result.insertId;
+      userDetailsFields[0] = accountId;
 
-    client.query(registerQuery, userDetailsFields, function (err, result) {
-      if (err) {
+      client.query(registerQuery, userDetailsFields, function (err, result) {
+        if (err) {
           console.error(err);
           //return res.send("An error occurred during registration.");
-      } else {
+        } else {
           //res.send("Registration successful!");
           console.log("Registration successful!");
 
           //create profile for user
-          client.query("INSERT INTO UserProfile(account_id) " + " VALUES(?)",[accountId],function(err,result){
-            if(err){
+          client.query("INSERT INTO UserProfile(account_id) " + " VALUES(?)", [accountId], function (err, result) {
+            if (err) {
               throw err;
-            }else{
-              console.log("Profile for User " + receivedData.fullname + ' '+ receivedData.surname + ' has been Generated');
+            } else {
+              console.log("Profile for User " + receivedData.fullname + ' ' + receivedData.surname + ' has been Generated');
             }
           });
-      }
-  });
-  }
-});
-
-});
-
-
-// Endpoint to initiate a password reset
-router.post('/forgot-password', async (req, res) => {
-  const { email } = req.body;
-
-  // Check if the email exists in the database
-  try {
-    const { rows } = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-
-    if (rows.length === 0) {
-      return res.status(404).json({ message: 'Email not found' });
+        }
+      });
     }
+  });
 
-    // Generate a reset token and store it in the database
-    const token = generateToken();
-    await pool.query('INSERT INTO password_reset_tokens (email, token) VALUES ($1, $2)', [email, token]);
-
-    // Create a password reset link
-    const resetLink = `http://your-app.com/reset-password?token=${token}`;
-
-    // Send a password reset email to the user
-    sendPasswordResetEmail(email, resetLink);
-
-    res.status(200).json({ message: 'Password reset email sent' });
-  } catch (error) {
-    console.error('Error checking email:', error);
-    res.status(500).json({ message: 'Failed to initiate password reset' });
-  }
 });
+
 
 //  reset the password
 // update password 
@@ -172,15 +146,16 @@ router.put('/forgot-password', async (req, res) => {
 
   const updatePasswordSQL = `UPDATE Alumni_Space_Account SET password = ? WHERE email = ?`;
 
- 
-  client.query(updatePasswordSQL,[password,email],(err, result) => {
-      if (err) {
-        console.error(err);
-        //res.status(500).send('An error occurred during password update.');
-      } else {
-        console.log('Password updated successfully!');
-      }
+
+  client.query(updatePasswordSQL, [password, email], (err, result) => {
+    if (err) {
+      console.error(err);
+      //res.status(500).send('An error occurred during password update.');
+    } else {
+      console.log('Password updated successfully!');
+      res.status(200).json({ message: 'Login successful!' });
     }
+  }
   );
 });
 
@@ -292,22 +267,22 @@ router.get('/api/userprofile', (req, res) => {
 // Route to insert a new job
 router.post('/api/newjob', (req, res) => {
 
-    var job_title = req.body.job_title;
-    var company = req.body.company;
-    var location = req.body.location;
-    var deadline = req.body.deadline;
-    var account_id = req.body.account_id;
-    var content_type = req.body.content_type;
-    var date_posted = req.body.date_posted;
+  var job_title = req.body.job_title;
+  var company = req.body.company;
+  var location = req.body.location;
+  var deadline = req.body.deadline;
+  var account_id = req.body.account_id;
+  var content_type = req.body.content_type;
+  var date_posted = req.body.date_posted;
 
-    console.log(job_title);
-    console.log(company);
-    console.log(location);
-    console.log(deadline);
-    console.log(account_id);
-    console.log(content_type);
-    console.log(date_posted);
-   
+  console.log(job_title);
+  console.log(company);
+  console.log(location);
+  console.log(deadline);
+  console.log(account_id);
+  console.log(content_type);
+  console.log(date_posted);
+
   // Handle the data on the server as needed
 
   // SQL query to insert into Jobs table
@@ -332,12 +307,12 @@ router.post('/api/newjob', (req, res) => {
 //updating jobs
 router.put('/api/Jobs/:job_id', (req, res) => {
   const job_id = req.params.job_id;
-  const { account_id, content_type, job_title, company, location, deadline, date_posted} = req.body;
+  const { account_id, content_type, job_title, company, location, deadline, date_posted } = req.body;
 
   // SQL query to update Jobs table by job_id*****96
   const updateJobSQL = `UPDATE User SET account_id = ?, content_type = ?, job_title = ?, company = ?, location = ?, deadline = ?, date_posted = ?  WHERE job_id = ?`;
 
-  const values = [account_id, content_type, job_title, company, location, deadline,date_posted, job_id];
+  const values = [account_id, content_type, job_title, company, location, deadline, date_posted, job_id];
 
   client.query(updateJobSQL, values, (err, result) => {
     if (err) {
@@ -361,7 +336,7 @@ router.get('/api/job/:id', (req, res) => {
   const selectJobSQL = 'SELECT * FROM User WHERE job_id = ?';
 
   client.query(selectJobSQL, [jobId], (err, result) => {
-     if (err) {
+    if (err) {
       console.error(err);
       res.status(500).send('An error occurred while fetching the job id.');
     } else {
@@ -379,24 +354,24 @@ router.get('/api/job/:id', (req, res) => {
 //selecting all jobs
 
 router.get('/api/jobs', (req, res) => {
-  
+
   // SQL query to select all jobs
   const selectAllJobsSQL = 'SELECT * FROM Jobs';
 
-  client.query(selectJobSQL,(err, result) => {
+  client.query(selectJobSQL, (err, result) => {
     if (err) {
-     console.error(err);
-     res.status(500).send('An error occurred while fetching jobs.');
-   } else {
-     if (result && result.length > 0) {
-       //console.log("something");
-       const user = result[0];
-       res.status(200).json({ message: 'Jobs retrieved successfully', data: user });
-     } else {
-       res.status(404).send('Job not found.');
-     }
-   }
- });
+      console.error(err);
+      res.status(500).send('An error occurred while fetching jobs.');
+    } else {
+      if (result && result.length > 0) {
+        //console.log("something");
+        const user = result[0];
+        res.status(200).json({ message: 'Jobs retrieved successfully', data: user });
+      } else {
+        res.status(404).send('Job not found.');
+      }
+    }
+  });
 });
 
 module.exports = router;
