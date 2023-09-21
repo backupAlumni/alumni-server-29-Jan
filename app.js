@@ -1,6 +1,7 @@
 //imports
 const express = require("express");
 const app = express();
+const cors = require('cors');
 const path = require("path");
 
 // Set the view engine to EJS
@@ -8,6 +9,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // Set up middleware
+app.use(cors());//allow u to recive request from multiple domains
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 
