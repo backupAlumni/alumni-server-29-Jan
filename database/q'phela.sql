@@ -18,7 +18,7 @@ CREATE TABLE Administrator (
     admin_id SERIAL PRIMARY KEY,
     account_id INT REFERENCES Alumni_Space_Account(account_id),
     name VARCHAR(50) NOT NULL,
-    surname VARCHAR(50) NOT NULL,
+    surname VARCHAR(50) NOT NULL
 );
 
 --Profile
