@@ -39,7 +39,7 @@ router.post('/api/login', (req, res) => {
         if (role == "Alumni") {
           sql = "SELECT name FROM Tut_Alumni where account_id = ?";
         } else {
-          sql = "";
+          sql = "SELECT name FROM Administrator where account_id = ?";
         }
         //query to get user details
         client.query(sql, [account_id], function (err, result) {
