@@ -268,29 +268,29 @@ router.get('/api/userprofile', (req, res) => {
 router.post('/api/newjob', (req, res) => {
 
   var job_title = req.body.job_title;
-  var company = req.body.company;
+  var Organisation = req.body.Organisation;
+  var workplace_type = req.body.workplace_type;
   var location = req.body.location;
-  var deadline = req.body.deadline;
-  var account_id = req.body.account_id;
-  var content_type = req.body.content_type;
-  var date_posted = req.body.date_posted;
+  var job_type = req.body.job_type;
+  var job_description = req.body.job_description;
+ 
 
   console.log(job_title);
-  console.log(company);
+  console.log(Organisation);
+  console.log(workplace_type);
   console.log(location);
-  console.log(deadline);
-  console.log(account_id);
-  console.log(content_type);
-  console.log(date_posted);
+  console.log(job_type);
+  console.log(job_description);
+  
 
   // Handle the data on the server as needed
 
   // SQL query to insert into Jobs table
-  const insertJobSQL = `INSERT INTO joblisting (job_title, company, location, deadline, account_id, content_type, date_posted) VALUES (?, ?, ?, ?, ?, ?,?)`;
+  const insertJobSQL = `INSERT INTO joblisting (job_title, Organisation, workplace_type, location, job_type, job_description) VALUES (?, ?, ?, ?, ?, ?)`;
 
   client.query(
     insertJobSQL,
-    [job_title, company, location, deadline, account_id, content_type, date_posted],
+    [job_title, Organisation, workplace_type, location, job_type, job_description],
     (err, result) => {
       if (err) {
         console.error(err);
@@ -371,7 +371,7 @@ router.get('/api/job/:id', (req, res) => {
 
 router.get('/api/jobs', (req, res) => {
   // SQL query to select all jobs
-  const selectAllJobsSQL = 'SELECT * FROM Users'; 
+  const selectAllJobsSQL = 'SELECT * FROM joblisting'; 
 
   client.query(selectAllJobsSQL, (err, result) => {
     if (err) {
