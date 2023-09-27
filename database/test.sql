@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 27, 2023 at 02:14 PM
+-- Generation Time: Sep 27, 2023 at 02:21 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -71,12 +71,12 @@ INSERT INTO `alumni_space_account` (`account_id`, `email`, `password`, `role`) V
 CREATE TABLE `joblisting` (
   `job_id` bigint(20) UNSIGNED NOT NULL,
   `account_id` int(11) DEFAULT NULL,
-  `content_type` varchar(50) NOT NULL,
+  `Organisation` varchar(50) NOT NULL,
   `job_title` varchar(50) NOT NULL,
-  `company` varchar(50) NOT NULL,
+  `workplace_type` varchar(50) NOT NULL,
   `location` varchar(50) NOT NULL,
-  `deadline` date DEFAULT NULL,
-  `date_posted` date DEFAULT NULL
+  `job_type` varchar(50) NOT NULL,
+  `job_description` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------

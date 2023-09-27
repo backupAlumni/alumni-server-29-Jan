@@ -51,12 +51,12 @@ CREATE TABLE UserStory(
 CREATE TABLE JobListing(
     job_id SERIAL PRIMARY KEY,
     account_id INT REFERENCES Alumni_Space_Account(account_id),
-    content_type VARCHAR(50) NOT NULL,
+    Organisation VARCHAR(50) NOT NULL,
     job_title VARCHAR(50) NOT NULL,
-    company VARCHAR(50) NOT NULL,
+    workplace_type VARCHAR(50) NOT NULL,
     location VARCHAR(50) NOT NULL,
-    deadline Date,
-    date_posted Date
+    job_type VARCHAR(50) NOT NULL,
+    job_description VARCHAR(50) NOT NULL
 );
 
 
