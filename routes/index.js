@@ -286,7 +286,7 @@ router.post('/api/newjob', (req, res) => {
   // Handle the data on the server as needed
 
   // SQL query to insert into Jobs table
-  const insertJobSQL = `INSERT INTO Users (job_title, company, location, deadline, account_id, content_type, date_posted) VALUES (?, ?, ?, ?, ?, ?,?)`;
+  const insertJobSQL = `INSERT INTO joblisting (job_title, company, location, deadline, account_id, content_type, date_posted) VALUES (?, ?, ?, ?, ?, ?,?)`;
 
   client.query(
     insertJobSQL,
