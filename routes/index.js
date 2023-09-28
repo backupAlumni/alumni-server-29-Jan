@@ -273,7 +273,8 @@ router.post('/api/newjob', (req, res) => {
   var location = req.body.location;
   var job_type = req.body.job_type;
   var job_description = req.body.job_description;
- 
+  var date_posted = req.body.date_posted;
+  var deadline = req.body.deadline;
 
   console.log(job_title);
   console.log(Organisation);
@@ -281,16 +282,18 @@ router.post('/api/newjob', (req, res) => {
   console.log(location);
   console.log(job_type);
   console.log(job_description);
+  console.log(date_posted);
+  console.log(deadline);
   
 
   // Handle the data on the server as needed
 
   // SQL query to insert into Jobs table
-  const insertJobSQL = `INSERT INTO joblisting (job_title, Organisation, workplace_type, location, job_type, job_description) VALUES (?, ?, ?, ?, ?, ?)`;
+  const insertJobSQL = `INSERT INTO joblisting (job_title, Organisation, workplace_type, location, job_type, job_description,date_posted,deadline) VALUES (?, ?, ?, ?, ?, ?,?,?)`;
 
   client.query(
     insertJobSQL,
-    [job_title, Organisation, workplace_type, location, job_type, job_description],
+    [job_title, Organisation, workplace_type, location, job_type, job_description,date_posted,deadline],
     (err, result) => {
       if (err) {
         console.error(err);
