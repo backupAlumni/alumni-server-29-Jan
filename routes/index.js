@@ -387,5 +387,79 @@ router.get('/api/jobs', (req, res) => {
   }
   });
 });
+
+
+
+//Add Event
+router.post('/api/event', function(req,res){
+    var event_title = req.body.event_title;
+    var event_description = req.body.event_description;
+    var event_date =  req.body.event_date;
+
+    // SQL query to insert into Events table
+  const insertJobSQL = `INSERT INTO Event (event_title,event_description,event_date) VALUES (?, ?, ?)`;
+
+  client.query(
+    insertJobSQL,
+    [event_title,event_description,event_date],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('An error occurred during job insertion.');
+      } else {
+        console.log('Event inserted successfully!');
+        res.status(200).json({ message: 'Event inserted successfully!' });
+      }
+    }
+  );
+});
+
+//Get
+router.get('/api/event/:id', function(req,res){
+  var eventId = req.body.eventId;
+  
+
+  // SQL query to select a job by its ID
+  const selectJobSQL = 'SELECT * FROM Event WHERE event_id = ?';
+
+  client.query(selectJobSQL, [eventId], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('An error occurred while fetching the job id.');
+    } else {
+      if (result && result.length > 0) {
+        //console.log("something");
+        const user = result[0];
+        res.status(200).json({ message: 'Event id retrieved successfully', data: user });
+      } else {
+        res.status(404).send('Event not found.');
+      }
+    }
+  });
+});
+
+//Get all events
+router.get('/api/events', (req, res) => {
+  // SQL query to select all jobs
+  const selectAllJobsSQL = 'SELECT * FROM Event'; 
+
+  client.query(selectAllJobsSQL, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('An error occurred while fetching Events.');
+    } else {
+      if (result && result.length > 0) {
+      res.status(200).json({ events: result });
+    }
+  }
+  });
+});
+
+
+
+
+
+
+
 module.exports = router;
 

@@ -67,8 +67,7 @@ CREATE TABLE Event(
     alumni_id INT REFERENCES Alumni_Space_Account(account_id) ,
     event_title VARCHAR(50) NOT NULL,
     event_description VARCHAR(100) NOT NULL,
-    date Date
-    
+    event_date Date
 );
 
 
