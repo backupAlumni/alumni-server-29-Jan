@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 27, 2023 at 02:21 PM
+-- Generation Time: Oct 10, 2023 at 10:57 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -76,8 +76,18 @@ CREATE TABLE `joblisting` (
   `workplace_type` varchar(50) NOT NULL,
   `location` varchar(50) NOT NULL,
   `job_type` varchar(50) NOT NULL,
-  `job_description` varchar(50) NOT NULL
+  `job_description` varchar(50) NOT NULL,
+  `date_posted` date DEFAULT NULL,
+  `deadline` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `joblisting`
+--
+
+INSERT INTO `joblisting` (`job_id`, `account_id`, `Organisation`, `job_title`, `workplace_type`, `location`, `job_type`, `job_description`, `date_posted`, `deadline`) VALUES
+(1, NULL, 'AWS', 'Developer', 'Hybrid', 'Emalahleni', 'Full-time', 'zxzdzdfg', '2023-10-26', '2023-10-10'),
+(2, NULL, 'sad', 'sad', 'Hybrid', 'Emalahleni', 'Full-time', 'sadsa', '2023-10-25', '2023-10-10');
 
 -- --------------------------------------------------------
 
@@ -179,7 +189,7 @@ ALTER TABLE `alumni_space_account`
 -- AUTO_INCREMENT for table `joblisting`
 --
 ALTER TABLE `joblisting`
-  MODIFY `job_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `job_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tut_alumni`
