@@ -388,6 +388,26 @@ router.get('/api/jobs', (req, res) => {
   });
 });
 
+//search jobs
+router.get('/api/search/jobs', (req, res) => {
+  const { job_type, location, date_posted } = req.body;
+
+  // SQL query to search for jobs based on the provided parameters
+  const searchJobsSQL = 'SELECT * FROM Jobs WHERE job_type = ? AND location = ? AND date_posted = ?';
+
+  client.query(searchJobsSQL, [job_type, location, date_posted], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('An error occurred while searching for jobs.');
+    } else {
+      if (result && result.length > 0) {
+        res.status(200).json({ message: 'Jobs retrieved successfully', data: result });
+      } else {
+        res.status(404).send('No jobs found matching the criteria.');
+      }
+    }
+  });
+});
 
 
 //Add Event
