@@ -1,4 +1,4 @@
-Create DATABASE Alumni_Space_DB;
+Create DATABASE alumni_space;
 
 CREATE TABLE ALUMNI_SPACE_UI (
     account_id SERIAL PRIMARY KEY,
@@ -50,8 +50,7 @@ CREATE TABLE UserStory(
     alumni_id INT REFERENCES Alumni_Space_Account(account_id) ,
     story_type VARCHAR(50) NOT NULL,
     story_text VARCHAR(50) NOT NULL,
-    date_posted Date
-    
+    date_posted TimeStamp NOT NULL
 );
 
 
@@ -111,7 +110,7 @@ CREATE TABLE Chat(
 CREATE TABLE Query(
     query_id SERIAL PRIMARY KEY,
     job_id INT REFERENCES Alumni_Space_Account(job_id) ,
-    account_id INT REFERENCES Alumni_Space_Account(account_id), ,
+    account_id INT REFERENCES Alumni_Space_Account(account_id),
     query_text VARCHAR(50) NOT NULL,
     time TimeStamp,
     status VARCHAR(50) NOT NULL,
