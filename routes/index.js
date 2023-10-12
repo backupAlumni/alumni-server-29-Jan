@@ -389,7 +389,7 @@ router.get('/api/jobs', (req, res) => {
 });
 
 //search jobs
-router.get('/api/search/jobs', (req, res) => {
+router.post('/api/search/jobs', (req, res) => {
   const { job_type, location, date_posted } = req.body;
 
   // SQL query to search for jobs based on the provided parameters
@@ -403,7 +403,8 @@ router.get('/api/search/jobs', (req, res) => {
       if (result && result.length > 0) {
         //console.log("something");
         const user = result[0];
-        res.status(200).json({ message: 'Job id retrieved successfully', data: user });
+        console.log(result);
+        res.status(200).json({ message: 'Job id retrieved successfully', result });
       } else {
         res.status(404).send('Job not found.');
       }
