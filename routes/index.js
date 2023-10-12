@@ -50,7 +50,7 @@ router.post('/api/login', (req, res) => {
               var name = result[0].name;
               console.log("name: " + name);
               //send to front-end
-              res.status(200).json({ message: 'Login successful!', result });
+              res.status(200).json({ message: 'Login successful!', result,account_id });
             } else {
               console.log('Invalid email or password');
               res.status(401).json({ message: 'Invalid email or password' });
