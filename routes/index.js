@@ -220,7 +220,7 @@ router.put('/api/userprofile/:user_id', (req, res) => {
   res.status(200).json({ message: 'Data received on the server for updating profile', data: receivedData });
 
   // SQL query to update UserProfile table by user_id
-  const updateProfileSQL = `UPDATE UserProfile SET contact_no = ?, education = ?, achievement = ?, skills = ?, experience = ?, interest = ?, bio = ? WHERE user_id = ? `;
+  const updateProfileSQL = `UPDATE UserProfile SET contact_no = ?, education = ?, achievement = ?, skills = ?, experience = ?, interest = ?, bio = ? WHERE account_id = ? `;
 
   //const { contact_no, education, achievement, skills, experience, interest, bio } = updatedData;
 
@@ -239,13 +239,13 @@ router.put('/api/userprofile/:user_id', (req, res) => {
 });
 
 //Get a user profile by user_id
-router.get('/api/userprofile', (req, res) => {
+router.put('/api/userprofile', (req, res) => {
   //const user_id = req.params.user_id;
 
   var user_id = req.body.user_id;
 
   // SQL query to retrieve a user profile by user_id
-  const getProfileSQL = `SELECT * FROM UserProfile WHERE user_id = ?`;
+  const getProfileSQL = `SELECT * FROM UserProfile WHERE account_id = ?`;
 
   client.query(getProfileSQL, [user_id], (err, result) => {
     if (err) {
@@ -255,7 +255,7 @@ router.get('/api/userprofile', (req, res) => {
       if (result && result.length > 0) {
         console.log("something");
         const userProfile = result[0];
-        res.status(200).json({ message: 'User profile retrieved successfully', data: userProfile });
+        res.status(200).json({ message: 'User profile retrieved successfully', result });
       } else {
         res.status(404).send('User profile not found.');
       }
