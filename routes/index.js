@@ -2,6 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const multer = require('multer');
 
 //Express Router
 const router = express.Router();
@@ -479,9 +480,44 @@ router.get('/api/events', (req, res) => {
 
 
 
+//Allowing User to upload files
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    //folder
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    // Define the filename
+    cb(null, file.originalname);
+  }
+});
 
 
+const upload = multer({ storage });
 
+router.post('/upload', upload.single('file'), (req, res) => {
+  // File has been uploaded,
+  res.send('File uploaded successfully');
+});
+
+//sending file to the user 
+router.use('/uploads', express.static(__dirname + '/uploads'));
+
+app.get('/getDocument/:filename', (req, res) => {
+  const fileName = req.params.filename;
+  const filePath = __dirname + '/uploads/' + fileName;
+
+  // Check if the file exists
+  fs.access(filePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      // The file does not exist
+      res.status(404).send('File not found');
+    } else {
+      // The file exists, so serve it
+      res.sendFile(filePath);
+    }
+  });
+});
 
 module.exports = router;
 
