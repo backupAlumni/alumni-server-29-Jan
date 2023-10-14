@@ -205,9 +205,9 @@ router.put('/api/userprofile/:user_id', (req, res) => {
   const user_id = req.body.user_id;
   const receivedData = req.body;
 
-  var contact_no = req.body.contact_no;
-  var education = req.body.education;
-  var achievement = req.body.achievement;
+  var location = req.body.location;
+  var qualification = req.body.qualification;
+  var employment_status = req.body.employment_status;
   var skills = req.body.skills;
   var experience = req.body.experience;
   var interest = req.body.interest;
@@ -220,13 +220,13 @@ router.put('/api/userprofile/:user_id', (req, res) => {
   res.status(200).json({ message: 'Data received on the server for updating profile', data: receivedData });
 
   // SQL query to update UserProfile table by user_id
-  const updateProfileSQL = `UPDATE UserProfile SET contact_no = ?, education = ?, achievement = ?, skills = ?, experience = ?, interest = ?, bio = ? WHERE account_id = ? `;
+  const updateProfileSQL = `UPDATE UserProfile SET location = ?, qualification = ?, employment_status = ?, skills = ?, experience = ?, interest = ?, bio = ? WHERE account_id = ? `;
 
   //const { contact_no, education, achievement, skills, experience, interest, bio } = updatedData;
 
   client.query(
     updateProfileSQL,
-    [contact_no, education, achievement, skills, experience, interest, bio, user_id],
+    [location, qualification, employment_status, skills, experience, interest, bio, user_id],
     (err, result) => {
       if (err) {
         console.error(err);
@@ -253,7 +253,6 @@ router.put('/api/userprofile', (req, res) => {
       res.status(500).send('An error occurred while fetching the user profile.');
     } else {
       if (result && result.length > 0) {
-        console.log("something");
         const userProfile = result[0];
         res.status(200).json({ message: 'User profile retrieved successfully', result });
       } else {

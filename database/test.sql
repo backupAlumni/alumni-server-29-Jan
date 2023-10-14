@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 10, 2023 at 10:57 AM
+-- Generation Time: Oct 13, 2023 at 04:15 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -118,9 +118,9 @@ INSERT INTO `tut_alumni` (`alumni_id`, `account_id`, `name`, `surname`) VALUES
 CREATE TABLE `userprofile` (
   `user_id` bigint(20) UNSIGNED NOT NULL,
   `account_id` int(11) DEFAULT NULL,
-  `contact_no` varchar(50) NOT NULL,
-  `education` varchar(100) NOT NULL,
-  `achievement` varchar(50) NOT NULL,
+  `location` varchar(50) NOT NULL,
+  `qualification` varchar(100) NOT NULL,
+  `employment_status` varchar(50) NOT NULL,
   `skills` varchar(50) NOT NULL,
   `experience` varchar(50) NOT NULL,
   `interest` varchar(50) NOT NULL,
@@ -131,7 +131,7 @@ CREATE TABLE `userprofile` (
 -- Dumping data for table `userprofile`
 --
 
-INSERT INTO `userprofile` (`user_id`, `account_id`, `contact_no`, `education`, `achievement`, `skills`, `experience`, `interest`, `bio`) VALUES
+INSERT INTO `userprofile` (`user_id`, `account_id`, `location`, `qualification`, `employment_status`, `skills`, `experience`, `interest`, `bio`) VALUES
 (1, 2, '', '', '', '', '', '', '');
 
 --

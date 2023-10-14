@@ -37,6 +37,18 @@ CREATE TABLE UserProfile(
     bio VARCHAR(50) NOT NULL
 );
 
+CREATE TABLE UserProfile(
+    user_id SERIAL PRIMARY KEY,
+    account_id INT REFERENCES Alumni_Space_Account(account_id),
+    location VARCHAR(50) NOT NULL,
+    qualification VARCHAR(100) NOT NULL,
+    employment_status VARCHAR(50) NOT NULL,
+    skills VARCHAR(50) NOT NULL,
+    experience VARCHAR(50) NOT NULL,
+    interest VARCHAR(50) NOT NULL,
+    bio VARCHAR(50) NOT NULL
+);
+
 
 CREATE TABLE UserStory(
     user_id SERIAL PRIMARY KEY,
