@@ -503,7 +503,7 @@ router.post('/upload', upload.single('file'), (req, res) => {
 //sending file to the user 
 router.use('/uploads', express.static(__dirname + '/uploads'));
 
-app.get('/getDocument/:filename', (req, res) => {
+router.get('/getDocument/:filename', (req, res) => {
   const fileName = req.params.filename;
   const filePath = __dirname + '/uploads/' + fileName;
 
