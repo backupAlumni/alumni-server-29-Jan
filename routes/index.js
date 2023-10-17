@@ -345,6 +345,31 @@ router.put('/api/Jobs/:job_id', (req, res) => {
 });
 
 
+//deleting a job
+router.delete('/api/job/:jobId', (req, res) => {
+  const jobId = req.body.id;
+
+  // SQL query to delete a job by its ID
+  const deleteJobSQL = 'DELETE FROM joblisting WHERE job_id = ?';
+
+  client.query(deleteJobSQL, [jobId], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('An error occurred during job deletion.');
+    } else {
+      if (result && result.length > 0) {
+        const user = result[0];
+        console.log('Job deleted successfully!');
+        res.status(200).json({ message: 'Job deleted successfully!',  data: user });
+      } else {
+        res.status(404).json({ message: 'Job not found.' });
+      }
+    }
+  });
+});
+
+
+
 //getting job by its id
 
 router.get('/api/job/:id', (req, res) => {
