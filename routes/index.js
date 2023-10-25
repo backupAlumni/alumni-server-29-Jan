@@ -346,27 +346,43 @@ router.put('/api/Jobs/:job_id', (req, res) => {
 
 
 //deleting a job
-router.delete('/api/job/:jobId', (req, res) => {
-  const jobId = req.body.id;
-
+router.delete('/api/job/delete', (req, res) => {
+  const job_id = req.body.job_id;
+  console.log(job_id);
+    // SQL query to delete a job by its ID
+    const deleteJobSQL = 'DELETE FROM joblisting WHERE job_id = ?';
+  
+    client.query(deleteJobSQL, [job_id], (err, result) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'An error occurred during job deletion.' });
+      } else {
+        if (result && result.length > 0) {
+          console.log('Job deleted successfully!');
+          return res.status(200).json({ message: 'Job deleted successfully.' });
+        } else {
+          return res.status(404).json({ message: 'Job not found.' });
+        }
+      }
+    });
+  });
   // SQL query to delete a job by its ID
-  const deleteJobSQL = 'DELETE FROM joblisting WHERE job_id = ?';
+ /* const deleteJobSQL = 'DELETE FROM joblisting WHERE job_id = ?';
 
-  client.query(deleteJobSQL, [jobId], (err, result) => {
+  pool.query(deleteJobSQL, [jobId], (err, result) => {
     if (err) {
       console.error(err);
-      res.status(500).send('An error occurred during job deletion.');
+      res.status(500).json({ message: 'An error occurred during job deletion.' });
     } else {
-      if (result && result.length > 0) {
-        const user = result[0];
+      if (result.affectedRows > 0) {
         console.log('Job deleted successfully!');
-        res.status(200).json({ message: 'Job deleted successfully!',  data: user });
+        res.status(200).json({ message: 'Job deleted successfully.' });
       } else {
         res.status(404).json({ message: 'Job not found.' });
       }
     }
   });
-});
+});*/
 
 
 
