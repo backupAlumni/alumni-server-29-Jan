@@ -346,8 +346,8 @@ router.put('/api/Jobs/:job_id', (req, res) => {
 
 
 //deleting a job
-router.delete('/api/job/delete', (req, res) => {
-  const job_id = req.body.job_id;
+router.delete('/api/job/delete/:job_id', (req, res) => {
+  const job_id = req.params.job_id;
   console.log(job_id);
     // SQL query to delete a job by its ID
     const deleteJobSQL = 'DELETE FROM joblisting WHERE job_id = ?';
