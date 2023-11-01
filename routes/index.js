@@ -453,6 +453,53 @@ router.post('/api/search/jobs', (req, res) => {
   });
 });
 
+//auto deleting job
+
+const jobs = [
+  { job_id: 1, job_title: 'Developer', deadline: '2023-10-10' },
+  //{ job_id: 2, job_title: 'Job 2', deadline: '2023-12-15T14:00:00' },
+  // Add more job listings here
+];
+
+router.post('/api/deletejobs', (req, res) => {
+
+  const selectAllJobsSQL = 'SELECT * FROM joblisting'; 
+
+  client.query(selectAllJobsSQL, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('An error occurred while fetching jobs.');
+    } else {
+      if (result && result.length > 0) {
+        const currentTime = new Date();
+        const jobsToDelete = result.filter((job) => {
+          const jobDeadline = new Date(job.deadline);
+          return jobDeadline <= currentTime;
+      
+        });
+        console.log(jobsToDelete);
+      
+        if (jobsToDelete.length > 0) {
+          // Delete expired jobs from the jobs array
+          jobsToDelete.forEach((jobToDelete) => {
+            
+            const index = result.findIndex((job) => job.job_id === jobToDelete.job_id);
+            if (index !== -1) {
+              result.splice(index, 1);console.log(result);
+              ///
+            }
+          });
+      
+          res.json({ message: 'Expired jobs deleted' });
+        } else {
+          res.json({ message: 'No expired jobs to delete' });
+        }
+    }
+  }
+  });
+ 
+});
+
 
 //Add Event
 router.post('/api/event', function(req,res){
