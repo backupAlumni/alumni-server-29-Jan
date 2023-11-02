@@ -69,8 +69,8 @@ CREATE TABLE JobListing(
     location VARCHAR(50) NOT NULL,
     job_type VARCHAR(50) NOT NULL,
     job_description VARCHAR(50) NOT NULL,
-    date_posted DATE,
-    deadline DATE
+    date_posted DATETIME,
+    deadline DATETIME
 );
 
 

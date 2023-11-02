@@ -293,7 +293,7 @@ router.post('/api/newjob', (req, res) => {
 
   client.query(
     insertJobSQL,
-    [job_title, Organisation, workplace_type, location, job_type, job_description,date_posted,deadline],
+    [job_title, Organisation, workplace_type, location, job_type, job_description,new Date(),deadline],
     (err, result) => {
       if (err) {
         console.error(err);
