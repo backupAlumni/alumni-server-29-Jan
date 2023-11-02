@@ -51,7 +51,7 @@ router.post('/api/login', (req, res) => {
               var name = result[0].name;
               console.log("name: " + name);
               //send to front-end
-              res.status(200).json({ message: 'Login successful!', result,account_id });
+              res.status(200).json({ message: 'Login successful!', result, account_id });
             } else {
               console.log('Invalid email or password');
               res.status(401).json({ message: 'Invalid email or password' });
@@ -284,7 +284,7 @@ router.post('/api/newjob', (req, res) => {
   console.log(job_description);
   console.log(date_posted);
   console.log(deadline);
-  
+
 
   // Handle the data on the server as needed
 
@@ -293,7 +293,7 @@ router.post('/api/newjob', (req, res) => {
 
   client.query(
     insertJobSQL,
-    [job_title, Organisation, workplace_type, location, job_type, job_description,date_posted,deadline],
+    [job_title, Organisation, workplace_type, location, job_type, job_description, date_posted, deadline],
     (err, result) => {
       if (err) {
         console.error(err);
@@ -332,7 +332,7 @@ router.put('/api/Jobs/:job_id', (req, res) => {
 
   client.query(
     updateJobSQL,
-    [account_id,content_type,job_title,company,location,deadline,date_posted,job_id],
+    [account_id, content_type, job_title, company, location, deadline, date_posted, job_id],
     (err, result) => {
       if (err) {
         console.error(err);
@@ -349,39 +349,39 @@ router.put('/api/Jobs/:job_id', (req, res) => {
 router.delete('/api/job/delete/:job_id', (req, res) => {
   const job_id = req.params.job_id;
   console.log(job_id);
-    // SQL query to delete a job by its ID
-    const deleteJobSQL = 'DELETE FROM joblisting WHERE job_id = ?';
-  
-    client.query(deleteJobSQL, [job_id], (err, result) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ message: 'An error occurred during job deletion.' });
-      } else {
-        if (result && result.length > 0) {
-          console.log('Job deleted successfully!');
-          return res.status(200).json({ message: 'Job deleted successfully.' });
-        } else {
-          return res.status(404).json({ message: 'Job not found.' });
-        }
-      }
-    });
-  });
   // SQL query to delete a job by its ID
- /* const deleteJobSQL = 'DELETE FROM joblisting WHERE job_id = ?';
+  const deleteJobSQL = 'DELETE FROM joblisting WHERE job_id = ?';
 
-  pool.query(deleteJobSQL, [jobId], (err, result) => {
+  client.query(deleteJobSQL, [job_id], (err, result) => {
     if (err) {
       console.error(err);
-      res.status(500).json({ message: 'An error occurred during job deletion.' });
+      return res.status(500).json({ message: 'An error occurred during job deletion.' });
     } else {
-      if (result.affectedRows > 0) {
+      if (result && result.length > 0) {
         console.log('Job deleted successfully!');
-        res.status(200).json({ message: 'Job deleted successfully.' });
+        return res.status(200).json({ message: 'Job deleted successfully.' });
       } else {
-        res.status(404).json({ message: 'Job not found.' });
+        return res.status(404).json({ message: 'Job not found.' });
       }
     }
   });
+});
+// SQL query to delete a job by its ID
+/* const deleteJobSQL = 'DELETE FROM joblisting WHERE job_id = ?';
+
+ pool.query(deleteJobSQL, [jobId], (err, result) => {
+   if (err) {
+     console.error(err);
+     res.status(500).json({ message: 'An error occurred during job deletion.' });
+   } else {
+     if (result.affectedRows > 0) {
+       console.log('Job deleted successfully!');
+       res.status(200).json({ message: 'Job deleted successfully.' });
+     } else {
+       res.status(404).json({ message: 'Job not found.' });
+     }
+   }
+ });
 });*/
 
 
@@ -415,7 +415,7 @@ router.get('/api/job/:id', (req, res) => {
 
 router.get('/api/jobs', (req, res) => {
   // SQL query to select all jobs
-  const selectAllJobsSQL = 'SELECT * FROM joblisting'; 
+  const selectAllJobsSQL = 'SELECT * FROM joblisting';
 
   client.query(selectAllJobsSQL, (err, result) => {
     if (err) {
@@ -423,9 +423,9 @@ router.get('/api/jobs', (req, res) => {
       res.status(500).send('An error occurred while fetching jobs.');
     } else {
       if (result && result.length > 0) {
-      res.status(200).json({ jobs: result });
+        res.status(200).json({ jobs: result });
+      }
     }
-  }
   });
 });
 
@@ -463,7 +463,7 @@ const jobs = [
 
 router.post('/api/deletejobs', (req, res) => {
 
-  const selectAllJobsSQL = 'SELECT * FROM joblisting'; 
+  const selectAllJobsSQL = 'SELECT * FROM joblisting';
 
   client.query(selectAllJobsSQL, (err, result) => {
     if (err) {
@@ -472,47 +472,66 @@ router.post('/api/deletejobs', (req, res) => {
     } else {
       if (result && result.length > 0) {
         const currentTime = new Date();
-        const jobsToDelete = result.filter((job) => {
-          const jobDeadline = new Date(job.deadline);
-          return jobDeadline <= currentTime;
-      
-        });
-        console.log(jobsToDelete);
-      
-        if (jobsToDelete.length > 0) {
-          // Delete expired jobs from the jobs array
-          jobsToDelete.forEach((jobToDelete) => {
+        //loop all the jobs
+        for (let i = 0; i < result.length; i++) {
+          //check if job is expiring
+          const jobDeadline = new Date(result[i].deadline);
+
+          if (currentTime.getFullYear() === jobDeadline.getFullYear() &&
+              currentTime.getMonth() === jobDeadline.getMonth() &&
+              currentTime.getDate() === jobDeadline.getDate()) {
             
-            const index = result.findIndex((job) => job.job_id === jobToDelete.job_id);
-            if (index !== -1) {
-              result.splice(index, 1);console.log(result);
-              ///
+                const deleteJobSQL = 'DELETE FROM joblisting WHERE job_id = ?';
+                client.query(deleteJobSQL, [result[i].job_id], (err, result) => {
+                  if (err) {
+                    console.error(err);
+                    return res.status(500).json({ message: 'An error occurred during job deletion.' });
+                  }
+                  console.log('Job deleted successfully: ' + result[i].job_title);
+                });
+              } else {
+                console.log('Job ' + result[i].job_title + ' is not expiring today.');
+              }
             }
-          });
-      
-          res.json({ message: 'Expired jobs deleted' });
-        } else {
-          res.json({ message: 'No expired jobs to delete' });
-        }
+            //console.log('Job ' + result[i].job_title + ' is expiring soon....');
+            /*/delete the job now
+           
+            client.query(deleteJobSQL, [ result[i].job_id], (err, result)=> {
+              if (err) {
+                console.error(err);
+                return res.status(500).json({ message: 'An error occurred during job deletion.' });
+              }else{
+                console.log('Job deleted successfully!');
+              }
+            });*/
+        /*  } else {
+            console.log('Not todays date');
+            console.log(currentTime.getMonth);
+
+          }
+        }*/
+        res.json({ message: 'Expired jobs will be deleted' });
+      } else {
+        res.json({ message: 'No expired jobs to delete' });
+      }
     }
-  }
   });
- 
 });
 
 
-//Add Event
-router.post('/api/event', function(req,res){
-    var event_title = req.body.event_title;
-    var event_description = req.body.event_description;
-    var event_date =  req.body.event_date;
 
-    // SQL query to insert into Events table
+//Add Event
+router.post('/api/event', function (req, res) {
+  var event_title = req.body.event_title;
+  var event_description = req.body.event_description;
+  var event_date = req.body.event_date;
+
+  // SQL query to insert into Events table
   const insertJobSQL = `INSERT INTO Event (event_title,event_description,event_date) VALUES (?, ?, ?)`;
 
   client.query(
     insertJobSQL,
-    [event_title,event_description,event_date],
+    [event_title, event_description, event_date],
     (err, result) => {
       if (err) {
         console.error(err);
@@ -526,9 +545,9 @@ router.post('/api/event', function(req,res){
 });
 
 //Get
-router.get('/api/event/:id', function(req,res){
+router.get('/api/event/:id', function (req, res) {
   var eventId = req.body.eventId;
-  
+
 
   // SQL query to select a job by its ID
   const selectJobSQL = 'SELECT * FROM Event WHERE event_id = ?';
@@ -552,7 +571,7 @@ router.get('/api/event/:id', function(req,res){
 //Get all events
 router.get('/api/events', (req, res) => {
   // SQL query to select all jobs
-  const selectAllJobsSQL = 'SELECT * FROM Event'; 
+  const selectAllJobsSQL = 'SELECT * FROM Event';
 
   client.query(selectAllJobsSQL, (err, result) => {
     if (err) {
@@ -560,9 +579,9 @@ router.get('/api/events', (req, res) => {
       res.status(500).send('An error occurred while fetching Events.');
     } else {
       if (result && result.length > 0) {
-      res.status(200).json({ events: result });
+        res.status(200).json({ events: result });
+      }
     }
-  }
   });
 });
 
