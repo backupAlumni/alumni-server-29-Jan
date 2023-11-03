@@ -19,6 +19,38 @@ router.use(bodyParser.urlencoded({ extended: true }));
 // Enable CORS for all routes
 router.use(cors());
 
+//Allowing User to upload files
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+      let uploadPath = 'uploads/';
+      const fileType = req.body.fileType; // You need to send the file type from the client.
+
+      switch (fileType) {
+          case 'profile':
+              uploadPath += 'profiles/';
+              break;
+          case 'event':
+              uploadPath += 'events/';
+              break;
+          case 'academic':
+              uploadPath += 'docs/academic/';
+              break;
+          case 'certificate':
+              uploadPath += 'docs/certs/';
+              break;
+          default:
+              uploadPath += 'others/';
+              break;
+      }
+
+      cb(null, uploadPath);
+  },
+  filename: function (req, file, cb) {
+      cb(null, file.originalname);
+  },
+});
+const upload = multer({ storage });
+
 //Routes Management
 router.post('/api/login', (req, res) => {
   const receivedData = req.body;
@@ -504,10 +536,10 @@ router.post('/api/deletejobs', (req, res) => {
 
 
 //Add Event
-router.post('/api/event', function (req, res) {
+router.post('/api/event', upload.single('file'), function (req, res) {
   var event_title = req.body.event_title;
   var event_description = req.body.event_description;
-  var event_date = req.body.event_date;
+  var event_date = new Date();
 
   // SQL query to insert into Events table
   const insertJobSQL = `INSERT INTO Event (event_title,event_description,event_date) VALUES (?, ?, ?)`;
@@ -568,8 +600,6 @@ router.get('/api/events', (req, res) => {
   });
 });
 
-
-
 //updating events
 router.put('/api/event/:event_id', (req, res) => {
   const event_id  = req.body.event_id ;
@@ -604,8 +634,6 @@ router.put('/api/event/:event_id', (req, res) => {
   );
 });
 
-
-
 //deleting an event
 router.delete('/api/event/delete/:event_id', (req, res) => {
   const event_id = req.body.event_id;
@@ -632,39 +660,6 @@ router.delete('/api/event/delete/:event_id', (req, res) => {
 
 
 
-
-//Allowing User to upload files
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-      let uploadPath = 'uploads/';
-      const fileType = req.body.fileType; // You need to send the file type from the client.
-
-      switch (fileType) {
-          case 'profile':
-              uploadPath += 'profiles/';
-              break;
-          case 'post':
-              uploadPath += 'posts/';
-              break;
-          case 'academic':
-              uploadPath += 'docs/academic/';
-              break;
-          case 'certificate':
-              uploadPath += 'docs/certs/';
-              break;
-          default:
-              uploadPath += 'others/';
-              break;
-      }
-
-      cb(null, uploadPath);
-  },
-  filename: function (req, file, cb) {
-      cb(null, file.originalname);
-  },
-});
-
-const upload = multer({ storage });
 
 router.post('/api/upload', upload.single('file_name'), (req, res) => {
   if (!req.file) {
