@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const multer = require('multer');
+const fs = require('fs');
 
 //Express Router
 const router = express.Router();
@@ -14,6 +15,8 @@ const { password } = require('pg/lib/defaults');
 
 //Middleware
 router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: true }));
+// Enable CORS for all routes
 router.use(cors());
 
 //Routes Management
@@ -628,27 +631,81 @@ router.delete('/api/event/delete/:event_id', (req, res) => {
 
 
 
+
+
 //Allowing User to upload files
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    //folder
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    // Define the filename
-    cb(null, file.originalname);
-  }
-});
+  destination: function (req, file, cb) {
+      let uploadPath = 'uploads/';
+      const fileType = req.body.fileType; // You need to send the file type from the client.
 
+      switch (fileType) {
+          case 'profile':
+              uploadPath += 'profiles/';
+              break;
+          case 'post':
+              uploadPath += 'posts/';
+              break;
+          case 'academic':
+              uploadPath += 'docs/academic/';
+              break;
+          case 'certificate':
+              uploadPath += 'docs/certs/';
+              break;
+          default:
+              uploadPath += 'others/';
+              break;
+      }
+
+      cb(null, uploadPath);
+  },
+  filename: function (req, file, cb) {
+      cb(null, file.originalname);
+  },
+});
 
 const upload = multer({ storage });
 
-router.post('/upload', upload.single('file'), (req, res) => {
-  // File has been uploaded,
-  res.send('File uploaded successfully');
+router.post('/api/upload', upload.single('file_name'), (req, res) => {
+  if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+  }
+
+  const picturePath = req.file.path;
+
+  // Get the file type from the request body
+  const fileType = req.body.fileType;
+
+  let uploadDirectory = 'uploads/others/'; // Default directory if fileType is not recognized
+
+  switch (fileType) {
+      case 'profile':
+          uploadDirectory = 'uploads/profiles/';
+          break;
+      case 'post':
+          uploadDirectory = 'uploads/posts/';
+          break;
+      case 'academic':
+          uploadDirectory = 'uploads/docs/academic/';
+          break;
+      case 'certificate':
+          uploadDirectory = 'uploads/docs/certs/';
+          break;
+      // Add more cases as needed for different file types
+  }
+
+  // Move the file to the appropriate directory
+  fs.rename(picturePath, uploadDirectory + req.file.originalname, (err) => {
+      if (err) {
+          console.error(err);
+          return res.status(500).json({ error: 'Error saving picture to the server' });
+      }
+
+      res.json({ success: true, message: 'Picture uploaded and saved successfully' });
+  });
 });
 
-//sending file to the user 
+//Folder to serve(save) on
 router.use('/uploads', express.static(__dirname + '/uploads'));
 
 router.get('/getDocument/:filename', (req, res) => {
