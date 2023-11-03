@@ -347,7 +347,7 @@ router.put('/api/Jobs/:job_id', (req, res) => {
 
 //deleting a job
 router.delete('/api/job/delete/:job_id', (req, res) => {
-  const job_id = req.params.job_id;
+  const job_id = req.body.job_id;
   console.log(job_id);
   // SQL query to delete a job by its ID
   const deleteJobSQL = 'DELETE FROM joblisting WHERE job_id = ?';
@@ -357,10 +357,11 @@ router.delete('/api/job/delete/:job_id', (req, res) => {
       console.error(err);
       return res.status(500).json({ message: 'An error occurred during job deletion.' });
     } else {
-      if (result && result.length > 0) {
+      if (result.affectedRows > 0) {
         console.log('Job deleted successfully!');
         return res.status(200).json({ message: 'Job deleted successfully.' });
       } else {
+        
         return res.status(404).json({ message: 'Job not found.' });
       }
     }
@@ -537,6 +538,67 @@ router.get('/api/events', (req, res) => {
     } else {
       if (result && result.length > 0) {
         res.status(200).json({ events: result });
+      }
+    }
+  });
+});
+
+
+
+//updating events
+router.put('/api/event/:event_id', (req, res) => {
+  const event_id  = req.body.event_id ;
+  const receivedData = req.body;
+
+ // var alumni_id = req.body.alumni_id;
+  var event_title = req.body.event_title;
+  var event_description = req.body.event_description;
+  var event_date = req.body.event_date;
+ 
+
+  // Handle the data on the server as needed
+  console.log('Received data for updating event:', receivedData);
+
+  // Send a response back to the client
+  res.status(200).json({ message: 'Data received on the server for updating event', data: receivedData });
+
+  // SQL query to update Job table by job_id
+  const updateEventSQL = `UPDATE Event SET event_title = ?, event_description = ?, event_date = ? WHERE event_id = ?`;
+
+  client.query(
+    updateEventSQL,
+    [event_title, event_description, event_date, event_id],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('An error occurred during event update.');
+      } else {
+        console.log('Event updated successfully!');
+      }
+    }
+  );
+});
+
+
+
+//deleting an event
+router.delete('/api/event/delete/:event_id', (req, res) => {
+  const event_id = req.body.event_id;
+  console.log(event_id);
+ 
+  const deleteEventSQL = 'DELETE FROM Event WHERE event_id = ?';
+
+  client.query(deleteEventSQL, [event_id], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'An error occurred during Event deletion.' });
+    } else {
+      if (result.affectedRows > 0) {
+        console.log('Event deleted successfully!');
+        return res.status(200).json({ message: 'Event deleted successfully.' });
+      } else {
+        
+        return res.status(404).json({ message: 'Event not found.' });
       }
     }
   });
