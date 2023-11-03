@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 03, 2023 at 12:53 PM
+-- Generation Time: Nov 03, 2023 at 01:38 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -60,7 +60,15 @@ CREATE TABLE `alumni_space_account` (
 
 INSERT INTO `alumni_space_account` (`account_id`, `email`, `password`, `role`) VALUES
 (1, 'admin@email.com', '123', 'Admin'),
-(2, '123@email.com', '123', 'Alumni');
+(2, 'mashia@gmail.com', '123', 'Alumni'),
+(3, 'mhlongo@gmail.com', '123', 'Alumni'),
+(4, 'masia@gmail.com', '123', 'Alumni'),
+(5, 'mabena@gmail.com', '123', 'Alumni'),
+(6, 'masuku@gmail.com', '123', 'Alumni'),
+(7, 'mnisi@gmail.com', '123', 'Alumni'),
+(8, 'sibiya@gmail.com', '123', 'Alumni'),
+(9, 'lebelo@gmail.com', '123', 'Alumni'),
+(10, 'lehlojane@gmail.com', '123', 'Alumni');
 
 -- --------------------------------------------------------
 
@@ -75,6 +83,15 @@ CREATE TABLE `event` (
   `event_description` varchar(100) NOT NULL,
   `event_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `event`
+--
+
+INSERT INTO `event` (`event_id`, `alumni_id`, `event_title`, `event_description`, `event_date`) VALUES
+(1, 2, 'Hackthon', 'Hack', '2023-11-15'),
+(2, 3, 'Studython', 'Study', '2023-11-20'),
+(3, 4, 'Webin', 'Online', '2023-11-25');
 
 -- --------------------------------------------------------
 
@@ -113,16 +130,15 @@ CREATE TABLE `tut_alumni` (
 --
 
 INSERT INTO `tut_alumni` (`alumni_id`, `account_id`, `name`, `surname`) VALUES
-(1, 2, 'Lindo', 'Zane'),
 (2, 3, 'Sihle', 'Mlongo'),
 (3, 7, 'Kefentse', 'Mnisi'),
 (4, 5, 'Themba', 'Mabena'),
 (5, 6, 'Snenhlanhla', 'Masuku'),
 (6, 4, 'Innocent', 'Masia'),
 (7, 8, 'Noxolo', 'Sibiya'),
-(8, 3, 'Elias', 'Mashia'),
-(9, 3, 'Kgaogelo', 'Lebelo'),
-(10, 3, 'Kabelo', 'Lehlojane');
+(8, 2, 'Elias', 'Mashia'),
+(9, 9, 'Kgaogelo', 'Lebelo'),
+(10, 10, 'Kabelo', 'Lehlojane');
 
 -- --------------------------------------------------------
 
@@ -209,13 +225,13 @@ ALTER TABLE `administrator`
 -- AUTO_INCREMENT for table `alumni_space_account`
 --
 ALTER TABLE `alumni_space_account`
-  MODIFY `account_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `account_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `event`
 --
 ALTER TABLE `event`
-  MODIFY `event_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `event_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `joblisting`
