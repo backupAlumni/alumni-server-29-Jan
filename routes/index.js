@@ -264,6 +264,28 @@ router.put('/api/userprofile', (req, res) => {
 });
 
 
+//selecting all userprofiles
+
+router.get('/api/profile', (req, res) => {
+  // SQL query to select all jobs
+  const selectAllProfileSQL = 'SELECT * FROM UserProfile';
+
+  client.query(selectAllProfileSQL, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('An error occurred while fetching UserProfiles.');
+    } else {
+      if (result && result.length > 0) {
+        res.status(200).json({ userProfile : result });
+      }
+    }
+  });
+});
+
+
+
+
+
 // Route to insert a new job
 router.post('/api/newjob', (req, res) => {
 
