@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 03, 2023 at 12:44 PM
+-- Generation Time: Nov 03, 2023 at 12:53 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -115,8 +115,8 @@ CREATE TABLE `tut_alumni` (
 INSERT INTO `tut_alumni` (`alumni_id`, `account_id`, `name`, `surname`) VALUES
 (1, 2, 'Lindo', 'Zane'),
 (2, 3, 'Sihle', 'Mlongo'),
-(3, 7, 'Themba', 'Mabena'),
-(4, 5, 'Kefentse', 'Mnisi'),
+(3, 7, 'Kefentse', 'Mnisi'),
+(4, 5, 'Themba', 'Mabena'),
 (5, 6, 'Snenhlanhla', 'Masuku'),
 (6, 4, 'Innocent', 'Masia'),
 (7, 8, 'Noxolo', 'Sibiya'),
@@ -148,10 +148,11 @@ CREATE TABLE `userprofile` (
 
 INSERT INTO `userprofile` (`user_id`, `account_id`, `location`, `qualification`, `employment_status`, `skills`, `experience`, `interest`, `bio`) VALUES
 (1, 2, '', '', '', '', '', '', ''),
-(2, 1, 'Soshanguve', 'PHD', 'Employed', 'Java,React,Angular,NodeJS,MySQL Database', '6 Years', 'Coding/Full-Stack', 'team player and hackerthon master'),
-(3, 4, 'Hammanskraal', 'Doctrate', 'Employed', 'C#,Java,React,Angular,NodeJS,MySQL Database', '12 Years', 'Full-Stack', ' hackerthon master'),
+(2, 3, 'Soshanguve', 'PHD', 'Employed', 'Java,React,Angular,NodeJS,MySQL Database', '6 Years', 'Coding/Full-Stack', 'team player and hackerthon master'),
+(3, 7, 'Hammanskraal', 'Doctrate', 'Employed', 'C#,Java,React,Angular,NodeJS,MySQL Database', '12 Years', 'Full-Stack', ' hackerthon master'),
 (4, 5, 'Kwazulu-Natal', 'Diploma', 'UnEmployed', 'Java,MySQL Database', '0', 'Business Analyst', 'like attending hackerthon'),
-(5, 6, 'Sandton', 'masters', 'Self-Employed', 'Java,AWS Deploying,MySQL Database,Azure', '2 months', 'Scrum Master', ' hackerthon Master');
+(5, 6, 'Sandton', 'masters', 'Self-Employed', 'Java,AWS Deploying,MySQL Database,Azure', '2 months', 'Scrum Master', ' hackerthon Master'),
+(6, 4, 'Pretoria', 'Diploma', 'UnEmployed', 'Analytical Thinking,Legal Knowledge,AdvocacyTime M', '3 years', 'Criminal Law', ' hackerthon Master');
 
 --
 -- Indexes for dumped tables
@@ -232,7 +233,7 @@ ALTER TABLE `tut_alumni`
 -- AUTO_INCREMENT for table `userprofile`
 --
 ALTER TABLE `userprofile`
-  MODIFY `user_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `user_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
