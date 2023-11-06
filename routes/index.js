@@ -534,6 +534,25 @@ router.post('/api/deletejobs', (req, res) => {
 });
 
 
+//count all available events
+router.get('/api/count_job', (req, res) => {
+  // MySQL query to count alumni
+  const query = 'SELECT COUNT(*) AS job_count FROM joblisting';
+
+  client.query(query, (err, results) => {
+    if (err) {
+      console.error('Error retrieving Job count:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+      return;
+    }
+
+    const jobCount = results[0].job_count;
+    res.json({ job_count: jobCount });
+  });
+});
+
+
+
 
 //Add Event
 router.post('/api/event', upload.single('file'), function (req, res) {
@@ -657,6 +676,22 @@ router.delete('/api/event/delete/:event_id', (req, res) => {
   });
 });
 
+//count all available events
+router.get('/api/count_event', (req, res) => {
+  // MySQL query to count alumni
+  const query = 'SELECT COUNT(*) AS event_count FROM Event';
+
+  client.query(query, (err, results) => {
+    if (err) {
+      console.error('Error retrieving event count:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+      return;
+    }
+
+    const eventCount = results[0].event_count;
+    res.json({ event_count: eventCount });
+  });
+});
 
 
 
