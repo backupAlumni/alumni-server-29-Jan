@@ -493,7 +493,7 @@ router.post('/api/search/jobs', (req, res) => {
 });
 
 //auto deleting job
-router.post('/api/deletejobs', (req, res) => {
+router.delete('/api/deletejobs', (req, res) => {
 
   const selectAllJobsSQL = 'SELECT * FROM joblisting';
 
@@ -662,6 +662,7 @@ router.delete('/api/event/delete/:event_id', (req, res) => {
 
 
 router.post('/api/upload', upload.single('file_name'), (req, res) => {
+  console.log('Saving file....');
   if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });
   }
@@ -696,7 +697,7 @@ router.post('/api/upload', upload.single('file_name'), (req, res) => {
           return res.status(500).json({ error: 'Error saving picture to the server' });
       }
 
-      res.json({ success: true, message: 'Picture uploaded and saved successfully' });
+      res.json({ success: true, message: fileType + ' uploaded and saved successfully' });
   });
 });
 
