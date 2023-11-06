@@ -303,7 +303,7 @@ router.put('/api/userprofile', (req, res) => {
 
 router.get('/api/profile', (req, res) => {
   // SQL query to select all jobs
-  const selectAllProfileSQL = 'SELECT * FROM UserProfile';
+  const selectAllProfileSQL = 'SELECT * FROM tut_alumni';
 
   client.query(selectAllProfileSQL, (err, result) => {
     if (err) {
@@ -716,6 +716,23 @@ router.get('/getDocument/:filename', (req, res) => {
       // The file exists, so serve it
       res.sendFile(filePath);
     }
+  });
+});
+
+//count all available alumni
+router.get('/api/count_alumni', (req, res) => {
+  // MySQL query to count alumni
+  const query = 'SELECT COUNT(*) AS alumni_count FROM Tut_Alumni';
+
+  client.query(query, (err, results) => {
+    if (err) {
+      console.error('Error retrieving alumni count:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+      return;
+    }
+
+    const alumniCount = results[0].alumni_count;
+    res.json({ alumni_count: alumniCount });
   });
 });
 
