@@ -236,18 +236,26 @@ router.post('/api/userprofile', (req, res) => {
   });
 });
 
+function toInitCap(str) {
+  return str
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}
+
 //updating profile
 router.put('/api/userprofile/:user_id', (req, res) => {
   const user_id = req.body.user_id;
   const receivedData = req.body;
 
-  var location = req.body.location;
-  var qualification = req.body.qualification;
-  var employment_status = req.body.employment_status;
-  var skills = req.body.skills;
+  var location = toInitCap(req.body.location);
+  var qualification = toInitCap(req.body.qualification);
+  var employment_status = toInitCap(req.body.employment_status);
+  const skills = Array.isArray(req.body.skills) ? req.body.skills.join(', ') : '';
   var experience = req.body.experience;
-  var interest = req.body.interest;
-  var bio = req.body.bio;
+  var interest = toInitCap(req.body.interest);
+  var bio = toInitCap(req.body.bio);
+
 
   // Handle the data on the server as needed
   console.log('Received data for updating profile:', receivedData);
@@ -404,7 +412,7 @@ router.put('/api/Jobs/:job_id', (req, res) => {
 
 //deleting a job
 router.delete('/api/job/delete/:job_id', (req, res) => {
-  const job_id = req.body.job_id;
+  const job_id = req.params.job_id;
   console.log(job_id);
   // SQL query to delete a job by its ID
   const deleteJobSQL = 'DELETE FROM joblisting WHERE job_id = ?';
