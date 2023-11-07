@@ -676,6 +676,50 @@ router.delete('/api/event/delete/:event_id', (req, res) => {
   });
 });
 
+
+//auto deleting event
+router.delete('/api/deleteEvent', (req, res) => {
+
+  const selectAllEventsSQL = 'SELECT * FROM Event';
+
+  client.query(selectAllEventsSQL, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('An error occurred while fetching Event.');
+    } else {
+      if (result && result.length > 0) {
+        const currentTime = new Date();
+        console.log(currentTime);
+        //loop all the jobs
+        for (let i = 0; i < result.length; i++) {
+          //check if job is expiring
+          const eventDeadline = new Date(result[i].deadline);
+          console.log(eventDeadline);
+
+          if (currentTime >= eventDeadline) {
+            
+                const deleteEventSQL = 'DELETE FROM Event WHERE event_id = ?';
+                client.query(deleteEventSQL, [result[i].event_id], (err, result) => {
+                  if (err) {
+                    console.error(err);
+                    return res.status(500).json({ message: 'An error occurred during Event deletion.' });
+                  }
+                  console.log('Event deleted successfully: ');
+                });
+              } else {
+                console.log('Event ' + result[i].event_title + ' is not expiring today.');
+              }
+            }
+        res.json({ message: 'Expired Event will be deleted' });
+      } else {
+        res.json({ message: 'No expired Event to delete' });
+      }
+    }
+  });
+});
+
+
+
 //count all available events
 router.get('/api/count_event', (req, res) => {
   // MySQL query to count alumni

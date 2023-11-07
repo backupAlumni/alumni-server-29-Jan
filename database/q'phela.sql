@@ -80,7 +80,8 @@ CREATE TABLE Event(
     event_title VARCHAR(50) NOT NULL,
     event_description VARCHAR(100) NOT NULL,
     date_posted DateTime,
-    event_date DateTime
+    event_date DateTime,
+    deadline DateTime
 );
 
 
