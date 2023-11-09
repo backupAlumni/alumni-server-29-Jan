@@ -73,9 +73,9 @@ router.post('/api/login', (req, res) => {
         console.log('Account ' + account_id + ' has been found successful!');
 
         if (role == "Alumni") {
-          sql = "SELECT name FROM Tut_Alumni where account_id = ?";
+          sql = "SELECT * FROM Tut_Alumni where account_id = ?";
         } else {
-          sql = "SELECT name FROM Administrator where account_id = ?";
+          sql = "SELECT * FROM Administrator where account_id = ?";
         }
         //query to get user details
         client.query(sql, [account_id], function (err, result) {
@@ -820,7 +820,7 @@ router.get('/api/count_alumni', (req, res) => {
     }
 
     const alumniCount = results[0].alumni_count;
-    res.json({ alumni_count: alumniCount });
+    res.status(200).json({ alumni_count: alumniCount });
   });
 });
 
