@@ -542,7 +542,7 @@ router.delete('/api/deletejobs', (req, res) => {
 });
 
 
-//count all available events
+//count all available jobs
 router.get('/api/count_job', (req, res) => {
   // MySQL query to count alumni
   const query = 'SELECT COUNT(*) AS job_count FROM joblisting';
@@ -821,6 +821,44 @@ router.get('/api/count_alumni', (req, res) => {
 
     const alumniCount = results[0].alumni_count;
     res.json({ alumni_count: alumniCount });
+  });
+});
+
+
+
+//API for sending Query
+router.post('/api/send_query', (req, res) => {
+
+  const { account_id, query_text, status, date } = req.body;
+  const insertQuery = 'INSERT INTO Query (account_id, query_text, status, date) VALUES (?, ?, ?, ?)';
+  client.query(insertQuery, [account_id, query_text, status, date], (err, results) => {
+    if (err) {
+      console.error('Error inserting query:', err);
+      res.status(500).json({ error: 'Error inserting query' });
+    }else{
+      console.log('Query inserted successfully');
+      res.json({ success: true });
+    }
+
+  });
+});
+
+
+
+//responding query
+router.post('/api/respond_query', (req, res) => {
+
+  const { query_id, query_text } = req.body;
+  const updatetQuery = 'UPDATE Query SET status = "Completed", query_text = ? WHERE query_id = ?';
+  client.query(updatetQuery, [ query_text,query_id], (err, results) => {
+    if (err) {
+      console.error('Error updating query:', err);
+      res.status(500).json({ error: 'Error updating query' });
+    }else{
+      console.log('Query responded successfully');
+      res.json({ success: true });
+    }
+
   });
 });
 

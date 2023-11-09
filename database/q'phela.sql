@@ -118,10 +118,8 @@ CREATE TABLE Chat(
 
 CREATE TABLE Query(
     query_id SERIAL PRIMARY KEY,
-    job_id INT REFERENCES Alumni_Space_Account(job_id) ,
-    account_id INT REFERENCES Alumni_Space_Account(account_id), ,
+    account_id INT REFERENCES Alumni_Space_Account(account_id),
     query_text VARCHAR(50) NOT NULL,
-    time TimeStamp,
     status VARCHAR(50) NOT NULL,
-    date DATE
+    date DATETIME
 );
