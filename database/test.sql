@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 03, 2023 at 01:38 PM
+-- Generation Time: Nov 10, 2023 at 09:16 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -89,9 +89,8 @@ CREATE TABLE `event` (
 --
 
 INSERT INTO `event` (`event_id`, `alumni_id`, `event_title`, `event_description`, `event_date`) VALUES
-(1, 2, 'Hackthon', 'Hack', '2023-11-15'),
-(2, 3, 'Studython', 'Study', '2023-11-20'),
-(3, 4, 'Webin', 'Online', '2023-11-25');
+(4, NULL, 'Hackthon', 'A hackathon is a brief, intensive event where diverse teams collaborate to solve challenges or creat', '2023-11-10'),
+(5, NULL, 'Studython', '\nA studython is a concentrated study event where students collaboratively work on coursework and exa', '2023-11-10');
 
 -- --------------------------------------------------------
 
@@ -111,6 +110,35 @@ CREATE TABLE `joblisting` (
   `date_posted` datetime DEFAULT NULL,
   `deadline` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `joblisting`
+--
+
+INSERT INTO `joblisting` (`job_id`, `account_id`, `Organisation`, `job_title`, `workplace_type`, `location`, `job_type`, `job_description`, `date_posted`, `deadline`) VALUES
+(2, NULL, 'TUT', 'Teaching', 'Hybrid', 'Soshanguve', 'Full-time', '3 years experience\nSpecializing with English and M', '2023-11-10 09:50:32', '2023-12-01 00:50:00'),
+(3, NULL, 'AWS', 'Software Engineering', 'Hybrid', 'Pretoria', 'Internship', '12 Months Internship\nSkills: C++, Angular, NodeJS,', '2023-11-10 09:55:13', '2023-11-30 00:01:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `query`
+--
+
+CREATE TABLE `query` (
+  `query_id` bigint(20) UNSIGNED NOT NULL,
+  `account_id` int(11) DEFAULT NULL,
+  `query_text` varchar(50) NOT NULL,
+  `status` varchar(50) NOT NULL,
+  `date` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `query`
+--
+
+INSERT INTO `query` (`query_id`, `account_id`, `query_text`, `status`, `date`) VALUES
+(1, 0, 'Answered', 'Completed', '2023-11-10 06:44:57');
 
 -- --------------------------------------------------------
 
@@ -163,7 +191,7 @@ CREATE TABLE `userprofile` (
 --
 
 INSERT INTO `userprofile` (`user_id`, `account_id`, `location`, `qualification`, `employment_status`, `skills`, `experience`, `interest`, `bio`) VALUES
-(1, 2, '', '', '', '', '', '', ''),
+(1, 2, 'Iu', 'Yuj', 'None', '', '2', 'Ko;', 'U'),
 (2, 3, 'Soshanguve', 'PHD', 'Employed', 'Java,React,Angular,NodeJS,MySQL Database', '6 Years', 'Coding/Full-Stack', 'team player and hackerthon master'),
 (3, 7, 'Hammanskraal', 'Doctrate', 'Employed', 'C#,Java,React,Angular,NodeJS,MySQL Database', '12 Years', 'Full-Stack', ' hackerthon master'),
 (4, 5, 'Kwazulu-Natal', 'Diploma', 'UnEmployed', 'Java,MySQL Database', '0', 'Business Analyst', 'like attending hackerthon'),
@@ -200,6 +228,12 @@ ALTER TABLE `joblisting`
   ADD PRIMARY KEY (`job_id`);
 
 --
+-- Indexes for table `query`
+--
+ALTER TABLE `query`
+  ADD PRIMARY KEY (`query_id`);
+
+--
 -- Indexes for table `tut_alumni`
 --
 ALTER TABLE `tut_alumni`
@@ -231,13 +265,19 @@ ALTER TABLE `alumni_space_account`
 -- AUTO_INCREMENT for table `event`
 --
 ALTER TABLE `event`
-  MODIFY `event_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `event_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `joblisting`
 --
 ALTER TABLE `joblisting`
-  MODIFY `job_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `job_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `query`
+--
+ALTER TABLE `query`
+  MODIFY `query_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tut_alumni`
