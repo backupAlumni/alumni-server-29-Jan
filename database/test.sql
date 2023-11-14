@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 14, 2023 at 02:25 PM
+-- Generation Time: Nov 14, 2023 at 02:54 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -106,23 +106,13 @@ CREATE TABLE `joblisting` (
   `workplace_type` varchar(50) NOT NULL,
   `location` varchar(50) NOT NULL,
   `job_type` varchar(50) NOT NULL,
+  `salary` double DEFAULT NULL,
   `job_description` varchar(50) NOT NULL,
-  `date_posted` datetime DEFAULT NULL,
-  `deadline` datetime DEFAULT NULL,
-  `experience` varchar(50) NOT NULL,
   `required_Skills` varchar(50) NOT NULL,
-  `salary` double DEFAULT NULL
+  `experience` varchar(50) NOT NULL,
+  `date_posted` datetime DEFAULT NULL,
+  `deadline` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Dumping data for table `joblisting`
---
-
-INSERT INTO `joblisting` (`job_id`, `account_id`, `Organisation`, `job_title`, `workplace_type`, `location`, `job_type`, `job_description`, `date_posted`, `deadline`, `experience`, `required_Skills`, `salary`) VALUES
-(1, NULL, 'sni', ' snehhh', 'Onsite', 'Polokwane', 'Contract', ';,\'poo', '2023-11-14 14:28:15', '2023-11-14 19:28:00', '', '', NULL),
-(2, NULL, 'gdg', ' sih', 'Onsite', 'Emalahleni', '', 'jyf', '2023-11-14 14:43:14', '2023-11-14 19:40:00', 'tgbxfth', 'hdtrh', 34324324),
-(3, NULL, 'hb', ' hm', 'Hybrid', 'Mbhombela', 'jobType', 'ku', '2023-11-14 14:50:40', '2023-11-14 16:50:00', 'jgyj', 'ukhj', 45),
-(4, NULL, 'bgb', ' fgnfg', '', 'Soshanguve', 'Full-time', 'rsgdf', '2023-11-14 14:53:54', '2023-11-14 17:53:00', 'vdf', 'fd', 344);
 
 -- --------------------------------------------------------
 
@@ -276,7 +266,7 @@ ALTER TABLE `event`
 -- AUTO_INCREMENT for table `joblisting`
 --
 ALTER TABLE `joblisting`
-  MODIFY `job_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `job_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `query`
