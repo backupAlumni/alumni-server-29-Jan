@@ -340,6 +340,9 @@ router.post('/api/newjob', (req, res) => {
   var job_description = req.body.job_description;
   var date_posted = req.body.date_posted;
   var deadline = req.body.deadline;
+  var experience = req.body.experience;
+  var required_Skills = req.body.required_Skills;
+  var salary = req.body.salary;
 
   console.log(job_title);
   console.log(Organisation);
@@ -349,16 +352,20 @@ router.post('/api/newjob', (req, res) => {
   console.log(job_description);
   console.log(date_posted);
   console.log(deadline);
+  console.log(experience);
+  console.log(required_Skills); 
+  console.log(salary);
+
 
 
   // Handle the data on the server as needed
 
   // SQL query to insert into Jobs table
-  const insertJobSQL = `INSERT INTO joblisting (job_title, Organisation, workplace_type, location, job_type, job_description,date_posted,deadline) VALUES (?, ?, ?, ?, ?, ?,?,?)`;
+  const insertJobSQL = `INSERT INTO joblisting (job_title, Organisation, workplace_type, location, job_type, job_description,experience, required_Skills, salary,date_posted,deadline) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   client.query(
     insertJobSQL,
-    [job_title, Organisation, workplace_type, location, job_type, job_description,new Date(),deadline],
+    [job_title, Organisation, workplace_type, location, job_type, job_description,experience,required_Skills,salary, new Date(),deadline],
     (err, result) => {
       if (err) {
         console.error(err);
@@ -384,6 +391,9 @@ router.put('/api/Jobs/:job_id', (req, res) => {
   var location = req.body.location;
   var deadline = req.body.deadline;
   var workplace_type = req.body.workplace_type;
+  var experience = req.body.experience;
+  var required_Skills = req.body.required_Skills;
+  var salary = req.body.salary;
 
   // Handle the data on the server as needed
   console.log('Received data for updating job:', receivedData);
@@ -392,12 +402,12 @@ router.put('/api/Jobs/:job_id', (req, res) => {
   res.status(200).json({ message: 'Data received on the server for updating job', data: receivedData });
 
   // SQL query to update Job table by job_id
-  const updateJobSQL = `UPDATE joblisting SET job_title = ?, organisation = ?, location = ?, workplace_type = ? , job_type = ?, job_description, deadline = ?, WHERE job_id = ? `;
+  const updateJobSQL = `UPDATE joblisting SET job_title = ?, organisation = ?, location = ?, workplace_type = ? , job_type = ?, job_description, deadline = ?, experience = ?, required_Skills = ?, salary =?, WHERE job_id = ? `;
 
 
   client.query(
     updateJobSQL,
-    [job_title, organisation, location, workplace_type,job_type,job_description, deadline, job_id],
+    [job_title, organisation, location, workplace_type,job_type,job_description, deadline, experience,required_Skills, salary,  job_id],
     (err, result) => {
       if (err) {
         console.error(err);
@@ -436,7 +446,7 @@ router.delete('/api/job/delete/:job_id', (req, res) => {
 //getting job by its id
 
 router.get('/api/job/:id', (req, res) => {
-  const jobId = req.body.id;
+  const jobId = req.params.id;
   console.log(jobId);
 
   // SQL query to select a job by its ID

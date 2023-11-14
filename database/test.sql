@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 10, 2023 at 09:16 AM
+-- Generation Time: Nov 14, 2023 at 10:40 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -108,16 +108,11 @@ CREATE TABLE `joblisting` (
   `job_type` varchar(50) NOT NULL,
   `job_description` varchar(50) NOT NULL,
   `date_posted` datetime DEFAULT NULL,
-  `deadline` datetime DEFAULT NULL
+  `deadline` datetime DEFAULT NULL,
+  `experience` varchar(50) NOT NULL,
+  `skills` varchar(50) NOT NULL,
+  `salary` double DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Dumping data for table `joblisting`
---
-
-INSERT INTO `joblisting` (`job_id`, `account_id`, `Organisation`, `job_title`, `workplace_type`, `location`, `job_type`, `job_description`, `date_posted`, `deadline`) VALUES
-(2, NULL, 'TUT', 'Teaching', 'Hybrid', 'Soshanguve', 'Full-time', '3 years experience\nSpecializing with English and M', '2023-11-10 09:50:32', '2023-12-01 00:50:00'),
-(3, NULL, 'AWS', 'Software Engineering', 'Hybrid', 'Pretoria', 'Internship', '12 Months Internship\nSkills: C++, Angular, NodeJS,', '2023-11-10 09:55:13', '2023-11-30 00:01:00');
 
 -- --------------------------------------------------------
 
@@ -271,7 +266,7 @@ ALTER TABLE `event`
 -- AUTO_INCREMENT for table `joblisting`
 --
 ALTER TABLE `joblisting`
-  MODIFY `job_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `job_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `query`
