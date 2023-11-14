@@ -576,14 +576,15 @@ router.get('/api/count_job', (req, res) => {
 router.post('/api/event', upload.single('file'), function (req, res) {
   var event_title = req.body.event_title;
   var event_description = req.body.event_description;
-  var event_date = new Date();
+  var event_date = req.body.event_date
+  var date_posted = new Date();
 
   // SQL query to insert into Events table
-  const insertJobSQL = `INSERT INTO Event (event_title,event_description,event_date) VALUES (?, ?, ?)`;
+  const insertJobSQL = `INSERT INTO Event (event_title,event_description,date_posted,event_date) VALUES (?, ?,?, ?)`;
 
   client.query(
     insertJobSQL,
-    [event_title, event_description, event_date],
+    [event_title, event_description,date_posted, event_date],
     (err, result) => {
       if (err) {
         console.error(err);
@@ -673,7 +674,7 @@ router.put('/api/event/:event_id', (req, res) => {
 
 //deleting an event
 router.delete('/api/event/delete/:event_id', (req, res) => {
-  const event_id = req.body.event_id;
+  const event_id = req.params.event_id;
   console.log(event_id);
  
   const deleteEventSQL = 'DELETE FROM Event WHERE event_id = ?';
