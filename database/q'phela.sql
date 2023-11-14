@@ -68,6 +68,7 @@ CREATE TABLE JobListing(
     workplace_type VARCHAR(50) NOT NULL,
     location VARCHAR(50) NOT NULL,
     job_type VARCHAR(50) NOT NULL,
+<<<<<<< HEAD
      salary NUMBER,
     job_description VARCHAR(50) NOT NULL,
     required_Skills VARCHAR(50) NOT NULL,
@@ -75,6 +76,14 @@ CREATE TABLE JobListing(
     date_posted DATETIME,
     deadline DATETIME
     
+=======
+    job_description VARCHAR(255) NOT NULL,
+    date_posted DATETIME,
+    deadline DATETIME,
+    experience VARCHAR(255) NOT NULL,
+    required_Skills VARCHAR(255) NOT NULL,
+    salary NUMBER
+>>>>>>> 1f84d24fa865e9e5d34a666e3d2b79cd03d7a699
 );
 
 
