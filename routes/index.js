@@ -570,6 +570,39 @@ router.get('/api/count_job', (req, res) => {
   });
 });
 
+//save jobs
+
+// Assuming you're using Express.js
+router.post('/api/applyjob', (req, res) => {
+  var alumni_id = req.body.alumni_id;
+  var job_title = req.body.job_title;
+  var job_description = req.body.job_description;
+  var application_date = new Date();
+
+  console.log(alumni_id);
+  console.log(job_title);
+  console.log(job_description);
+  console.log(application_date);
+
+  // Handle the data on the server as needed
+
+  // SQL query to insert into Applications table
+  const insertApplicationSQL = `INSERT INTO savejob (alumni_id, job_title, job_description, application_date) VALUES ( ?, ?, ?, ?)`;
+
+  client.query(
+    insertApplicationSQL,
+    [alumni_id, job_title, job_description, application_date],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('An error occurred during application insertion.');
+      } else {
+        console.log('Application inserted successfully!');
+        res.status(200).json({ message: 'Application inserted successfully!' });
+      }
+    }
+  );
+});
 
 
 
@@ -887,6 +920,9 @@ router.post('/api/respond_query', (req, res) => {
 
   });
 });
+
+
+
 
 module.exports = router;
 

@@ -127,3 +127,12 @@ CREATE TABLE Query(
     status VARCHAR(50) NOT NULL,
     date DATETIME
 );
+
+
+CREATE TABLE savejob(
+    savejob_id SERIAL PRIMARY KEY,
+    alumni_id INT REFERENCES Alumni_Space_Account(alumni_id),
+    job_title VARCHAR(50) NOT NULL,
+    job_description VARCHAR(50) NOT NULL,
+    application_date DATETIME
+);
