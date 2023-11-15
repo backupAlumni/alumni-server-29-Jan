@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const multer = require('multer');
 const fs = require('fs');
+const path = require('path');
 
 //Express Router
 const router = express.Router();
@@ -27,10 +28,10 @@ const storage = multer.diskStorage({
 
       switch (fileType) {
           case 'profile':
-              uploadPath += 'profiles/';
+              uploadPath += 'pics/profiles/';
               break;
           case 'event':
-              uploadPath += 'events/';
+              uploadPath += 'pics/events/';
               break;
           case 'academic':
               uploadPath += 'docs/academic/';
@@ -758,7 +759,7 @@ router.get('/api/count_event', (req, res) => {
 
 
 
-
+//Upload Documents
 router.post('/api/upload', upload.single('file_name'), (req, res) => {
   console.log('Saving file....');
   if (!req.file) {
@@ -774,7 +775,7 @@ router.post('/api/upload', upload.single('file_name'), (req, res) => {
 
   switch (fileType) {
       case 'profile':
-          uploadDirectory = 'uploads/profiles/';
+          uploadDirectory = 'uploads/pics/profiles/';
           break;
       case 'post':
           uploadDirectory = 'uploads/posts/';
@@ -785,36 +786,50 @@ router.post('/api/upload', upload.single('file_name'), (req, res) => {
       case 'certificate':
           uploadDirectory = 'uploads/docs/certs/';
           break;
-      // Add more cases as needed for different file types
   }
 
-  // Move the file to the appropriate directory
+  // Save file to the relevent folder
   fs.rename(picturePath, uploadDirectory + req.file.originalname, (err) => {
       if (err) {
           console.error(err);
           return res.status(500).json({ error: 'Error saving picture to the server' });
       }
-
-      res.json({ success: true, message: fileType + ' uploaded and saved successfully' });
   });
+
+  //Update Database
+  var account_id = req.body.account_id;
+  console.log(account_id);
+
+  var sql = 'UPDATE userprofile SET pic_file = ? WHERE account_id = ?';
+
+  client.query(sql,[req.file.originalname, account_id] ,(err, results) => {
+    if (err) {
+      res.status(500).json({ error: 'Internal Server Error' });
+      return;
+    }else{
+      res.json({ success: true, message: fileType + ' uploaded and saved successfully' });
+    }
+  });
+
 });
 
 //Folder to serve(save) on
-router.use('/uploads', express.static(__dirname + '/uploads'));
+//router.use('/uploads', express.static(__dirname + '/uploads'));
+//router.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+router.use('/uploads', express.static('uploads'));
 
-router.get('/getDocument/:filename', (req, res) => {
-  const fileName = req.params.filename;
-  const filePath = __dirname + '/uploads/' + fileName;
-
-  // Check if the file exists
-  fs.access(filePath, fs.constants.F_OK, (err) => {
-    if (err) {
-      // The file does not exist
-      res.status(404).send('File not found');
-    } else {
-      // The file exists, so serve it
-      res.sendFile(filePath);
-    }
+//GET Documents
+router.get('/api/getDocument', (req, res) => {
+  const sql = 'SELECT pic_file FROM userprofile WHERE account_id = 2';
+  client.query(sql, (err, results) => {
+      if (err) {
+          console.error(err);
+          res.status(500).json({ error: 'Error fetching pictures' });
+      } else {
+          const pictures = results.map((result) => ({ filePath: result.pic_file }));
+          console.log(pictures);
+          res.json(pictures);
+      }
   });
 });
 

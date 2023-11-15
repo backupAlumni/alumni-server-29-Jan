@@ -34,7 +34,7 @@ CREATE TABLE UserProfile(
     skills VARCHAR(50) NOT NULL,
     experience VARCHAR(50) NOT NULL,
     interest VARCHAR(50) NOT NULL,
-    bio VARCHAR(50) NOT NULL
+    bio VARCHAR(50) NOT NULL,
 );
 
 CREATE TABLE UserProfile(
@@ -46,7 +46,8 @@ CREATE TABLE UserProfile(
     skills VARCHAR(50) NOT NULL,
     experience VARCHAR(50) NOT NULL,
     interest VARCHAR(50) NOT NULL,
-    bio VARCHAR(50) NOT NULL
+    bio VARCHAR(50) NOT NULL,
+    pic_file VARCHAR(255) NOT NULL
 );
 
 
