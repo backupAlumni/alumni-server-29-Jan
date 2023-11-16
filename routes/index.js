@@ -2,6 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const axios = require('axios');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
@@ -23,31 +24,31 @@ router.use(cors());
 //Allowing User to upload files
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-      let uploadPath = 'uploads/';
-      const fileType = req.body.fileType; // You need to send the file type from the client.
+    let uploadPath = 'uploads/';
+    const fileType = req.body.fileType; // You need to send the file type from the client.
 
-      switch (fileType) {
-          case 'profile':
-              uploadPath += 'pics/profiles/';
-              break;
-          case 'event':
-              uploadPath += 'pics/events/';
-              break;
-          case 'academic':
-              uploadPath += 'docs/academic/';
-              break;
-          case 'certificate':
-              uploadPath += 'docs/certs/';
-              break;
-          default:
-              uploadPath += 'others/';
-              break;
-      }
+    switch (fileType) {
+      case 'profile':
+        uploadPath += 'pics/profiles/';
+        break;
+      case 'event':
+        uploadPath += 'pics/events/';
+        break;
+      case 'academic':
+        uploadPath += 'docs/academic/';
+        break;
+      case 'certificate':
+        uploadPath += 'docs/certs/';
+        break;
+      default:
+        uploadPath += 'others/';
+        break;
+    }
 
-      cb(null, uploadPath);
+    cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
-      cb(null, file.originalname);
+    cb(null, file.originalname);
   },
 });
 const upload = multer({ storage });
@@ -320,7 +321,7 @@ router.get('/api/profile', (req, res) => {
       res.status(500).send('An error occurred while fetching UserProfiles.');
     } else {
       if (result && result.length > 0) {
-        res.status(200).json({ userProfile : result });
+        res.status(200).json({ userProfile: result });
       }
     }
   });
@@ -354,7 +355,7 @@ router.post('/api/newjob', (req, res) => {
   console.log(date_posted);
   console.log(deadline);
   console.log(experience);
-  console.log(required_Skills); 
+  console.log(required_Skills);
   console.log(salary);
 
 
@@ -366,7 +367,7 @@ router.post('/api/newjob', (req, res) => {
 
   client.query(
     insertJobSQL,
-    [job_title, Organisation, workplace_type, location, job_type, job_description,experience,required_Skills,salary, new Date(),deadline],
+    [job_title, Organisation, workplace_type, location, job_type, job_description, experience, required_Skills, salary, new Date(), deadline],
     (err, result) => {
       if (err) {
         console.error(err);
@@ -408,7 +409,7 @@ router.put('/api/Jobs/:job_id', (req, res) => {
 
   client.query(
     updateJobSQL,
-    [job_title, organisation, location, workplace_type,job_type,job_description, deadline, experience,required_Skills, salary,  job_id],
+    [job_title, organisation, location, workplace_type, job_type, job_description, deadline, experience, required_Skills, salary, job_id],
     (err, result) => {
       if (err) {
         console.error(err);
@@ -437,7 +438,7 @@ router.delete('/api/job/delete/:job_id', (req, res) => {
         console.log('Job deleted successfully!');
         return res.status(200).json({ message: 'Job deleted successfully.' });
       } else {
-        
+
         return res.status(404).json({ message: 'Job not found.' });
       }
     }
@@ -531,19 +532,19 @@ router.delete('/api/deletejobs', (req, res) => {
           console.log(jobDeadline);
 
           if (currentTime >= jobDeadline) {
-            
-                const deleteJobSQL = 'DELETE FROM joblisting WHERE job_id = ?';
-                client.query(deleteJobSQL, [result[i].job_id], (err, result) => {
-                  if (err) {
-                    console.error(err);
-                    return res.status(500).json({ message: 'An error occurred during job deletion.' });
-                  }
-                  console.log('Job deleted successfully: ');
-                });
-              } else {
-                console.log('Job ' + result[i].job_title + ' is not expiring today.');
+
+            const deleteJobSQL = 'DELETE FROM joblisting WHERE job_id = ?';
+            client.query(deleteJobSQL, [result[i].job_id], (err, result) => {
+              if (err) {
+                console.error(err);
+                return res.status(500).json({ message: 'An error occurred during job deletion.' });
               }
-            }
+              console.log('Job deleted successfully: ');
+            });
+          } else {
+            console.log('Job ' + result[i].job_title + ' is not expiring today.');
+          }
+        }
         res.json({ message: 'Expired jobs will be deleted' });
       } else {
         res.json({ message: 'No expired jobs to delete' });
@@ -610,26 +611,46 @@ router.post('/api/applyjob', (req, res) => {
 router.post('/api/event', upload.single('file'), function (req, res) {
   var event_title = req.body.event_title;
   var event_description = req.body.event_description;
-  var event_date = req.body.event_date
+  var event_date = req.body.event_date;
   var date_posted = new Date();
 
   // SQL query to insert into Events table
-  const insertJobSQL = `INSERT INTO Event (event_title,event_description,date_posted,event_date) VALUES (?, ?,?, ?)`;
+  const insertJobSQL = `INSERT INTO Event (event_title, event_description, date_posted, event_date, event_file) VALUES (?, ?, ?, ?, ?)`;
 
   client.query(
     insertJobSQL,
-    [event_title, event_description,date_posted, event_date],
+    [event_title, event_description, date_posted, event_date, req.file.originalname],
     (err, result) => {
       if (err) {
         console.error(err);
-        res.status(500).send('An error occurred during job insertion.');
+        res.status(500).send('An error occurred during event insertion.');
       } else {
         console.log('Event inserted successfully!');
-        res.status(200).json({ message: 'Event inserted successfully!' });
+
+        // Save event document on the server
+        const fileData = new FormData();
+        fileData.append('file_name', req.file);
+        fileData.append('fileType', 'event');
+        fileData.append('event_id', result.insertId);
+
+        // Make a request to the '/api/upload' endpoint
+        axios.post('http://localhost:3000/api/upload', fileData)
+          .then(uploadResponse => {
+            console.log(uploadResponse.data);
+            // Handle success, but don't send a response here
+          })
+          .catch(error => {
+            console.error(error);
+            // Handle error, log it, but don't send a response here
+          });
+
+        // Send a response to the client after successfully inserting the event
+        res.status(200).json({ message: 'Event and file information saved successfully!' });
       }
     }
   );
 });
+
 
 //Get
 router.get('/api/event/:id', function (req, res) {
@@ -674,14 +695,14 @@ router.get('/api/events', (req, res) => {
 
 //updating events
 router.put('/api/event/:event_id', (req, res) => {
-  const event_id  = req.body.event_id ;
+  const event_id = req.body.event_id;
   const receivedData = req.body;
 
- // var alumni_id = req.body.alumni_id;
+  // var alumni_id = req.body.alumni_id;
   var event_title = req.body.event_title;
   var event_description = req.body.event_description;
   var event_date = req.body.event_date;
- 
+
 
   // Handle the data on the server as needed
   console.log('Received data for updating event:', receivedData);
@@ -710,7 +731,7 @@ router.put('/api/event/:event_id', (req, res) => {
 router.delete('/api/event/delete/:event_id', (req, res) => {
   const event_id = req.params.event_id;
   console.log(event_id);
- 
+
   const deleteEventSQL = 'DELETE FROM Event WHERE event_id = ?';
 
   client.query(deleteEventSQL, [event_id], (err, result) => {
@@ -722,7 +743,7 @@ router.delete('/api/event/delete/:event_id', (req, res) => {
         console.log('Event deleted successfully!');
         return res.status(200).json({ message: 'Event deleted successfully.' });
       } else {
-        
+
         return res.status(404).json({ message: 'Event not found.' });
       }
     }
@@ -750,19 +771,19 @@ router.delete('/api/deleteEvent', (req, res) => {
           console.log(eventDeadline);
 
           if (currentTime >= eventDeadline) {
-            
-                const deleteEventSQL = 'DELETE FROM Event WHERE event_id = ?';
-                client.query(deleteEventSQL, [result[i].event_id], (err, result) => {
-                  if (err) {
-                    console.error(err);
-                    return res.status(500).json({ message: 'An error occurred during Event deletion.' });
-                  }
-                  console.log('Event deleted successfully: ');
-                });
-              } else {
-                console.log('Event ' + result[i].event_title + ' is not expiring today.');
+
+            const deleteEventSQL = 'DELETE FROM Event WHERE event_id = ?';
+            client.query(deleteEventSQL, [result[i].event_id], (err, result) => {
+              if (err) {
+                console.error(err);
+                return res.status(500).json({ message: 'An error occurred during Event deletion.' });
               }
-            }
+              console.log('Event deleted successfully: ');
+            });
+          } else {
+            console.log('Event ' + result[i].event_title + ' is not expiring today.');
+          }
+        }
         res.json({ message: 'Expired Event will be deleted' });
       } else {
         res.json({ message: 'No expired Event to delete' });
@@ -796,7 +817,7 @@ router.get('/api/count_event', (req, res) => {
 router.post('/api/upload', upload.single('file_name'), (req, res) => {
   console.log('Saving file....');
   if (!req.file) {
-      return res.status(400).json({ error: 'No file uploaded' });
+    return res.status(400).json({ error: 'No file uploaded' });
   }
 
   const picturePath = req.file.path;
@@ -806,40 +827,48 @@ router.post('/api/upload', upload.single('file_name'), (req, res) => {
 
   let uploadDirectory = 'uploads/others/'; // Default directory if fileType is not recognized
 
+  //Variables
+  var sql = '';
+  var id = '';
+
   switch (fileType) {
-      case 'profile':
-          uploadDirectory = 'uploads/pics/profiles/';
-          break;
-      case 'post':
-          uploadDirectory = 'uploads/posts/';
-          break;
-      case 'academic':
-          uploadDirectory = 'uploads/docs/academic/';
-          break;
-      case 'certificate':
-          uploadDirectory = 'uploads/docs/certs/';
-          break;
+    case 'profile':
+      uploadDirectory = 'uploads/pics/profiles/';
+      sql = 'UPDATE userprofile SET pic_file = ? WHERE account_id = ?';
+      id = req.body.account_id;
+      break;
+    case 'event':
+      uploadDirectory = 'uploads/pics/events/';
+      sql = 'UPDATE event SET event_file = ? WHERE event_id = ?';
+      id = req.body.event_id;
+      break;
+    case 'post':
+      uploadDirectory = 'uploads/posts/';
+      break;
+    case 'academic':
+      uploadDirectory = 'uploads/docs/academic/';
+      break;
+    case 'certificate':
+      uploadDirectory = 'uploads/docs/certs/';
+      break;
+
   }
 
   // Save file to the relevent folder
   fs.rename(picturePath, uploadDirectory + req.file.originalname, (err) => {
-      if (err) {
-          console.error(err);
-          return res.status(500).json({ error: 'Error saving picture to the server' });
-      }
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Error saving picture to the server' });
+    }
   });
 
+
   //Update Database
-  var account_id = req.body.account_id;
-  console.log(account_id);
-
-  var sql = 'UPDATE userprofile SET pic_file = ? WHERE account_id = ?';
-
-  client.query(sql,[req.file.originalname, account_id] ,(err, results) => {
+  client.query(sql, [req.file.originalname, id], (err, results) => {
     if (err) {
       res.status(500).json({ error: 'Internal Server Error' });
       return;
-    }else{
+    } else {
       res.json({ success: true, message: fileType + ' uploaded and saved successfully' });
     }
   });
@@ -852,17 +881,18 @@ router.post('/api/upload', upload.single('file_name'), (req, res) => {
 router.use('/uploads', express.static('uploads'));
 
 //GET Documents
-router.get('/api/getDocument', (req, res) => {
-  const sql = 'SELECT pic_file FROM userprofile WHERE account_id = 2';
-  client.query(sql, (err, results) => {
-      if (err) {
-          console.error(err);
-          res.status(500).json({ error: 'Error fetching pictures' });
-      } else {
-          const pictures = results.map((result) => ({ filePath: result.pic_file }));
-          console.log(pictures);
-          res.json(pictures);
-      }
+router.get('/api/getDocument/:account_id', (req, res) => {
+  var account_id = req.body.account_id;
+  const sql = 'SELECT pic_file FROM userprofile WHERE account_id = ? ';
+  client.query(sql, req.params.account_id, (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Error fetching pictures' });
+    } else {
+      const pictures = results.map((result) => ({ filePath: result.pic_file }));
+      console.log(pictures);
+      res.json(pictures);
+    }
   });
 });
 
@@ -894,7 +924,7 @@ router.post('/api/send_query', (req, res) => {
     if (err) {
       console.error('Error inserting query:', err);
       res.status(500).json({ error: 'Error inserting query' });
-    }else{
+    } else {
       console.log('Query inserted successfully');
       res.json({ success: true });
     }
@@ -909,11 +939,11 @@ router.post('/api/respond_query', (req, res) => {
 
   const { query_id, query_text } = req.body;
   const updatetQuery = 'UPDATE Query SET status = "Completed", query_text = ? WHERE query_id = ?';
-  client.query(updatetQuery, [ query_text,query_id], (err, results) => {
+  client.query(updatetQuery, [query_text, query_id], (err, results) => {
     if (err) {
       console.error('Error updating query:', err);
       res.status(500).json({ error: 'Error updating query' });
-    }else{
+    } else {
       console.log('Query responded successfully');
       res.json({ success: true });
     }

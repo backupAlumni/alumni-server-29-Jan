@@ -85,7 +85,8 @@ CREATE TABLE Event(
     event_description VARCHAR(100) NOT NULL,
     date_posted DateTime,
     event_date DateTime,
-    deadline DateTime
+    deadline DateTime,
+    pic_file VARCHAR(255) NOT NULL
 );
 
 
