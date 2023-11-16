@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 14, 2023 at 02:54 PM
+-- Generation Time: Nov 16, 2023 at 09:04 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -81,16 +81,18 @@ CREATE TABLE `event` (
   `alumni_id` int(11) DEFAULT NULL,
   `event_title` varchar(50) NOT NULL,
   `event_description` varchar(100) NOT NULL,
-  `event_date` date DEFAULT NULL
+  `date_posted` datetime DEFAULT NULL,
+  `event_date` datetime DEFAULT NULL,
+  `deadline` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `event`
 --
 
-INSERT INTO `event` (`event_id`, `alumni_id`, `event_title`, `event_description`, `event_date`) VALUES
-(4, NULL, 'Hackthon', 'A hackathon is a brief, intensive event where diverse teams collaborate to solve challenges or creat', '2023-11-10'),
-(5, NULL, 'Studython', '\nA studython is a concentrated study event where students collaboratively work on coursework and exa', '2023-11-10');
+INSERT INTO `event` (`event_id`, `alumni_id`, `event_title`, `event_description`, `date_posted`, `event_date`, `deadline`) VALUES
+(4, NULL, 'Hackthon', 'A hackathon is a brief, intensive event where diverse teams collaborate to solve challenges or creat', '2023-11-16 10:02:16', '2023-11-24 16:00:00', '2023-12-02 23:59:59'),
+(5, NULL, 'Studython', 'A studython is a concentrated study event where students collaboratively work on coursework and exa', '2023-11-16 10:02:40', '2023-11-30 13:00:00', '2023-12-02 23:59:59');
 
 -- --------------------------------------------------------
 
@@ -178,20 +180,21 @@ CREATE TABLE `userprofile` (
   `skills` varchar(50) NOT NULL,
   `experience` varchar(50) NOT NULL,
   `interest` varchar(50) NOT NULL,
-  `bio` varchar(50) NOT NULL
+  `bio` varchar(50) NOT NULL,
+  `pic_file` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `userprofile`
 --
 
-INSERT INTO `userprofile` (`user_id`, `account_id`, `location`, `qualification`, `employment_status`, `skills`, `experience`, `interest`, `bio`) VALUES
-(1, 2, 'Iu', 'Yuj', 'None', '', '2', 'Ko;', 'U'),
-(2, 3, 'Soshanguve', 'PHD', 'Employed', 'Java,React,Angular,NodeJS,MySQL Database', '6 Years', 'Coding/Full-Stack', 'team player and hackerthon master'),
-(3, 7, 'Hammanskraal', 'Doctrate', 'Employed', 'C#,Java,React,Angular,NodeJS,MySQL Database', '12 Years', 'Full-Stack', ' hackerthon master'),
-(4, 5, 'Kwazulu-Natal', 'Diploma', 'UnEmployed', 'Java,MySQL Database', '0', 'Business Analyst', 'like attending hackerthon'),
-(5, 6, 'Sandton', 'masters', 'Self-Employed', 'Java,AWS Deploying,MySQL Database,Azure', '2 months', 'Scrum Master', ' hackerthon Master'),
-(6, 4, 'Pretoria', 'Diploma', 'UnEmployed', 'Analytical Thinking,Legal Knowledge,AdvocacyTime M', '3 years', 'Criminal Law', ' hackerthon Master');
+INSERT INTO `userprofile` (`user_id`, `account_id`, `location`, `qualification`, `employment_status`, `skills`, `experience`, `interest`, `bio`, `pic_file`) VALUES
+(1, 2, '', '', '', '', '', '', '', ''),
+(2, 3, 'Soshanguve', 'PHD', 'Employed', 'Java,React,Angular,NodeJS,MySQL Database', '6 Years', 'Coding/Full-Stack', 'team player and hackerthon master', ''),
+(3, 7, 'Hammanskraal', 'Doctrate', 'Employed', 'C#,Java,React,Angular,NodeJS,MySQL Database', '12 Years', 'Full-Stack', ' hackerthon master', ''),
+(4, 5, 'Kwazulu-Natal', 'Diploma', 'UnEmployed', 'Java,MySQL Database', '0', 'Business Analyst', 'like attending hackerthon', ''),
+(5, 6, 'Sandton', 'masters', 'Self-Employed', 'Java,AWS Deploying,MySQL Database,Azure', '2 months', 'Scrum Master', ' hackerthon Master', ''),
+(6, 4, 'Pretoria', 'Diploma', 'UnEmployed', 'Analytical Thinking,Legal Knowledge,AdvocacyTime M', '3 years', 'Criminal Law', ' hackerthon Master', '');
 
 --
 -- Indexes for dumped tables
