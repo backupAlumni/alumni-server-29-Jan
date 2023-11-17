@@ -327,6 +327,39 @@ router.get('/api/profile', (req, res) => {
   });
 });
 
+router.get('/api/profiles', (req, res) => {
+  // SQL query to select profiles with names from Tut_Alumni and additional information from UserProfile
+  const selectProfilesSQL = `
+    SELECT ta.name, ta.surname, up.*
+    FROM Tut_Alumni ta
+    JOIN UserProfile up ON ta.account_id = up.account_id
+  `;
+
+  client.query(selectProfilesSQL, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('An error occurred while fetching profiles.');
+    } else {
+      if (result && result.length > 0) {
+        var profilePictures = [];
+
+        for (let i = 0; i < result.length; i++) {
+          if (result[i].pic_file === '') {
+            console.log('Profile has no picture');
+          } else {
+            profilePictures.push({ filePath: result[i].pic_file });
+          }
+        }
+
+        res.status(200).json({ profiles: result, profilePictures: profilePictures });
+      } else {
+        res.status(404).send('No profiles found.');
+      }
+    }
+  });
+});
+
+
 
 
 
@@ -614,37 +647,43 @@ router.post('/api/event', upload.single('file'), function (req, res) {
   var event_date = req.body.event_date;
   var date_posted = new Date();
 
-  // SQL query to insert into Events table
-  const insertJobSQL = `INSERT INTO Event (event_title, event_description, date_posted, event_date, event_file) VALUES (?, ?, ?, ?, ?)`;
+  //var
+  var insertEventSQL;
+  var values;
 
+
+  if (!req.file) {
+    //if event pic is null
+
+    insertEventSQL = `INSERT INTO Event (event_title, event_description, date_posted, event_date) VALUES (?, ?, ?, ?)`;
+    values = [event_title, event_description, date_posted, event_date];
+
+  } else {
+    insertEventSQL = `INSERT INTO Event (event_title, event_description, date_posted, event_date, event_file) VALUES (?, ?, ?, ?, ?)`;
+    values = [event_title, event_description, date_posted, event_date, req.file.originalname];
+
+    //imag var
+    const picturePath = req.file.path;
+    let uploadDirectory = 'uploads/pics/events/';
+
+    //SAVE event image on database
+    fs.rename(picturePath, uploadDirectory + req.file.originalname, (err) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Error saving picture to the server' });
+      }
+    });
+
+  }
+  // SQL query to insert into Events table
   client.query(
-    insertJobSQL,
-    [event_title, event_description, date_posted, event_date, req.file.originalname],
+    insertEventSQL, values,
     (err, result) => {
       if (err) {
         console.error(err);
         res.status(500).send('An error occurred during event insertion.');
       } else {
         console.log('Event inserted successfully!');
-
-        // Save event document on the server
-        const fileData = new FormData();
-        fileData.append('file_name', req.file);
-        fileData.append('fileType', 'event');
-        fileData.append('event_id', result.insertId);
-
-        // Make a request to the '/api/upload' endpoint
-        axios.post('http://localhost:3000/api/upload', fileData)
-          .then(uploadResponse => {
-            console.log(uploadResponse.data);
-            // Handle success, but don't send a response here
-          })
-          .catch(error => {
-            console.error(error);
-            // Handle error, log it, but don't send a response here
-          });
-
-        // Send a response to the client after successfully inserting the event
         res.status(200).json({ message: 'Event and file information saved successfully!' });
       }
     }
@@ -678,20 +717,33 @@ router.get('/api/event/:id', function (req, res) {
 
 //Get all events
 router.get('/api/events', (req, res) => {
-  // SQL query to select all jobs
-  const selectAllJobsSQL = 'SELECT * FROM Event';
+  // SQL query to select all events
+  const selectAllEventsSQL = 'SELECT * FROM Event';
 
-  client.query(selectAllJobsSQL, (err, result) => {
+  client.query(selectAllEventsSQL, (err, result) => {
     if (err) {
       console.error(err);
       res.status(500).send('An error occurred while fetching Events.');
     } else {
       if (result && result.length > 0) {
-        res.status(200).json({ events: result });
+        var pictures = [];
+
+        for (let i = 0; i < result.length; i++) {
+          if (result[i].event_file === '') {
+            console.log('Event has no picture');
+          } else {
+            pictures.push({ filePath: result[i].event_file });
+          }
+        }
+
+        res.json({ events: result, pictures: pictures });
+      } else {
+        res.json({ events: [] }); // Return an empty array if there are no events
       }
     }
   });
 });
+
 
 //updating events
 router.put('/api/event/:event_id', (req, res) => {
@@ -881,10 +933,30 @@ router.post('/api/upload', upload.single('file_name'), (req, res) => {
 router.use('/uploads', express.static('uploads'));
 
 //GET Documents
-router.get('/api/getDocument/:account_id', (req, res) => {
-  var account_id = req.body.account_id;
-  const sql = 'SELECT pic_file FROM userprofile WHERE account_id = ? ';
-  client.query(sql, req.params.account_id, (err, results) => {
+router.get('/api/getDocument/:fileType/:id', (req, res) => {
+  //var account_id = req.body.accounid;
+  var sql;
+
+  switch (req.params.fileType) {
+    case 'profile':
+      sql = 'SELECT pic_file FROM userprofile WHERE account_id = ? ';
+      break;
+    case 'event':
+      sql = 'SELECT event_file FROM event WHERE account_id = ? ';
+      break;
+    case 'post':
+      uploadDirectory = 'uploads/posts/';
+      break;
+    case 'academic':
+      uploadDirectory = 'uploads/docs/academic/';
+      break;
+    case 'certificate':
+      uploadDirectory = 'uploads/docs/certs/';
+      break;
+
+  }
+
+  client.query(sql, req.params.id, (err, results) => {
     if (err) {
       console.error(err);
       res.status(500).json({ error: 'Error fetching pictures' });
