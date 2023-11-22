@@ -1,27 +1,15 @@
-const express = require('express');
-const httpServer = require('http').createServer(express);
+const app = require('express')();
+const httpServer = require('http').createServer(app);
 const io = require('socket.io')(httpServer, {
-  cors: {origin : '*'}
+  cors: { origin: '*' }
 });
-const router = express.Router();
 
-const myMiddleware = (req, res, next) => {
-  // Your middleware logic here
-  next();
-};
-
-router.use(myMiddleware);
-
-// Your route handling logic goes here
-
-module.exports = router;
-
-const database = require('../database/database'); 
+const database = require('../database/database');
 
 
 //use port 3000 or check for enviroment variable named PORT 
-const port = process.env.PORT || 3000;
-var currentRoom="default";
+const port = process.env.PORT || 3001;
+var currentRoom = "default";
 
 //Run whe client connects
 io.on('connection', (socket) => {
@@ -36,25 +24,25 @@ io.on('connection', (socket) => {
         console.error('Error connecting to the database:', err);
         return;
       }
-    
+
       // Perform your database operations using the 'connection' object
-      var values =[message.text,message.date,message.sender,message.room]
-      var sqlInsert="INSERT INTO `alumni-space-db`.`message` (`text`, `date`, `sender`, `room`) VALUES (?,?,?,?);"
-      var sqlSelect="SELECT text,date,sender,room FROM `alumni-space-db`.`message`;"
-      connection.query(sqlInsert,values,(queryError, results) => {
+      var values = [message.text, message.date, message.sender, message.room]
+      var sqlInsert = "INSERT INTO `alumni-space-db`.`message` (`text`, `date`, `sender`, `room`) VALUES (?,?,?,?);"
+      var sqlSelect = "SELECT text,date,sender,room FROM `alumni-space-db`.`message`;"
+      connection.query(sqlInsert, values, (queryError, results) => {
         connection.release(); // Release the connection back to the pool
-    
+
         if (queryError) {
           console.error('Error executing query:', queryError);
           return;
         }
-    
+
         console.log('Query results:', results);
       });
     });
     console.log(message);
     //Sent as soon as a user conne
-    io.to(message.room).emit('message',message);
+    io.to(message.room).emit('message', message);
   });
   socket.on('post', (post) => {
     database.getConnection((err, connection) => {
@@ -62,46 +50,46 @@ io.on('connection', (socket) => {
         console.error('Error connecting to the database:', err);
         return;
       }
-    
+
       // Perform your database operations using the 'connection' object
-      var values =[post.user_name,post.user_postion,post.institution,post.post_time,post.text_message,]
-      var sqlInsert="INSERT INTO `alumni-space-db`.`post` (`user_name`, `user_postion`, `institution`, `post_time`,`text_message`) VALUES (?,?,?,?,?);"
-      
-      connection.query(sqlInsert,values,(queryError, results) => {
+      var values = [post.user_name, post.user_postion, post.institution, post.post_time, post.text_message,]
+      var sqlInsert = "INSERT INTO `alumni-space-db`.`post` (`user_name`, `user_postion`, `institution`, `post_time`,`text_message`) VALUES (?,?,?,?,?);"
+
+      connection.query(sqlInsert, values, (queryError, results) => {
         connection.release(); // Release the connection back to the pool
-    
+
         if (queryError) {
           console.error('Error executing query:', queryError);
           return;
         }
-    
+
         console.log('Query results:', results);
       });
     });
- 
-   
-  
+
+
+
   });
-  
+
   socket.on('saveGroup', (group) => {
     database.getConnection((err, connection) => {
       if (err) {
         console.error('Error connecting to the database:', err);
         return;
       }
-    
+
       // Perform your database operations using the 'connection' object
-      var values =[group.name,group.description,group.participant,group.role]
-      var sqlInsert="INSERT INTO `alumni-space-db`.`groups` ( `name`, `description`, `participant` ,`role`) VALUES (?,?,?,?);"
-     
-      connection.query(sqlInsert,values,(queryError, results) => {
+      var values = [group.name, group.description, group.participant, group.role]
+      var sqlInsert = "INSERT INTO `alumni-space-db`.`groups` ( `name`, `description`, `participant` ,`role`) VALUES (?,?,?,?);"
+
+      connection.query(sqlInsert, values, (queryError, results) => {
         connection.release(); // Release the connection back to the pool
-    
+
         if (queryError) {
           console.error('Error executing query:', queryError);
           return;
         }
-    
+
         console.log('Query results:', results);
       });
     });
@@ -113,101 +101,101 @@ io.on('connection', (socket) => {
   });
 
   socket.on('joinRoom', (room) => {
-  
-    currentRoom=room;
+
+    currentRoom = room;
     socket.join(room);
     database.getConnection((err, connection) => {
       if (err) {
         console.error('Error connecting to the database:', err);
         return;
       }
-    var sqlSelect="SELECT text,date,sender,room FROM `alumni-space-db`.`message` Where room = ?;"
-    connection.query(sqlSelect,room,(queryError, results) => {
-      connection.release(); // Release the connection back to the pool
-      const msgList  = [];
-      if (queryError) {
-        console.error('Error executing query:', queryError);
-        return;
-      }
-      results.forEach(function (msg) {
-        msgList.push(msg);
-        io.in(room).emit('message',msg);
-        console.log('My Query results:', {text:msg.text, date:msg.date, sender:msg.sender, room:msg.room});
-         });
-      
-    
+      var sqlSelect = "SELECT text,date,sender,room FROM `alumni-space-db`.`message` Where room = ?;"
+      connection.query(sqlSelect, room, (queryError, results) => {
+        connection.release(); // Release the connection back to the pool
+        const msgList = [];
+        if (queryError) {
+          console.error('Error executing query:', queryError);
+          return;
+        }
+        results.forEach(function (msg) {
+          msgList.push(msg);
+          io.in(room).emit('message', msg);
+          console.log('My Query results:', { text: msg.text, date: msg.date, sender: msg.sender, room: msg.room });
+        });
+
+
+      });
     });
-  });
-   
-  });
-//send old posst
-database.getConnection((err, connection) => {
-  if (err) {
-    console.error('Error connecting to the database:', err);
-    return;
-  }
-var sqlSelect="SELECT user_name,user_postion,institution,post_time,text_message FROM `alumni-space-db`.`post`"
-connection.query(sqlSelect,(queryError, results) => {
-  connection.release(); // Release the connection back to the pool
-  const msgList  = [];
-  if (queryError) {
-    console.error('Error executing query:', queryError);
-    return;
-  }
-    io.emit('postList',results);
 
-  
-
-});
-});
-  socket.on('disconnect', () => {
-    console.log('a user disconnected!');
   });
-
-  
-socket.on('Login', (details) => {
-  database.getConnection((err, connection) => {
+  //send old posst
+  /*database.getConnection((err, connection) => {
     if (err) {
       console.error('Error connecting to the database:', err);
       return;
     }
-  
-
-    
-    var sqlSelect="SELECT * FROM `alumni-space-db`.user;"
-    connection.query(sqlSelect,(queryError, results) => {
+    var sqlSelect = "SELECT user_name,user_postion,institution,post_time,text_message FROM `alumni-space-db`.`post`"
+    connection.query(sqlSelect, (queryError, results) => {
       connection.release(); // Release the connection back to the pool
-  
+      const msgList = [];
       if (queryError) {
         console.error('Error executing query:', queryError);
         return;
       }
-      console.log('My entered details: ',details);
-      var found=false;
-    
-      var list=[];
- 
-      results.forEach(function (user) {
-        
-      
-         if(user.email === details.email && user.password === details.password){
-          found=true;
-          io.emit('userDetails',user);
-          io.emit('currentUser',user);
-          console.log('Login Query results:', user);
-         }else{
-          list.push(user)
-         }
-         
-         });
-         io.emit('userList',list);
-         console.log('my list', results);
-         io.emit('loginResults',found);
-   
+      io.emit('postList', results);
     });
+  });*/
+
+  socket.on('disconnect', () => {
+    console.log('a user disconnected!');
   });
 
-});
+
+  socket.on('Login', (details) => {
+    database.getConnection((err, connection) => {
+      if (err) {
+        console.error('Error connecting to the database:', err);
+        return;
+      }
+
+
+
+      var sqlSelect = "SELECT * FROM `alumni-space-db`.user;"
+      connection.query(sqlSelect, (queryError, results) => {
+        connection.release(); // Release the connection back to the pool
+
+        if (queryError) {
+          console.error('Error executing query:', queryError);
+          return;
+        }
+        console.log('My entered details: ', details);
+        var found = false;
+
+        var list = [];
+
+        results.forEach(function (user) {
+
+
+          if (user.email === details.email && user.password === details.password) {
+            found = true;
+            io.emit('userDetails', user);
+            io.emit('currentUser', user);
+            console.log('Login Query results:', user);
+          } else {
+            list.push(user)
+          }
+
+        });
+        io.emit('userList', list);
+        console.log('my list', results);
+        io.emit('loginResults', found);
+
+      });
+    });
+
+  });
 });
 
-//httpServer.listen(port, () => console.log(`listening on port ${port}`));
+module.exports = app;
+
+httpServer.listen(port, () => console.log(`listening on port ${port}`));
