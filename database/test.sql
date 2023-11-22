@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 16, 2023 at 02:54 PM
+-- Generation Time: Nov 22, 2023 at 05:47 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -62,14 +62,13 @@ INSERT INTO `alumni_space_account` (`account_id`, `email`, `password`, `role`) V
 (1, 'admin@email.com', '123', 'Admin'),
 (2, 'mashia@gmail.com', '123', 'Alumni'),
 (3, 'mhlongo@gmail.com', '123', 'Alumni'),
-(4, 'masia@gmail.com', '123', 'Alumni'),
-(5, 'mabena@gmail.com', '123', 'Alumni'),
+(4, 'nkadimeng@gmail.com', '123', 'Alumni'),
+(5, 'malobane@gmail.com', '123', 'Alumni'),
 (6, 'masuku@gmail.com', '123', 'Alumni'),
 (7, 'mnisi@gmail.com', '123', 'Alumni'),
-(8, 'sibiya@gmail.com', '123', 'Alumni'),
-(9, 'lebelo@gmail.com', '123', 'Alumni'),
-(10, 'lehlojane@gmail.com', '123', 'Alumni'),
-(11, '222965810@tut4life.ac.za', '123456', 'Alumni');
+(8, 'mnyalo@gmail.com', '123', 'Alumni'),
+(9, 'mashao@gmail.com', '123', 'Alumni'),
+(10, 'lehlojane@gmail.com', '123', 'Alumni');
 
 -- --------------------------------------------------------
 
@@ -93,8 +92,8 @@ CREATE TABLE `event` (
 --
 
 INSERT INTO `event` (`event_id`, `alumni_id`, `event_title`, `event_description`, `date_posted`, `event_date`, `deadline`, `event_file`) VALUES
-(4, NULL, 'Hackthon', 'A hackathon is a brief, intensive event where diverse teams collaborate to solve challenges or creat', '2023-11-16 10:02:16', '2023-11-24 16:00:00', '2023-12-02 23:59:59', ''),
-(5, NULL, 'Studython', 'A studython is a concentrated study event where students collaboratively work on coursework and exa', '2023-11-16 10:02:40', '2023-11-30 13:00:00', '2023-12-02 23:59:59', '');
+(4, NULL, 'Hackthon', 'A hackathon is a brief, intensive event where diverse teams collaborate to solve challenges or creat', '2023-11-16 10:02:16', '2023-11-24 16:00:00', '2023-12-02 23:59:59', 'event.jpg'),
+(5, NULL, 'Studython', 'A studython is a concentrated study event where students collaboratively work on coursework and exa', '2023-11-16 10:02:40', '2023-11-30 13:00:00', '2023-12-02 23:59:59', 'studython.jpeg');
 
 -- --------------------------------------------------------
 
@@ -132,12 +131,19 @@ CREATE TABLE `query` (
   `date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `query`
+-- Table structure for table `savejob`
 --
 
-INSERT INTO `query` (`query_id`, `account_id`, `query_text`, `status`, `date`) VALUES
-(1, 0, 'Answered', 'Completed', '2023-11-10 06:44:57');
+CREATE TABLE `savejob` (
+  `savejob_id` bigint(20) UNSIGNED NOT NULL,
+  `alumni_id` int(11) DEFAULT NULL,
+  `job_title` varchar(50) NOT NULL,
+  `job_description` varchar(50) NOT NULL,
+  `application_date` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
@@ -159,14 +165,13 @@ CREATE TABLE `tut_alumni` (
 INSERT INTO `tut_alumni` (`alumni_id`, `account_id`, `name`, `surname`) VALUES
 (2, 3, 'Sihle', 'Mlongo'),
 (3, 7, 'Kefentse', 'Mnisi'),
-(4, 5, 'Themba', 'Mabena'),
+(4, 5, 'Patience', 'Malobane'),
 (5, 6, 'Snenhlanhla', 'Masuku'),
-(6, 4, 'Innocent', 'Masia'),
-(7, 8, 'Noxolo', 'Sibiya'),
+(6, 4, 'Berlinah', 'Nkadimeng'),
+(7, 8, 'Noxolo', 'Mnyalo'),
 (8, 2, 'Elias', 'Mashia'),
-(9, 9, 'Kgaogelo', 'Lebelo'),
-(10, 10, 'Kabelo', 'Lehlojane'),
-(11, 11, 'Sbongiseni', 'Ngema');
+(9, 9, 'Kgaogelo', 'Mashao'),
+(10, 10, 'Kabelo', 'Lehlojane');
 
 -- --------------------------------------------------------
 
@@ -193,12 +198,14 @@ CREATE TABLE `userprofile` (
 
 INSERT INTO `userprofile` (`user_id`, `account_id`, `location`, `qualification`, `employment_status`, `skills`, `experience`, `interest`, `bio`, `pic_file`) VALUES
 (1, 2, '', '', '', '', '', '', '', 'aboutPic.jpg'),
-(2, 3, 'Soshanguve', 'PHD', 'Employed', 'Java,React,Angular,NodeJS,MySQL Database', '6 Years', 'Coding/Full-Stack', 'team player and hackerthon master', ''),
-(3, 7, 'Hammanskraal', 'Doctrate', 'Employed', 'C#,Java,React,Angular,NodeJS,MySQL Database', '12 Years', 'Full-Stack', ' hackerthon master', ''),
-(4, 5, 'Kwazulu-Natal', 'Diploma', 'UnEmployed', 'Java,MySQL Database', '0', 'Business Analyst', 'like attending hackerthon', ''),
-(5, 6, 'Sandton', 'masters', 'Self-Employed', 'Java,AWS Deploying,MySQL Database,Azure', '2 months', 'Scrum Master', ' hackerthon Master', ''),
-(6, 4, 'Pretoria', 'Diploma', 'UnEmployed', 'Analytical Thinking,Legal Knowledge,AdvocacyTime M', '3 years', 'Criminal Law', ' hackerthon Master', ''),
-(7, 11, '', '', '', '', '', '', '', '');
+(2, 3, 'Soshanguve', 'PHD', 'Employed', 'Java,React,Angular,NodeJS,MySQL Database', '6 Years', 'Coding/Full-Stack', 'team player and hackerthon master', 'Sihle.jpg'),
+(3, 7, 'Hammanskraal', 'Doctrate', 'Employed', 'C#,Java,React,Angular,NodeJS,MySQL Database', '12 Years', 'Full-Stack', ' hackerthon master', 'Kfentse.jpg'),
+(4, 5, 'Kwazulu-Natal', 'Diploma', 'UnEmployed', 'Java,MySQL Database', '0', 'Business Analyst', 'like attending hackerthon', 'Patience.jpg'),
+(5, 6, 'Sandton', 'masters', 'Self-Employed', 'Java,AWS Deploying,MySQL Database,Azure', '2 months', 'Scrum Master', ' hackerthon Master', 'Sneh.jpg'),
+(6, 4, 'Pretoria', 'Diploma', 'UnEmployed', 'Analytical Thinking,Legal Knowledge,AdvocacyTime M', '3 years', 'Criminal Law', ' hackerthon Master', 'Berlinah.jpg'),
+(7, 8, '', '', '', '', '', '', '', ''),
+(8, 9, '', '', '', '', '', '', '', 'Kgaogelo.jpg'),
+(9, 10, '', '', '', '', '', '', '', '');
 
 --
 -- Indexes for dumped tables
@@ -234,6 +241,12 @@ ALTER TABLE `joblisting`
 --
 ALTER TABLE `query`
   ADD PRIMARY KEY (`query_id`);
+
+--
+-- Indexes for table `savejob`
+--
+ALTER TABLE `savejob`
+  ADD PRIMARY KEY (`savejob_id`);
 
 --
 -- Indexes for table `tut_alumni`
@@ -273,13 +286,19 @@ ALTER TABLE `event`
 -- AUTO_INCREMENT for table `joblisting`
 --
 ALTER TABLE `joblisting`
-  MODIFY `job_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `job_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `query`
 --
 ALTER TABLE `query`
   MODIFY `query_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `savejob`
+--
+ALTER TABLE `savejob`
+  MODIFY `savejob_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tut_alumni`
@@ -291,7 +310,7 @@ ALTER TABLE `tut_alumni`
 -- AUTO_INCREMENT for table `userprofile`
 --
 ALTER TABLE `userprofile`
-  MODIFY `user_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `user_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
