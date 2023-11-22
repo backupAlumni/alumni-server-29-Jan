@@ -15,11 +15,13 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 const indexRoute = require("./routes/index");
+const myNetworkRoute = require("./routes/my-network");
+
 //const alumniRoute = require("./routes/alumni");
 //const adminRoute = require("./routes/admin");
 
 app.use("/", indexRoute);
-//app.use("/alumni", alumniRoute);
+app.use("/network", myNetworkRoute);
 //app.use("/admin", adminRoute);
 
 // Start the server

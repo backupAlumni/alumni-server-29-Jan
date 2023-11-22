@@ -110,6 +110,37 @@ CREATE TABLE Notification(
     
 );
 
+--Linda's
+CREATE TABLE `message` (
+  `idmessage` int NOT NULL AUTO_INCREMENT,
+  `text` varchar(255) NOT NULL,
+  `date` varchar(45) DEFAULT NULL,
+  `sender` varchar(45) NOT NULL,
+  `room` varchar(45) NOT NULL,
+  PRIMARY KEY (`idmessage`)
+);
+
+CREATE TABLE `post` (
+  `idpost` int NOT NULL AUTO_INCREMENT,
+  `user_name` varchar(45) NOT NULL,
+  `user_postion` varchar(45) NOT NULL,
+  `institution` varchar(45) NOT NULL,
+  `post_time` varchar(45) NOT NULL,
+  `text_message` varchar(45) NOT NULL,
+  PRIMARY KEY (`idpost`)
+);
+
+CREATE TABLE `user` (
+  `id` int NOT NULL,
+  `email` varchar(45) NOT NULL,
+  `password` varchar(45) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `role` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email_UNIQUE` (`email`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
+);
+
 CREATE TABLE Chat(
     chat_id SERIAL PRIMARY KEY,
     user_id INT REFERENCES Alumni_Space_Account(user_id) ,
