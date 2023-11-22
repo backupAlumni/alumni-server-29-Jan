@@ -345,7 +345,6 @@ router.get('/api/profiles', (req, res) => {
 
         for (let i = 0; i < result.length; i++) {
           if (result[i].pic_file === '') {
-            console.log('Profile has no picture');
           } else {
             profilePictures.push({ filePath: result[i].pic_file });
           }
