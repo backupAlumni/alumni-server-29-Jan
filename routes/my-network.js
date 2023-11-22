@@ -27,7 +27,7 @@ io.on('connection', (socket) => {
 
       // Perform your database operations using the 'connection' object
       var values = [message.text, message.date, message.sender, message.room]
-      var sqlInsert = "INSERT INTO `alumni-space-db`.`message` (`text`, `date`, `sender`, `room`) VALUES (?,?,?,?);"
+      var sqlInsert = "INSERT INTO `test`.`message` (`text`, `date`, `sender`, `room`) VALUES (?,?,?,?);"
       var sqlSelect = "SELECT text,date,sender,room FROM `alumni-space-db`.`message`;"
       connection.query(sqlInsert, values, (queryError, results) => {
         connection.release(); // Release the connection back to the pool
