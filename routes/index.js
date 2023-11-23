@@ -311,22 +311,6 @@ router.put('/api/userprofile', (req, res) => {
 
 //selecting all userprofiles
 
-router.get('/api/profile', (req, res) => {
-  // SQL query to select all jobs
-  const selectAllProfileSQL = 'SELECT * FROM tut_alumni';
-
-  client.query(selectAllProfileSQL, (err, result) => {
-    if (err) {
-      console.error(err);
-      res.status(500).send('An error occurred while fetching UserProfiles.');
-    } else {
-      if (result && result.length > 0) {
-        res.status(200).json({ userProfile: result });
-      }
-    }
-  });
-});
-
 router.get('/api/profiles', (req, res) => {
   // SQL query to select profiles with names from Tut_Alumni and additional information from UserProfile
   const selectProfilesSQL = `
@@ -1003,8 +987,6 @@ router.post('/api/send_query', (req, res) => {
   });
 });
 
-
-
 //responding query
 router.post('/api/respond_query', (req, res) => {
 
@@ -1020,6 +1002,110 @@ router.post('/api/respond_query', (req, res) => {
     }
 
   });
+});
+
+
+
+//Connections
+//1.Create Connection
+router.post('/api/connections', (req, res) => {
+  const { follower_id, following_id, status } = req.body;
+
+  // Check if the connection exists
+  client.query(
+    'SELECT * FROM Connection WHERE follower_id = ? AND following_id = ?',
+    [follower_id, following_id],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Internal Server Error' });
+      }
+
+      if (results.length > 0) {
+        return res.status(400).json({ message: 'Connection already exists.' });
+      }
+
+      // Create a new connection
+      client.query(
+        'INSERT INTO Connection (follower_id, following_id, status) VALUES (?, ?, ?)',
+        [follower_id, following_id, status],
+        (err, result) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).json({ message: 'Internal Server Error' });
+          }
+
+          return res.status(201).json({ connection_id: result.insertId });
+        }
+      );
+    }
+  );
+});
+
+// 2. Count Number of Followers
+router.get('/api/followers/:account_id/count', (req, res) => {
+  const account_id = req.params.account_id;
+
+  // Count the number of followers
+  client.query(
+    'SELECT COUNT(*) as followerCount FROM Connection WHERE following_id = ?',
+    [account_id],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Internal Server Error' });
+      }
+
+      const followerCount = results[0].followerCount;
+
+      return res.json({ followerCount });
+    }
+  );
+});
+
+// 3. Count Number of Following
+router.get('/api/following/:account_id/count', (req, res) => {
+  const account_id = req.params.account_id;
+
+  // Count the number of following
+  client.query(
+    'SELECT COUNT(*) as followingCount FROM Connection WHERE follower_id = ?',
+    [account_id],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Internal Server Error' });
+      }
+
+      const followingCount = results[0].followingCount;
+
+      return res.json({ followingCount });
+    }
+  );
+});
+
+// 4. Update Connection Status
+router.patch('/api/connections/:connection_id/status', (req, res) => {
+  const connection_id = req.params.connection_id;
+  const { status } = req.body;
+
+  // Update the connection status
+  client.query(
+    'UPDATE Connection SET status = ? WHERE connection_id = ?',
+    [status, connection_id],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Internal Server Error' });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'Connection not found.' });
+      }
+
+      return res.json({ message: 'Connection status updated successfully.' });
+    }
+  );
 });
 
 

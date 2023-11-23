@@ -90,14 +90,16 @@ CREATE TABLE Event(
 );
 
 
-CREATE TABLE Connection(
+CREATE TABLE Connection (
     connection_id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES Alumni_Space_Account(user_id) ,
-    notification_id INT REFERENCES Alumni_Space_Account(notification_id) ,
-    interaction_history VARCHAR(100) NOT NULL,
-    date Date
-    
+    follower_id INT REFERENCES Alumni_Space_Account(account_id),
+    following_id INT REFERENCES Alumni_Space_Account(account_id),
+    status VARCHAR(100) NOT NULL,
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+
 
 
 CREATE TABLE Notification(
@@ -163,7 +165,7 @@ CREATE TABLE Query(
 
 CREATE TABLE savejob(
     savejob_id SERIAL PRIMARY KEY,
-    alumni_id INT REFERENCES Alumni_Space_Account(alumni_id),
+    account_id INT REFERENCES Alumni_Space_Account(account_id),
     job_title VARCHAR(50) NOT NULL,
     job_description VARCHAR(50) NOT NULL,
     application_date DATETIME
