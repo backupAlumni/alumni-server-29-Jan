@@ -24,19 +24,6 @@ CREATE TABLE Administrator (
 --Profile
 
 --Profile
-
-CREATE TABLE UserProfile(
-    user_id SERIAL PRIMARY KEY,
-    account_id INT REFERENCES Alumni_Space_Account(account_id),
-    contact_no VARCHAR(50) NOT NULL,
-    education VARCHAR(100) NOT NULL,
-    achievement VARCHAR(50) NOT NULL,
-    skills VARCHAR(50) NOT NULL,
-    experience VARCHAR(50) NOT NULL,
-    interest VARCHAR(50) NOT NULL,
-    bio VARCHAR(50) NOT NULL,
-);
-
 CREATE TABLE UserProfile(
     user_id SERIAL PRIMARY KEY,
     account_id INT REFERENCES Alumni_Space_Account(account_id),
@@ -100,19 +87,15 @@ CREATE TABLE Connection (
 
 
 
-
-
 CREATE TABLE Notification(
     notification_id SERIAL PRIMARY KEY,
-    job_id INT REFERENCES Alumni_Space_Account(job_id) ,
-    event_id INT REFERENCES Alumni_Space_Account(event_id) ,
-    subject VARCHAR(50) NOT NULL,
+    sender INT REFERENCES Alumni_Space_Account(account_id) ,
+    receiver INT REFERENCES Alumni_Space_Account(event_id) ,
     message VARCHAR(50) NOT NULL,
-    date Date
-    
+    date DateTIME
 );
 
---Linda's
+--Linda's chats
 CREATE TABLE `message` (
   `idmessage` int NOT NULL AUTO_INCREMENT,
   `text` varchar(255) NOT NULL,
@@ -143,17 +126,6 @@ CREATE TABLE `user` (
   UNIQUE KEY `id_UNIQUE` (`id`)
 );
 
-CREATE TABLE Chat(
-    chat_id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES Alumni_Space_Account(user_id) ,
-    notification_id INT REFERENCES Alumni_Space_Account(notification_id) ,
-    attribute_name VARCHAR(50) NOT NULL,
-    message VARCHAR(50) NOT NULL,
-    time TimeStamp,
-    chat_history VARCHAR(50) NOT NULL
-    
-);
-
 CREATE TABLE Query(
     query_id SERIAL PRIMARY KEY,
     account_id INT REFERENCES Alumni_Space_Account(account_id),
@@ -163,7 +135,7 @@ CREATE TABLE Query(
 );
 
 
-CREATE TABLE savejob(
+CREATE TABLE Applications(
     savejob_id SERIAL PRIMARY KEY,
     account_id INT REFERENCES Alumni_Space_Account(account_id),
     job_title VARCHAR(50) NOT NULL,
