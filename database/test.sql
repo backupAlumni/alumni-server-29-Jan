@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 22, 2023 at 05:47 PM
+-- Generation Time: Nov 23, 2023 at 03:28 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -73,6 +73,21 @@ INSERT INTO `alumni_space_account` (`account_id`, `email`, `password`, `role`) V
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `applications`
+--
+
+CREATE TABLE `applications` (
+  `savejob_id` bigint(20) UNSIGNED NOT NULL,
+  `account_id` int(11) DEFAULT NULL,
+  `job_title` varchar(50) NOT NULL,
+  `job_description` varchar(50) NOT NULL,
+  `application_status` varchar(50) NOT NULL,
+  `application_date` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `event`
 --
 
@@ -117,6 +132,42 @@ CREATE TABLE `joblisting` (
   `deadline` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+--
+-- Dumping data for table `joblisting`
+--
+
+INSERT INTO `joblisting` (`job_id`, `account_id`, `Organisation`, `job_title`, `workplace_type`, `location`, `job_type`, `salary`, `job_description`, `required_Skills`, `experience`, `date_posted`, `deadline`) VALUES
+(2, NULL, 'asas', 'asa', 'Onsite', 'Soshanguve', 'Full-time', 232, 'dasd', 'dsd', 'fdf', '2023-11-23 16:10:19', '2023-11-30 22:16:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `message`
+--
+
+CREATE TABLE `message` (
+  `idmessage` int(11) NOT NULL,
+  `text` varchar(255) NOT NULL,
+  `date` varchar(45) DEFAULT NULL,
+  `sender` varchar(45) NOT NULL,
+  `room` varchar(45) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `post`
+--
+
+CREATE TABLE `post` (
+  `idpost` int(11) NOT NULL,
+  `user_name` varchar(45) NOT NULL,
+  `user_postion` varchar(45) NOT NULL,
+  `institution` varchar(45) NOT NULL,
+  `post_time` varchar(45) NOT NULL,
+  `text_message` varchar(45) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
 -- --------------------------------------------------------
 
 --
@@ -129,20 +180,6 @@ CREATE TABLE `query` (
   `query_text` varchar(50) NOT NULL,
   `status` varchar(50) NOT NULL,
   `date` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `savejob`
---
-
-CREATE TABLE `savejob` (
-  `savejob_id` bigint(20) UNSIGNED NOT NULL,
-  `alumni_id` int(11) DEFAULT NULL,
-  `job_title` varchar(50) NOT NULL,
-  `job_description` varchar(50) NOT NULL,
-  `application_date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
@@ -172,6 +209,20 @@ INSERT INTO `tut_alumni` (`alumni_id`, `account_id`, `name`, `surname`) VALUES
 (8, 2, 'Elias', 'Mashia'),
 (9, 9, 'Kgaogelo', 'Mashao'),
 (10, 10, 'Kabelo', 'Lehlojane');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user`
+--
+
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL,
+  `email` varchar(45) NOT NULL,
+  `password` varchar(45) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `role` varchar(45) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
@@ -225,6 +276,12 @@ ALTER TABLE `alumni_space_account`
   ADD UNIQUE KEY `email` (`email`);
 
 --
+-- Indexes for table `applications`
+--
+ALTER TABLE `applications`
+  ADD PRIMARY KEY (`savejob_id`);
+
+--
 -- Indexes for table `event`
 --
 ALTER TABLE `event`
@@ -237,22 +294,36 @@ ALTER TABLE `joblisting`
   ADD PRIMARY KEY (`job_id`);
 
 --
+-- Indexes for table `message`
+--
+ALTER TABLE `message`
+  ADD PRIMARY KEY (`idmessage`);
+
+--
+-- Indexes for table `post`
+--
+ALTER TABLE `post`
+  ADD PRIMARY KEY (`idpost`);
+
+--
 -- Indexes for table `query`
 --
 ALTER TABLE `query`
   ADD PRIMARY KEY (`query_id`);
 
 --
--- Indexes for table `savejob`
---
-ALTER TABLE `savejob`
-  ADD PRIMARY KEY (`savejob_id`);
-
---
 -- Indexes for table `tut_alumni`
 --
 ALTER TABLE `tut_alumni`
   ADD PRIMARY KEY (`alumni_id`);
+
+--
+-- Indexes for table `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email_UNIQUE` (`email`),
+  ADD UNIQUE KEY `id_UNIQUE` (`id`);
 
 --
 -- Indexes for table `userprofile`
@@ -277,6 +348,12 @@ ALTER TABLE `alumni_space_account`
   MODIFY `account_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
+-- AUTO_INCREMENT for table `applications`
+--
+ALTER TABLE `applications`
+  MODIFY `savejob_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `event`
 --
 ALTER TABLE `event`
@@ -286,19 +363,25 @@ ALTER TABLE `event`
 -- AUTO_INCREMENT for table `joblisting`
 --
 ALTER TABLE `joblisting`
-  MODIFY `job_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `job_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `message`
+--
+ALTER TABLE `message`
+  MODIFY `idmessage` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `post`
+--
+ALTER TABLE `post`
+  MODIFY `idpost` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `query`
 --
 ALTER TABLE `query`
   MODIFY `query_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `savejob`
---
-ALTER TABLE `savejob`
-  MODIFY `savejob_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tut_alumni`
