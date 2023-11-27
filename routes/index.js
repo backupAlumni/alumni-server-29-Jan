@@ -348,7 +348,7 @@ router.get('/api/profiles', (req, res) => {
 
 
 // Route to insert a new job
-router.post('/api/newjob', (req, res) => {
+router.post('/api/jobs/newjob', (req, res) => {
 
   var job_title = req.body.job_title;
   var Organisation = req.body.Organisation;
@@ -398,7 +398,7 @@ router.post('/api/newjob', (req, res) => {
 
 
 //updating jobs
-router.put('/api/Jobs/:job_id', (req, res) => {
+router.put('/api/jobs/:job_id', (req, res) => {
   const job_id = req.params.job_id;
   const receivedData = req.body;
 
@@ -439,7 +439,7 @@ router.put('/api/Jobs/:job_id', (req, res) => {
 
 
 //deleting a job
-router.delete('/api/job/delete/:job_id', (req, res) => {
+router.delete('/api/jobs/delete/:job_id', (req, res) => {
   const job_id = req.params.job_id;
   console.log(job_id);
   // SQL query to delete a job by its ID
@@ -505,13 +505,13 @@ router.get('/api/jobs', (req, res) => {
 });
 
 //search jobs
-router.post('/api/search/jobs', (req, res) => {
+router.post('/api/jobs/search', (req, res) => {
   const { job_type, location, date_posted } = req.body;
 
   // SQL query to search for jobs based on the provided parameters
-  const searchJobsSQL = 'SELECT * FROM joblisting WHERE job_type = ? AND location = ? AND date_posted = ?';
+  const searchJobsSQL = 'SELECT * FROM joblisting WHERE job_type = ? AND location = ?';
 
-  client.query(searchJobsSQL, [job_type, location, date_posted], (err, result) => {
+  client.query(searchJobsSQL, [job_type, location], (err, result) => {
     if (err) {
       console.error(err);
       res.status(500).send('An error occurred while fetching the job id.');
@@ -571,7 +571,7 @@ router.delete('/api/deletejobs', (req, res) => {
 
 
 //count all available jobs
-router.get('/api/count_job', (req, res) => {
+router.get('/api/jobs/count_job', (req, res) => {
   // MySQL query to count alumni
   const query = 'SELECT COUNT(*) AS job_count FROM joblisting';
 
@@ -589,8 +589,8 @@ router.get('/api/count_job', (req, res) => {
 
 //save jobs
 
-// Assuming you're using Express.js
-router.post('/api/applyjob', (req, res) => {
+// Apply
+router.post('/api/jobs/applyjob', (req, res) => {
   var alumni_id = req.body.alumni_id;
   var job_title = req.body.job_title;
   var job_description = req.body.job_description;
@@ -621,9 +621,8 @@ router.post('/api/applyjob', (req, res) => {
   );
 });
 
-
-//select all saved jobs
-router.get('/api/alumni', (req, res) => {
+//Get Applicatiions
+router.get('/api/jobs/applications', (req, res) => {
   const query = `
   SELECT
     a.alumni_id,
@@ -657,7 +656,7 @@ router.get('/api/alumni', (req, res) => {
 
 
 //Add Event
-router.post('/api/event', upload.single('file'), function (req, res) {
+router.post('/api/events/add', upload.single('file'), function (req, res) {
   var event_title = req.body.event_title;
   var event_description = req.body.event_description;
   var event_date = req.body.event_date;
@@ -796,7 +795,7 @@ router.put('/api/event/:event_id', (req, res) => {
 });
 
 //deleting an event
-router.delete('/api/event/delete/:event_id', (req, res) => {
+router.delete('/api/events/delete/:event_id', (req, res) => {
   const event_id = req.params.event_id;
   console.log(event_id);
 
@@ -820,7 +819,7 @@ router.delete('/api/event/delete/:event_id', (req, res) => {
 
 
 //auto deleting event
-router.delete('/api/deleteEvent', (req, res) => {
+router.delete('/api/events/deleteEvent', (req, res) => {
 
   const selectAllEventsSQL = 'SELECT * FROM Event';
 
@@ -863,7 +862,7 @@ router.delete('/api/deleteEvent', (req, res) => {
 
 
 //count all available events
-router.get('/api/count_event', (req, res) => {
+router.get('/api/events/count_event', (req, res) => {
   // MySQL query to count alumni
   const query = 'SELECT COUNT(*) AS event_count FROM Event';
 
