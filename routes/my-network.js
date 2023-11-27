@@ -178,7 +178,7 @@ io.on('connection', (socket) => {
 
 
 
-      var sqlSelect = "SELECT * FROM `test`.Alumni_Space_Account;"
+      var sqlSelect = "SELECT Alumni_Space_Account.account_id, Tut_Alumni.name, Tut_Alumni.surname FROM `test`.Alumni_Space_Account INNER JOIN `test`.Tut_Alumni ON Alumni_Space_Account.account_id = Tut_Alumni.account_id;";
       connection.query(sqlSelect, (queryError, results) => {
         connection.release(); // Release the connection back to the pool
 
