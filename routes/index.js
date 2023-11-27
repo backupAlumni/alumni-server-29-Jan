@@ -246,7 +246,7 @@ function toInitCap(str) {
 }
 
 //updating profile
-router.put('/api/userprofile/:user_id', (req, res) => {
+router.put('/api/profile/update/:user_id', (req, res) => {
   const user_id = req.body.user_id;
   const receivedData = req.body;
 
@@ -285,7 +285,7 @@ router.put('/api/userprofile/:user_id', (req, res) => {
 });
 
 //Get a user profile by user_id
-router.put('/api/userprofile', (req, res) => {
+router.put('/api/profile/get_profile', (req, res) => {
   //const user_id = req.params.user_id;
 
   var user_id = req.body.user_id;
@@ -311,7 +311,7 @@ router.put('/api/userprofile', (req, res) => {
 
 //selecting all userprofiles
 
-router.get('/api/profiles', (req, res) => {
+router.get('/api/profile/profiles', (req, res) => {
   // SQL query to select profiles with names from Tut_Alumni and additional information from UserProfile
   const selectProfilesSQL = `
     SELECT ta.name, ta.surname, up.*
@@ -1003,7 +1003,7 @@ router.get('/api/count_alumni', (req, res) => {
 
 
 //API for sending Query
-router.post('/api/send_query', (req, res) => {
+router.post('/api/queries/send_query', (req, res) => {
 
   const { account_id, query_text, status, date } = req.body;
   const insertQuery = 'INSERT INTO Query (account_id, query_text, status, date) VALUES (?, ?, ?, ?)';
@@ -1020,7 +1020,7 @@ router.post('/api/send_query', (req, res) => {
 });
 
 //responding query
-router.post('/api/respond_query', (req, res) => {
+router.post('/api/queries/respond_query', (req, res) => {
 
   const { query_id, query_text } = req.body;
   const updatetQuery = 'UPDATE Query SET status = "Completed", query_text = ? WHERE query_id = ?';
@@ -1075,7 +1075,7 @@ router.post('/api/connections', (req, res) => {
 });
 
 // 2. Count Number of Followers
-router.get('/api/followers/:account_id/count', (req, res) => {
+router.get('/api/connections/followers/:account_id/count', (req, res) => {
   const account_id = req.params.account_id;
 
   // Count the number of followers
@@ -1096,7 +1096,7 @@ router.get('/api/followers/:account_id/count', (req, res) => {
 });
 
 // 3. Count Number of Following
-router.get('/api/following/:account_id/count', (req, res) => {
+router.get('/api/connections/following/:account_id/count', (req, res) => {
   const account_id = req.params.account_id;
 
   // Count the number of following

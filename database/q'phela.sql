@@ -61,7 +61,7 @@ CREATE TABLE JobListing(
     deadline DATETIME,
     experience VARCHAR(255) NOT NULL,
     required_Skills VARCHAR(255) NOT NULL,
-    salary NUMBER
+    salary double
 );
 
 

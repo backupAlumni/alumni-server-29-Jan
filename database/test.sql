@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 23, 2023 at 03:28 PM
+-- Generation Time: Nov 27, 2023 at 10:02 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -124,20 +124,13 @@ CREATE TABLE `joblisting` (
   `workplace_type` varchar(50) NOT NULL,
   `location` varchar(50) NOT NULL,
   `job_type` varchar(50) NOT NULL,
-  `salary` double DEFAULT NULL,
-  `job_description` varchar(50) NOT NULL,
-  `required_Skills` varchar(50) NOT NULL,
-  `experience` varchar(50) NOT NULL,
+  `job_description` varchar(255) NOT NULL,
   `date_posted` datetime DEFAULT NULL,
-  `deadline` datetime DEFAULT NULL
+  `deadline` datetime DEFAULT NULL,
+  `experience` varchar(255) NOT NULL,
+  `required_Skills` varchar(255) NOT NULL,
+  `salary` double DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Dumping data for table `joblisting`
---
-
-INSERT INTO `joblisting` (`job_id`, `account_id`, `Organisation`, `job_title`, `workplace_type`, `location`, `job_type`, `salary`, `job_description`, `required_Skills`, `experience`, `date_posted`, `deadline`) VALUES
-(2, NULL, 'asas', 'asa', 'Onsite', 'Soshanguve', 'Full-time', 232, 'dasd', 'dsd', 'fdf', '2023-11-23 16:10:19', '2023-11-30 22:16:00');
 
 -- --------------------------------------------------------
 
@@ -209,20 +202,6 @@ INSERT INTO `tut_alumni` (`alumni_id`, `account_id`, `name`, `surname`) VALUES
 (8, 2, 'Elias', 'Mashia'),
 (9, 9, 'Kgaogelo', 'Mashao'),
 (10, 10, 'Kabelo', 'Lehlojane');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user`
---
-
-CREATE TABLE `user` (
-  `id` int(11) NOT NULL,
-  `email` varchar(45) NOT NULL,
-  `password` varchar(45) NOT NULL,
-  `name` varchar(45) NOT NULL,
-  `role` varchar(45) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
@@ -318,14 +297,6 @@ ALTER TABLE `tut_alumni`
   ADD PRIMARY KEY (`alumni_id`);
 
 --
--- Indexes for table `user`
---
-ALTER TABLE `user`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email_UNIQUE` (`email`),
-  ADD UNIQUE KEY `id_UNIQUE` (`id`);
-
---
 -- Indexes for table `userprofile`
 --
 ALTER TABLE `userprofile`
@@ -351,7 +322,7 @@ ALTER TABLE `alumni_space_account`
 -- AUTO_INCREMENT for table `applications`
 --
 ALTER TABLE `applications`
-  MODIFY `savejob_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `savejob_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `event`
@@ -363,7 +334,7 @@ ALTER TABLE `event`
 -- AUTO_INCREMENT for table `joblisting`
 --
 ALTER TABLE `joblisting`
-  MODIFY `job_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `job_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `message`
