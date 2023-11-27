@@ -529,7 +529,7 @@ router.post('/api/jobs/search', (req, res) => {
 });
 
 //auto deleting job
-router.delete('/api/deletejobs', (req, res) => {
+router.delete('/api/jobs/deletejobs', (req, res) => {
 
   const selectAllJobsSQL = 'SELECT * FROM joblisting';
 
