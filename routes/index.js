@@ -623,11 +623,44 @@ router.post('/api/jobs/applyjob', (req, res) => {
 
 //Get Applicatiions
 router.get('/api/jobs/applications', (req, res) => {
-  const query = `
+//   const query = `
+//   SELECT
+//     a.alumni_id,
+//     a.name,
+//     a.surname,
+//     ac.email,
+//     u.location,
+//     u.qualification,
+//     u.employment_status,
+//     u.skills,
+//     u.experience,
+//     u.interest,
+//     u.bio,
+//     u.pic_file,
+//     s.account_id,
+//     s.job_title as saved_job_title,
+//     s.job_description as saved_job_description,
+//     s.application_date
+//   FROM
+//     Tut_Alumni a
+//   LEFT JOIN
+//     Applications s ON a.account_id = s.account_id
+//   LEFT JOIN
+//     UserProfile u ON a.account_id = u.account_id
+//   LEFT JOIN
+//     Alumni_Space_Account ac ON a.account_id = ac.account_id
+//   WHERE
+//     s.application_status = 'pending';
+// `;
+
+ const query = `
   SELECT
     a.alumni_id,
     a.name,
     a.surname,
+    ac.email,
+    u.location,
+    u.pic_file,
     s.account_id,
     s.job_title as saved_job_title,
     s.job_description as saved_job_description,
@@ -636,9 +669,15 @@ router.get('/api/jobs/applications', (req, res) => {
     Tut_Alumni a
   LEFT JOIN
     Applications s ON a.account_id = s.account_id
+  LEFT JOIN
+    UserProfile u ON a.account_id = u.account_id
+  LEFT JOIN
+    Alumni_Space_Account ac ON a.account_id = ac.account_id
   WHERE
     s.application_status = 'pending';
 `;
+   
+
 
   client.query(query, (err, result) => {
     if (err) {
