@@ -169,7 +169,63 @@ router.post('/api/register', (req, res) => {
 });
 
 
-//  reset the password
+
+
+// Admin  reset the password
+// update password 
+router.put('/adminForgot-password', async (req, res) => {
+  const receivedData = req.body;
+  var email = req.body.email;
+  var password = req.body.password;
+  console.log('Received data for updating password:', receivedData);
+
+  const updatePasswordSQL = `UPDATE Administrator SET password = ? WHERE email = ?`;
+
+
+  client.query(updatePasswordSQL, [password, email], (err, result) => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log('Password updated successfully!');
+      res.status(200).json({ message: 'Login successful!' });
+    }
+  }
+  );
+});
+
+
+//updating admni profile
+router.put('/api/adminProfile/update/:admin_id', (req, res) => {
+  const admin_id = req.body.admin_id;
+  const receivedData = req.body;
+  var name = toInitCap(req.body.name);
+  var surname = toInitCap(req.body.surname);
+  var email = toInitCap(req.body.email);
+  var address = toInitCap(req.body.address);
+
+  console.log('Received data for updating profile:', receivedData);
+  res.status(200).json({ message: 'Data received on the server for updating profile', data: receivedData });
+
+  const updateProfileSQL = `UPDATE AdminProfile SET name = ?, surname = ?, email = ?, address = ? `;
+
+  client.query(
+    updateProfileSQL,
+    [name, surname, email, address, admin_id],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('An error occurred during profile update.');
+      } else {
+        console.log('Profile updated successfully!');
+      }
+    }
+  );
+});
+
+
+
+
+// Alumni reset the password
 // update password 
 router.put('/forgot-password', async (req, res) => {
   //const user_id = req.body.user_id;
@@ -197,6 +253,8 @@ router.put('/forgot-password', async (req, res) => {
   );
 });
 
+
+
 // Logout
 router.get('/logout', (req, res) => {
   req.session.destroy(() => {
@@ -215,17 +273,9 @@ router.post('/api/userprofile', (req, res) => {
   var experience = req.body.experience;
   var interest = req.body.interest;
   var bio = req.body.bio;
-  // Handle the data on the server as needed
-  //console.log('Received data:', receivedData);
-
-  // Send a response back to the client
-  //res.status(200).json({ message: 'Data received on the server', data: receivedData });
-
-  // SQL query to insert into UserProfile table
 
   const insertProfileSQL = `
     INSERT INTO UserProfile (contact_no, education, achievement, skills, experience, enterest, bio) VALUES (?,?,?,?,?,?,?)`;
-  //const {achievement, skills, experience, interest, bio } = receivedData;
   console.log(receivedData.education);
 
   client.query(insertProfileSQL, [contact_no, education, achievement, skills, experience, interest, bio], (err, result) => {
@@ -244,6 +294,8 @@ function toInitCap(str) {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(' ');
 }
+
+
 
 //updating profile
 router.put('/api/profile/update/:user_id', (req, res) => {
@@ -283,6 +335,7 @@ router.put('/api/profile/update/:user_id', (req, res) => {
     }
   );
 });
+
 
 //Get a user profile by user_id
 router.put('/api/profile/get_profile', (req, res) => {
