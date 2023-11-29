@@ -202,15 +202,16 @@ router.put('/api/adminProfile/update/:admin_id', (req, res) => {
   var surname = toInitCap(req.body.surname);
   var email = toInitCap(req.body.email);
   var address = toInitCap(req.body.address);
+  var contact_no = toInitCap(req.body.contact_no);
 
   console.log('Received data for updating profile:', receivedData);
   res.status(200).json({ message: 'Data received on the server for updating profile', data: receivedData });
 
-  const updateProfileSQL = `UPDATE AdminProfile SET name = ?, surname = ?, email = ?, address = ? `;
+  const updateProfileSQL = `UPDATE Administrator SET name = ?, surname = ?, email = ?, address = ?, contact_no = ?`;
 
   client.query(
     updateProfileSQL,
-    [name, surname, email, address, admin_id],
+    [name, surname, email, address, contact_no, admin_id],
     (err, result) => {
       if (err) {
         console.error(err);
