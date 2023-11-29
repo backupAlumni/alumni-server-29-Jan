@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 27, 2023 at 10:02 AM
+-- Generation Time: Nov 29, 2023 at 08:39 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -83,6 +83,20 @@ CREATE TABLE `applications` (
   `job_description` varchar(50) NOT NULL,
   `application_status` varchar(50) NOT NULL,
   `application_date` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `connection`
+--
+
+CREATE TABLE `connection` (
+  `connection_id` bigint(20) UNSIGNED NOT NULL,
+  `follower_id` int(11) DEFAULT NULL,
+  `following_id` int(11) DEFAULT NULL,
+  `status` varchar(100) NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
@@ -170,7 +184,8 @@ CREATE TABLE `post` (
 CREATE TABLE `query` (
   `query_id` bigint(20) UNSIGNED NOT NULL,
   `account_id` int(11) DEFAULT NULL,
-  `query_text` varchar(50) NOT NULL,
+  `query_text` varchar(255) NOT NULL,
+  `query_response` varchar(255) NOT NULL,
   `status` varchar(50) NOT NULL,
   `date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
@@ -261,6 +276,12 @@ ALTER TABLE `applications`
   ADD PRIMARY KEY (`savejob_id`);
 
 --
+-- Indexes for table `connection`
+--
+ALTER TABLE `connection`
+  ADD PRIMARY KEY (`connection_id`);
+
+--
 -- Indexes for table `event`
 --
 ALTER TABLE `event`
@@ -325,6 +346,12 @@ ALTER TABLE `applications`
   MODIFY `savejob_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `connection`
+--
+ALTER TABLE `connection`
+  MODIFY `connection_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `event`
 --
 ALTER TABLE `event`
@@ -352,7 +379,7 @@ ALTER TABLE `post`
 -- AUTO_INCREMENT for table `query`
 --
 ALTER TABLE `query`
-  MODIFY `query_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `query_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tut_alumni`

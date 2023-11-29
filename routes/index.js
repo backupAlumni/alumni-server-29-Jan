@@ -608,7 +608,7 @@ router.post('/api/jobs/applyjob', (req, res) => {
 
   client.query(
     insertApplicationSQL,
-    [alumni_id, job_title, job_description,'pending', application_date],
+    [alumni_id, job_title, job_description, 'pending', application_date],
     (err, result) => {
       if (err) {
         console.error(err);
@@ -623,37 +623,37 @@ router.post('/api/jobs/applyjob', (req, res) => {
 
 //Get Applicatiions
 router.get('/api/jobs/applications', (req, res) => {
-//   const query = `
-//   SELECT
-//     a.alumni_id,
-//     a.name,
-//     a.surname,
-//     ac.email,
-//     u.location,
-//     u.qualification,
-//     u.employment_status,
-//     u.skills,
-//     u.experience,
-//     u.interest,
-//     u.bio,
-//     u.pic_file,
-//     s.account_id,
-//     s.job_title as saved_job_title,
-//     s.job_description as saved_job_description,
-//     s.application_date
-//   FROM
-//     Tut_Alumni a
-//   LEFT JOIN
-//     Applications s ON a.account_id = s.account_id
-//   LEFT JOIN
-//     UserProfile u ON a.account_id = u.account_id
-//   LEFT JOIN
-//     Alumni_Space_Account ac ON a.account_id = ac.account_id
-//   WHERE
-//     s.application_status = 'pending';
-// `;
+  //   const query = `
+  //   SELECT
+  //     a.alumni_id,
+  //     a.name,
+  //     a.surname,
+  //     ac.email,
+  //     u.location,
+  //     u.qualification,
+  //     u.employment_status,
+  //     u.skills,
+  //     u.experience,
+  //     u.interest,
+  //     u.bio,
+  //     u.pic_file,
+  //     s.account_id,
+  //     s.job_title as saved_job_title,
+  //     s.job_description as saved_job_description,
+  //     s.application_date
+  //   FROM
+  //     Tut_Alumni a
+  //   LEFT JOIN
+  //     Applications s ON a.account_id = s.account_id
+  //   LEFT JOIN
+  //     UserProfile u ON a.account_id = u.account_id
+  //   LEFT JOIN
+  //     Alumni_Space_Account ac ON a.account_id = ac.account_id
+  //   WHERE
+  //     s.application_status = 'pending';
+  // `;
 
- const query = `
+  const query = `
   SELECT
     a.alumni_id,
     a.name,
@@ -676,7 +676,7 @@ router.get('/api/jobs/applications', (req, res) => {
   WHERE
     s.application_status = 'pending';
 `;
-   
+
 
 
   client.query(query, (err, result) => {
@@ -1041,6 +1041,7 @@ router.get('/api/count_alumni', (req, res) => {
 
 
 
+//QUERIES
 //API for sending Query
 router.post('/api/queries/send_query', (req, res) => {
 
@@ -1061,9 +1062,9 @@ router.post('/api/queries/send_query', (req, res) => {
 //responding query
 router.post('/api/queries/respond_query', (req, res) => {
 
-  const { query_id, query_text } = req.body;
-  const updatetQuery = 'UPDATE Query SET status = "Completed", query_text = ? WHERE query_id = ?';
-  client.query(updatetQuery, [query_text, query_id], (err, results) => {
+  const { query_id, query_response } = req.body;
+  const updatetQuery = 'UPDATE Query SET status = "Answered", query_response = ? WHERE query_id = ?';
+  client.query(updatetQuery, [query_response, query_id], (err, results) => {
     if (err) {
       console.error('Error updating query:', err);
       res.status(500).json({ error: 'Error updating query' });
@@ -1074,6 +1075,37 @@ router.post('/api/queries/respond_query', (req, res) => {
 
   });
 });
+
+router.get('/api/queries/get_queries', (req, res) => {
+
+
+  const sqlQuery = `
+  SELECT
+    q.query_id,
+    q.query_text,
+    q.status,
+    q.date,
+    t.name AS alumni_name,
+    t.surname AS alumni_surname
+  FROM
+    Query q
+  JOIN
+    Tut_Alumni t ON q.account_id = t.account_id;
+`;
+  client.query(sqlQuery, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('An error occurred while fetching queries.');
+    } else {
+      if (result && result.length > 0) {
+        res.status(200).json({ queries: result });
+      }
+    }
+  });
+});
+
+//reading query
+
 
 
 
