@@ -91,7 +91,6 @@ CREATE TABLE Connection (
 );
 
 
-
 CREATE TABLE Notification(
     notification_id SERIAL PRIMARY KEY,
     sender INT REFERENCES Alumni_Space_Account(account_id) ,
@@ -120,21 +119,12 @@ CREATE TABLE `post` (
   PRIMARY KEY (`idpost`)
 );
 
-CREATE TABLE `user` (
-  `id` int NOT NULL,
-  `email` varchar(45) NOT NULL,
-  `password` varchar(45) NOT NULL,
-  `name` varchar(45) NOT NULL,
-  `role` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email_UNIQUE` (`email`),
-  UNIQUE KEY `id_UNIQUE` (`id`)
-);
 
 CREATE TABLE Query(
     query_id SERIAL PRIMARY KEY,
     account_id INT REFERENCES Alumni_Space_Account(account_id),
-    query_text VARCHAR(50) NOT NULL,
+    query_text VARCHAR(255) NOT NULL,
+    query_response VARCHAR(255) NOT NULL,
     status VARCHAR(50) NOT NULL,
     date DATETIME
 );
