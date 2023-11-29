@@ -18,19 +18,14 @@ CREATE TABLE Administrator (
     admin_id SERIAL PRIMARY KEY,
     account_id INT REFERENCES Alumni_Space_Account(account_id),
     name VARCHAR(50) NOT NULL,
-    surname VARCHAR(50) NOT NULL
+    surname VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE, 
+    address VARCHAR(50) NOT NULL,
+    contact_no NUMBER(10)
 );
 
 
 --Profile
-CREATE TABLE AdminProfile (
-    admin_id SERIAL PRIMARY KEY,
-    account_id INT REFERENCES Alumni_Space_Account(account_id),
-    name VARCHAR(50) NOT NULL,
-    surname VARCHAR(50) NOT NULL
-    email VARCHAR(100) NOT NULL UNIQUE, 
-    address VARCHAR(50) NOT NULL
-    );
 
 
 --Profile

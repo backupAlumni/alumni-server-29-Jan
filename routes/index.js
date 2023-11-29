@@ -223,8 +223,6 @@ router.put('/api/adminProfile/update/:admin_id', (req, res) => {
 });
 
 
-
-
 // Alumni reset the password
 // update password 
 router.put('/forgot-password', async (req, res) => {
