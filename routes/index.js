@@ -712,6 +712,7 @@ router.get('/api/jobs/applications', (req, res) => {
     a.surname,
     ac.email,
     u.location,
+    u.qualification,
     u.pic_file,
     s.account_id,
     s.job_title as saved_job_title,
