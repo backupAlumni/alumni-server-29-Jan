@@ -1265,6 +1265,13 @@ router.patch('/api/connections/:connection_id/status', (req, res) => {
 });
 
 
+//NOTIFICATIONS
+//send Notifications
+
+//read my notifications
+
+
+
 
 
 module.exports = router;
