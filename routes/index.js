@@ -207,6 +207,7 @@ router.put('/api/adminProfile/update/:admin_id', (req, res) => {
   console.log('Received data for updating profile:', receivedData);
   res.status(200).json({ message: 'Data received on the server for updating profile', data: receivedData });
 
+  //Fix the sql by adding the 'WHERE account_id = ?'
   const updateProfileSQL = `UPDATE Administrator SET name = ?, surname = ?, email = ?, address = ?, contact_no = ?`;
 
   client.query(
@@ -712,6 +713,7 @@ router.get('/api/jobs/applications', (req, res) => {
     a.surname,
     ac.email,
     u.location,
+    
     u.qualification,
     u.pic_file,
     s.account_id,
