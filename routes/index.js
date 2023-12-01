@@ -517,7 +517,7 @@ router.delete('/api/jobs/delete/:job_id', (req, res) => {
 
 //getting job by its id
 
-router.get('/api/jobs/:id', (req, res) => {
+router.get('/api/jobcareer/:id', (req, res) => {
   const jobId = req.params.id;
   console.log(jobId);
 
@@ -779,8 +779,6 @@ router.get('/api/jobs/applications', (req, res) => {
   WHERE
     s.application_status = 'pending';
 `;
-
-
 
   client.query(query, (err, result) => {
     if (err) {
