@@ -6,6 +6,7 @@ const axios = require('axios');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
+const uuid = require('uuid');
 
 //Express Router
 const router = express.Router();
@@ -516,7 +517,7 @@ router.delete('/api/jobs/delete/:job_id', (req, res) => {
 
 //getting job by its id
 
-router.get('/api/job/:id', (req, res) => {
+router.get('/api/jobs/:id', (req, res) => {
   const jobId = req.params.id;
   console.log(jobId);
 
@@ -593,12 +594,12 @@ router.delete('/api/jobs/deletejobs', (req, res) => {
     } else {
       if (result && result.length > 0) {
         const currentTime = new Date();
-        console.log(currentTime);
+        //console.log(currentTime);
         //loop all the jobs
         for (let i = 0; i < result.length; i++) {
           //check if job is expiring
           const jobDeadline = new Date(result[i].deadline);
-          console.log(jobDeadline);
+          //console.log(jobDeadline);
 
           if (currentTime >= jobDeadline) {
 
@@ -611,7 +612,7 @@ router.delete('/api/jobs/deletejobs', (req, res) => {
               console.log('Job deleted successfully: ');
             });
           } else {
-            console.log('Job ' + result[i].job_title + ' is not expiring today.');
+           // console.log('Job ' + result[i].job_title + ' is not expiring today.');
           }
         }
         res.json({ message: 'Expired jobs will be deleted' });
@@ -643,7 +644,11 @@ router.get('/api/jobs/count_job', (req, res) => {
 //save jobs
 
 // Apply
-router.post('/api/jobs/applyjob', (req, res) => {
+router.post('/api/jobs/applyjob', upload.fields([
+  { name: 'id_document', maxCount: 1 },
+  { name: 'additional_document', maxCount: 1 }
+]), (req, res) => {
+
   var alumni_id = req.body.alumni_id;
   var job_title = req.body.job_title;
   var job_description = req.body.job_description;
@@ -654,14 +659,56 @@ router.post('/api/jobs/applyjob', (req, res) => {
   console.log(job_description);
   console.log(application_date);
 
-  // Handle the data on the server as needed
+  //console.log(req.files.id_document.originalname);
 
-  // SQL query to insert into Applications table
-  const insertApplicationSQL = `INSERT INTO Applications (account_id, job_title, job_description,application_status, application_date) VALUES ( ?, ?, ?, ?, ?)`;
+  //var
+  var insertApplicationSQL;
+  var values;
+  const applicationId = uuid.v4();
+
+  const applicationDirectory = `uploads/docs/applications/`;
+  fs.mkdirSync(applicationDirectory, { recursive: true });
+
+  if (!req.files) {
+    //if no files
+    console.log('Nothing...'+additional_documentFile);
+    insertApplicationSQL = `INSERT INTO Applications (account_id, job_title, job_description,application_status, application_date) VALUES ( ?, ?, ?, ?, ?)`;
+    values = [alumni_id, job_title, job_description, 'pending', application_date];
+  } else if (!req.files.additional_document) {
+    //if only id is added
+    const idDocumentFile = req.files['id_document'][0];
+    console.log('Sing id...'+idDocumentFile);
+    const idDocumentFileName = `${applicationId}_${idDocumentFile.originalname}`;
+    insertApplicationSQL = `INSERT INTO Applications (account_id, job_title, job_description,application_status, application_date,id_document) VALUES ( ?, ?, ?, ?, ?,?)`;
+    values = [alumni_id, job_title, job_description, 'pending', application_date, idDocumentFileName];
+    //save
+    fs.renameSync(idDocumentFile.path, `${applicationDirectory}/${idDocumentFileName}`);
+  } else if (!req.files.id_document) {
+    //if only additional_doc is added
+    const additional_documentFile = req.files['additional_document'][0];
+    console.log('Single add...'+additional_documentFile);
+    const additional_documentName = `${applicationId}_${additional_documentFile.originalname}`;
+    insertApplicationSQL = `INSERT INTO Applications (account_id, job_title, job_description,application_status, application_date,additional_document) VALUES ( ?, ?, ?, ?, ?,?)`;
+    values = [alumni_id, job_title, job_description, 'pending', application_date, additional_documentName];
+    fs.renameSync(additional_documentFile.path, `${applicationDirectory}/${additional_documentName}`);
+  } else {
+    const idDocumentFile = req.files['id_document'][0];
+    const idDocumentFileName = `${applicationId}_${idDocumentFile.originalname}`;
+
+    const additional_documentFile = req.files['additional_document'][0];
+    const additional_documentName = `${applicationId}_${additional_documentFile.originalname}`;
+    console.log('Both...'+additional_documentFile);
+
+    insertApplicationSQL = `INSERT INTO Applications (account_id, job_title, job_description,application_status, application_date,id_document,additional_document) VALUES ( ?, ?, ?, ?, ?,?,?)`;
+    values = [alumni_id, job_title, job_description, 'pending', application_date, idDocumentFileName, additional_documentName];
+
+    fs.renameSync(idDocumentFile.path, `${applicationDirectory}/${idDocumentFileName}`);
+    fs.renameSync(additional_documentFile.path, `${applicationDirectory}/${additional_documentName}`);
+  }
 
   client.query(
     insertApplicationSQL,
-    [alumni_id, job_title, job_description, 'pending', application_date],
+    values,
     (err, result) => {
       if (err) {
         console.error(err);
@@ -673,6 +720,7 @@ router.post('/api/jobs/applyjob', (req, res) => {
     }
   );
 });
+
 
 //Get Applicatiions
 router.get('/api/jobs/applications', (req, res) => {
