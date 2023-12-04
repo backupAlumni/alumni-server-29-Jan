@@ -724,35 +724,7 @@ router.post('/api/jobs/applyjob', upload.fields([
 
 //Get Applicatiions
 router.get('/api/jobs/applications', (req, res) => {
-  //   const query = `
-  //   SELECT
-  //     a.alumni_id,
-  //     a.name,
-  //     a.surname,
-  //     ac.email,
-  //     u.location,
-  //     u.qualification,
-  //     u.employment_status,
-  //     u.skills,
-  //     u.experience,
-  //     u.interest,
-  //     u.bio,
-  //     u.pic_file,
-  //     s.account_id,
-  //     s.job_title as saved_job_title,
-  //     s.job_description as saved_job_description,
-  //     s.application_date
-  //   FROM
-  //     Tut_Alumni a
-  //   LEFT JOIN
-  //     Applications s ON a.account_id = s.account_id
-  //   LEFT JOIN
-  //     UserProfile u ON a.account_id = u.account_id
-  //   LEFT JOIN
-  //     Alumni_Space_Account ac ON a.account_id = ac.account_id
-  //   WHERE
-  //     s.application_status = 'pending';
-  // `;
+
 
   const query = `
   SELECT
@@ -793,6 +765,44 @@ router.get('/api/jobs/applications', (req, res) => {
     }
   });
 });
+
+//track my application 
+router.post('/api/jobs/trackApp', (req, res) => {
+  const { account_id } = req.body;
+
+  if (!account_id) {
+    res.status(400).json({ message: 'Alumni ID is required.' });
+    return;
+  }
+
+  const query = `
+    SELECT
+      s.job_title,
+      s.application_date,
+      s.application_status
+    FROM
+      Applications s
+    WHERE
+      s.account_id = ?;
+  `;
+
+  const values = [account_id];
+
+  client.query(query, values, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('An error occurred while fetching queries.');
+    } else {
+      if (result && result.length > 0) {
+        res.status(200).json({ jobs: result });
+      } else {
+        res.status(404).json({ message: 'No jobs found for the given alumni ID.' });
+      }
+    }
+  });
+});
+          
+
 
 
 //Add Event
@@ -869,6 +879,8 @@ router.get('/api/event/:id', function (req, res) {
     }
   });
 });
+
+
 
 //Get all events
 router.get('/api/events', (req, res) => {
