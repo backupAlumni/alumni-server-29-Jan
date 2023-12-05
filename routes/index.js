@@ -15,6 +15,7 @@ const router = express.Router();
 
 var client = require('../database/database');
 const { password } = require('pg/lib/defaults');
+const { NEWDATE } = require('mysql/lib/protocol/constants/types');
 
 //Middleware
 router.use(bodyParser.json());
@@ -737,6 +738,8 @@ router.get('/api/jobs/applications', (req, res) => {
     u.qualification,
     u.pic_file,
     s.account_id,
+    s.id_document,
+    s.additional_document,
     s.job_title as saved_job_title,
     s.job_description as saved_job_description,
     s.application_date
@@ -1198,6 +1201,7 @@ router.get('/api/queries/get_queries', (req, res) => {
     q.query_text,
     q.status,
     q.date,
+    q.account_id,
     t.name AS alumni_name,
     t.surname AS alumni_surname
   FROM
@@ -1327,8 +1331,64 @@ router.patch('/api/connections/:connection_id/status', (req, res) => {
 
 //NOTIFICATIONS
 //send Notifications
+router.post('/api/notifications/send',(req, res) =>{
+  //get variables
+  const {sender_id, receiver_id, message, date} = req.body;
+
+  //sql
+  const sql = 'INSERT INTO NOTIFICATION(sender,receiver,message,DATE) VALUES (?,?,?,?)'
+
+  //query
+  client.query(sql, [sender_id,receiver_id,message,date], (err, result) => {
+    if(err){
+      console.error(err);
+      res.status(500).send('An error occurred while sending the notifications.');
+    }else{
+      console.log('Notification will be sent soon....');
+      res.json({ success: true });
+    }
+  })
+
+});
 
 //read my notifications
+router.get('/api/notifications/get_my_notifications/:account_id', (req,res) =>{
+  //variables
+  const account_id = req.params.account_id;
+
+  //sql
+  const sql = `
+  SELECT 
+    n.notification_id,
+    CASE
+      WHEN n.sender = 0 THEN 'System'
+      WHEN n.sender = 1 THEN 'Admin'
+      ELSE COALESCE(a.name || ' ' || a.surname, 'Unknown Sender')
+    END AS sender,
+    n.receiver,
+    n.message,
+    n.date,
+    u.pic_file AS sender_pic
+  FROM Notification n
+  LEFT JOIN Tut_Alumni a ON n.sender = a.account_id
+  LEFT JOIN UserProfile u ON n.sender = u.account_id
+  WHERE n.receiver = ?
+`;
+
+
+
+  //query
+  client.query(sql,[account_id], (err,result) => {
+    if(err){
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }else{
+      if (result && result.length > 0) {
+        res.status(200).json({ myNotifications: result });
+      }
+    }
+  });
+
+});
 
 
 

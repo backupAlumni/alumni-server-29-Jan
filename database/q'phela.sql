@@ -91,11 +91,11 @@ CREATE TABLE Connection (
 );
 
 
-CREATE TABLE Notification(
+CREATE TABLE Notifications(
     notification_id SERIAL PRIMARY KEY,
     sender INT REFERENCES Alumni_Space_Account(account_id) ,
     receiver INT REFERENCES Alumni_Space_Account(event_id) ,
-    message VARCHAR(50) NOT NULL,
+    message VARCHAR(255) NOT NULL,
     date DateTIME
 );
 

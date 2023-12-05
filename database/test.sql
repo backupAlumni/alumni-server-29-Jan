@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 29, 2023 at 08:39 AM
+-- Generation Time: Dec 05, 2023 at 07:53 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -82,7 +82,9 @@ CREATE TABLE `applications` (
   `job_title` varchar(50) NOT NULL,
   `job_description` varchar(50) NOT NULL,
   `application_status` varchar(50) NOT NULL,
-  `application_date` datetime DEFAULT NULL
+  `application_date` datetime DEFAULT NULL,
+  `id_document` varchar(255) DEFAULT NULL,
+  `additional_document` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
