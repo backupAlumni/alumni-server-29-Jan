@@ -794,7 +794,7 @@ router.post('/api/jobs/trackApp', (req, res) => {
       res.status(500).send('An error occurred while fetching queries.');
     } else {
       if (result && result.length > 0) {
-        res.status(200).json({ jobs: result });
+        res.status(200).json({ applications: result });
       } else {
         res.status(404).json({ message: 'No jobs found for the given alumni ID.' });
       }
