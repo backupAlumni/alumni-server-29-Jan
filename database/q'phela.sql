@@ -43,6 +43,15 @@ CREATE TABLE UserProfile(
 );
 
 
+CREATE TABLE Certificates (
+    certificateId INT PRIMARY KEY AUTO_INCREMENT,
+    account_id INT REFERENCES Alumni_Space_Account(account_id),
+    certificateName VARCHAR(255),
+    filePath VARCHAR(255),
+);
+
+
+
 CREATE TABLE UserStory(
     user_id SERIAL PRIMARY KEY,
     alumni_id INT REFERENCES Alumni_Space_Account(account_id) ,

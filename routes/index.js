@@ -346,7 +346,13 @@ router.put('/api/profile/get_profile', (req, res) => {
   var user_id = req.body.user_id;
 
   // SQL query to retrieve a user profile by user_id
+//   const getProfileSQL = `
+//   SELECT ta.certificateName, ta.filePath, up.*
+//   FROM Certificates ta
+//   JOIN UserProfile up ON ta.account_id = up.account_id
+// `;
   const getProfileSQL = `SELECT * FROM UserProfile WHERE account_id = ?`;
+  
 
   client.query(getProfileSQL, [user_id], (err, result) => {
     if (err) {
@@ -356,6 +362,27 @@ router.put('/api/profile/get_profile', (req, res) => {
       if (result && result.length > 0) {
         const userProfile = result[0];
         res.status(200).json({ message: 'User profile retrieved successfully', result });
+      } else {
+        res.status(404).send('User profile not found.');
+      }
+    }
+  });
+});
+
+router.get('/api/profile/get_my_certs/:account_id', (req,res) => {
+  var account_id = req.params.account_id;
+
+  //slq
+  var sql = 'SELECT * FROM Certificates WHERE account_id = ?';
+
+  //query
+  client.query(sql, [account_id], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('An error occurred while fetching the user profile.');
+    } else {
+      if (result && result.length > 0) {
+        res.status(200).json({ message: 'User profile retrieved successfully', myCerts: result });
       } else {
         res.status(404).send('User profile not found.');
       }
@@ -1052,12 +1079,14 @@ router.post('/api/upload', upload.single('file_name'), (req, res) => {
   //Variables
   var sql = '';
   var id = '';
+  values = [];
 
   switch (fileType) {
     case 'profile':
       uploadDirectory = 'uploads/pics/profiles/';
       sql = 'UPDATE userprofile SET pic_file = ? WHERE account_id = ?';
       id = req.body.account_id;
+      values = [req.file.originalname, id];
       break;
     case 'event':
       uploadDirectory = 'uploads/pics/events/';
@@ -1072,6 +1101,9 @@ router.post('/api/upload', upload.single('file_name'), (req, res) => {
       break;
     case 'certificate':
       uploadDirectory = 'uploads/docs/certs/';
+      sql = 'INSERT INTO Certificates(account_id,certificateName,filePath) values (?,?,?)';
+      values = [req.body.account_id,req.body.certificateName,req.file.originalname];
+      //console.log('Data'+ values)
       break;
 
   }
@@ -1086,7 +1118,7 @@ router.post('/api/upload', upload.single('file_name'), (req, res) => {
 
 
   //Update Database
-  client.query(sql, [req.file.originalname, id], (err, results) => {
+  client.query(sql, values, (err, results) => {
     if (err) {
       res.status(500).json({ error: 'Internal Server Error' });
       return;
@@ -1222,7 +1254,6 @@ router.get('/api/queries/get_queries', (req, res) => {
 });
 
 //reading query
-
 
 
 
