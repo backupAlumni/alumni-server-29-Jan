@@ -389,6 +389,26 @@ router.get('/api/profile/get_my_certs/:account_id', (req,res) => {
     }
   });
 });
+router.delete('/api/profile/delete_my_cert/:certificateId', (req, res) => {
+  const certificateId = req.params.certificateId;
+  // SQL query to delete a job by its ID
+  const sql = 'DELETE FROM Certificates WHERE certificateId = ?';
+
+  client.query(sql, [certificateId], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'An error occurred during Certificate deletion.' });
+    } else {
+      if (result.affectedRows > 0) {
+        console.log('Certificate deleted successfully!');
+        return res.status(200).json({ message: 'Certificate deleted successfully.' });
+      } else {
+
+        return res.status(404).json({ message: 'Certificate not found.' });
+      }
+    }
+  });
+});
 
 
 //selecting all userprofiles
@@ -767,6 +787,7 @@ router.get('/api/jobs/applications', (req, res) => {
     s.account_id,
     s.id_document,
     s.additional_document,
+    s.application_status as applicationStatus,
     s.job_title as saved_job_title,
     s.job_description as saved_job_description,
     s.application_date
