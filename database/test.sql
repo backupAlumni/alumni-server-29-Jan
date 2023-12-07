@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 05, 2023 at 07:53 AM
+-- Generation Time: Dec 07, 2023 at 12:54 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -90,6 +90,19 @@ CREATE TABLE `applications` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `certificates`
+--
+
+CREATE TABLE `certificates` (
+  `certificateId` int(11) NOT NULL,
+  `account_id` int(11) DEFAULT NULL,
+  `certificateName` varchar(255) DEFAULT NULL,
+  `filePath` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `connection`
 --
 
@@ -160,6 +173,20 @@ CREATE TABLE `message` (
   `date` varchar(45) DEFAULT NULL,
   `sender` varchar(45) NOT NULL,
   `room` varchar(45) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notifications`
+--
+
+CREATE TABLE `notifications` (
+  `notification_id` bigint(20) UNSIGNED NOT NULL,
+  `sender` int(11) DEFAULT NULL,
+  `receiver` int(11) DEFAULT NULL,
+  `message` varchar(255) NOT NULL,
+  `date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
@@ -278,6 +305,12 @@ ALTER TABLE `applications`
   ADD PRIMARY KEY (`savejob_id`);
 
 --
+-- Indexes for table `certificates`
+--
+ALTER TABLE `certificates`
+  ADD PRIMARY KEY (`certificateId`);
+
+--
 -- Indexes for table `connection`
 --
 ALTER TABLE `connection`
@@ -300,6 +333,12 @@ ALTER TABLE `joblisting`
 --
 ALTER TABLE `message`
   ADD PRIMARY KEY (`idmessage`);
+
+--
+-- Indexes for table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`notification_id`);
 
 --
 -- Indexes for table `post`
@@ -348,6 +387,12 @@ ALTER TABLE `applications`
   MODIFY `savejob_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `certificates`
+--
+ALTER TABLE `certificates`
+  MODIFY `certificateId` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `connection`
 --
 ALTER TABLE `connection`
@@ -370,6 +415,12 @@ ALTER TABLE `joblisting`
 --
 ALTER TABLE `message`
   MODIFY `idmessage` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `notifications`
+--
+ALTER TABLE `notifications`
+  MODIFY `notification_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `post`

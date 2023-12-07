@@ -776,31 +776,36 @@ router.get('/api/jobs/applications', (req, res) => {
 
   const query = `
   SELECT
-    a.alumni_id,
-    a.name,
-    a.surname,
-    ac.email,
-    u.location,
-    
-    u.qualification,
-    u.pic_file,
-    s.account_id,
-    s.id_document,
-    s.additional_document,
-    s.application_status as applicationStatus,
-    s.job_title as saved_job_title,
-    s.job_description as saved_job_description,
-    s.application_date
-  FROM
-    Tut_Alumni a
-  LEFT JOIN
-    Applications s ON a.account_id = s.account_id
-  LEFT JOIN
-    UserProfile u ON a.account_id = u.account_id
-  LEFT JOIN
-    Alumni_Space_Account ac ON a.account_id = ac.account_id
-  WHERE
-    s.application_status = 'pending';
+  a.alumni_id,
+  a.name,
+  a.surname,
+  ac.email,
+  u.location,
+  u.qualification,
+  u.pic_file,
+  s.account_id,
+  s.id_document,
+  s.additional_document,
+  s.application_status as applicationStatus,
+  s.job_title as saved_job_title,
+  s.job_description as saved_job_description,
+  s.application_date,
+  GROUP_CONCAT(DISTINCT JSON_OBJECT('certificateName', c.certificateName, 'filePath', c.filePath)) as certificates
+FROM
+  Tut_Alumni a
+LEFT JOIN
+  Applications s ON a.account_id = s.account_id
+LEFT JOIN
+  UserProfile u ON a.account_id = u.account_id
+LEFT JOIN
+  Alumni_Space_Account ac ON a.account_id = ac.account_id
+LEFT JOIN
+  Certificates c ON a.account_id = c.account_id
+WHERE
+  s.application_status = 'pending'
+GROUP BY
+  a.alumni_id, a.name, a.surname, ac.email, u.location, u.qualification, u.pic_file, s.account_id, s.id_document, s.additional_document, s.application_status, s.job_title, s.job_description, s.application_date;
+
 `;
 
   client.query(query, (err, result) => {
@@ -1388,7 +1393,7 @@ router.post('/api/notifications/send',(req, res) =>{
   const {sender_id, receiver_id, message, date} = req.body;
 
   //sql
-  const sql = 'INSERT INTO NOTIFICATION(sender,receiver,message,DATE) VALUES (?,?,?,?)'
+  const sql = 'INSERT INTO NOTIFICATIONS(sender,receiver,message,DATE) VALUES (?,?,?,?)'
 
   //query
   client.query(sql, [sender_id,receiver_id,message,date], (err, result) => {
@@ -1421,7 +1426,7 @@ router.get('/api/notifications/get_my_notifications/:account_id', (req,res) =>{
     n.message,
     n.date,
     u.pic_file AS sender_pic
-  FROM Notification n
+  FROM NotificationS n
   LEFT JOIN Tut_Alumni a ON n.sender = a.account_id
   LEFT JOIN UserProfile u ON n.sender = u.account_id
   WHERE n.receiver = ?
