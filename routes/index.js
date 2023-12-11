@@ -389,6 +389,29 @@ router.get('/api/profile/get_my_certs/:account_id', (req,res) => {
     }
   });
 });
+
+router.get('/api/profile/get_my_pic/:account_id', (req, res) => {
+  var account_id = req.params.account_id;
+
+  // SQL
+  var sql = 'SELECT pic_file FROM userprofile WHERE account_id = ?';
+
+  // Query
+  client.query(sql, [account_id], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('An error occurred while fetching the user profile.');
+    } else {
+      if (result && result.length > 0) {
+        // Return only the pic_file value
+        res.status(200).json({ message: 'User profile retrieved successfully', myPic: result[0].pic_file });
+      } else {
+        res.status(404).send('User profile not found.');
+      }
+    }
+  });
+});
+
 router.delete('/api/profile/delete_my_cert/:certificateId', (req, res) => {
   const certificateId = req.params.certificateId;
   // SQL query to delete a job by its ID
@@ -1195,6 +1218,7 @@ router.get('/api/getDocument/:fileType/:id', (req, res) => {
       res.status(500).json({ error: 'Error fetching pictures' });
     } else {
       const pictures = results.map((result) => ({ filePath: result.pic_file }));
+      //const pictures = result;
       console.log(pictures);
       res.json(pictures);
     }
