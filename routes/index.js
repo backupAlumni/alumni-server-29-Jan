@@ -826,8 +826,9 @@ GROUP BY
 });
 
 //track my application 
-router.post('/api/jobs/trackApp', (req, res) => {
-  const { account_id } = req.body;
+router.get('/api/jobs/trackApp/:account_id', (req, res) => {
+  const account_id = req.params.account_id;
+  console.log(account_id);
 
   if (!account_id) {
     res.status(400).json({ message: 'Alumni ID is required.' });
@@ -853,6 +854,7 @@ router.post('/api/jobs/trackApp', (req, res) => {
       res.status(500).send('An error occurred while fetching queries.');
     } else {
       if (result && result.length > 0) {
+        console.log(result);
         res.status(200).json({ applications: result });
       } else {
         res.status(404).json({ message: 'No jobs found for the given alumni ID.' });
