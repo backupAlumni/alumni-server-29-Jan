@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 07, 2023 at 12:54 PM
--- Server version: 10.4.27-MariaDB
--- PHP Version: 8.2.0
+-- Generation Time: Jan 28, 2024 at 03:02 PM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -28,18 +28,41 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `administrator` (
-  `admin_id` bigint(20) UNSIGNED NOT NULL,
-  `account_id` int(11) DEFAULT NULL,
+  `admin_id` bigint(20) NOT NULL,
   `name` varchar(50) NOT NULL,
-  `surname` varchar(50) NOT NULL
+  `surname` varchar(50) NOT NULL,
+  `account_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `administrator`
 --
 
-INSERT INTO `administrator` (`admin_id`, `account_id`, `name`, `surname`) VALUES
-(1, 1, 'Busi', 'Mbatha');
+INSERT INTO `administrator` (`admin_id`, `name`, `surname`, `account_id`) VALUES
+(1, 'Busi', 'Mbatha', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `alumni_record`
+--
+
+CREATE TABLE `alumni_record` (
+  `alumni_rec_id` int(11) NOT NULL,
+  `company_name` varchar(255) DEFAULT NULL,
+  `company_role` varchar(255) DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `account_id` int(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `alumni_record`
+--
+
+INSERT INTO `alumni_record` (`alumni_rec_id`, `company_name`, `company_role`, `start_date`, `end_date`, `account_id`) VALUES
+(1, 'ICEP', 'Developer', '2022-04-04', '2023-04-05', 2),
+(2, 'TUT', 'Lecture', '2023-08-20', '2023-12-21', 2);
 
 -- --------------------------------------------------------
 
@@ -48,7 +71,7 @@ INSERT INTO `administrator` (`admin_id`, `account_id`, `name`, `surname`) VALUES
 --
 
 CREATE TABLE `alumni_space_account` (
-  `account_id` bigint(20) UNSIGNED NOT NULL,
+  `account_id` int(11) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(50) NOT NULL,
   `role` varchar(20) NOT NULL
@@ -60,15 +83,15 @@ CREATE TABLE `alumni_space_account` (
 
 INSERT INTO `alumni_space_account` (`account_id`, `email`, `password`, `role`) VALUES
 (1, 'admin@email.com', '123', 'Admin'),
-(2, 'mashia@gmail.com', '123', 'Alumni'),
-(3, 'mhlongo@gmail.com', '123', 'Alumni'),
-(4, 'nkadimeng@gmail.com', '123', 'Alumni'),
-(5, 'malobane@gmail.com', '123', 'Alumni'),
+(2, 'lehlojane@gmail.com', '123', 'Alumni'),
+(3, 'malobane@gmail.com', '123', 'Alumni'),
+(4, 'mashao@gmail.com', '123', 'Alumni'),
+(5, 'mashia@gmail.com', '123', 'Alumni'),
 (6, 'masuku@gmail.com', '123', 'Alumni'),
-(7, 'mnisi@gmail.com', '123', 'Alumni'),
-(8, 'mnyalo@gmail.com', '123', 'Alumni'),
-(9, 'mashao@gmail.com', '123', 'Alumni'),
-(10, 'lehlojane@gmail.com', '123', 'Alumni');
+(7, 'mhlongo@gmail.com', '123', 'Alumni'),
+(8, 'mnisi@gmail.com', '123', 'Alumni'),
+(9, 'mnyalo@gmail.com', '123', 'Alumni'),
+(10, 'nkadimeng@gmail.com', '123', 'Alumni');
 
 -- --------------------------------------------------------
 
@@ -227,25 +250,25 @@ CREATE TABLE `query` (
 
 CREATE TABLE `tut_alumni` (
   `alumni_id` bigint(20) UNSIGNED NOT NULL,
-  `account_id` int(11) DEFAULT NULL,
   `name` varchar(50) NOT NULL,
-  `surname` varchar(50) NOT NULL
+  `surname` varchar(50) NOT NULL,
+  `account_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `tut_alumni`
 --
 
-INSERT INTO `tut_alumni` (`alumni_id`, `account_id`, `name`, `surname`) VALUES
-(2, 3, 'Sihle', 'Mlongo'),
-(3, 7, 'Kefentse', 'Mnisi'),
-(4, 5, 'Patience', 'Malobane'),
-(5, 6, 'Snenhlanhla', 'Masuku'),
-(6, 4, 'Berlinah', 'Nkadimeng'),
-(7, 8, 'Noxolo', 'Mnyalo'),
-(8, 2, 'Elias', 'Mashia'),
-(9, 9, 'Kgaogelo', 'Mashao'),
-(10, 10, 'Kabelo', 'Lehlojane');
+INSERT INTO `tut_alumni` (`alumni_id`, `name`, `surname`, `account_id`) VALUES
+(2, 'Sihle', 'Mlongo', 2),
+(3, 'Kefentse', 'Mnisi', 3),
+(4, 'Patience', 'Malobane', NULL),
+(5, 'Snenhlanhla', 'Masuku', NULL),
+(6, 'Berlinah', 'Nkadimeng', NULL),
+(7, 'Noxolo', 'Mnyalo', NULL),
+(8, 'Elias', 'Mashia', NULL),
+(9, 'Kgaogelo', 'Mashao', NULL),
+(10, 'Kabelo', 'Lehlojane', NULL);
 
 -- --------------------------------------------------------
 
@@ -255,7 +278,6 @@ INSERT INTO `tut_alumni` (`alumni_id`, `account_id`, `name`, `surname`) VALUES
 
 CREATE TABLE `userprofile` (
   `user_id` bigint(20) UNSIGNED NOT NULL,
-  `account_id` int(11) DEFAULT NULL,
   `location` varchar(50) NOT NULL,
   `qualification` varchar(100) NOT NULL,
   `employment_status` varchar(50) NOT NULL,
@@ -263,23 +285,27 @@ CREATE TABLE `userprofile` (
   `experience` varchar(50) NOT NULL,
   `interest` varchar(50) NOT NULL,
   `bio` varchar(50) NOT NULL,
-  `pic_file` varchar(255) NOT NULL
+  `pic_file` varchar(255) NOT NULL,
+  `position` varchar(255) NOT NULL,
+  `company` varchar(255) NOT NULL,
+  `account_id` int(11) DEFAULT NULL,
+  `date_created` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `userprofile`
 --
 
-INSERT INTO `userprofile` (`user_id`, `account_id`, `location`, `qualification`, `employment_status`, `skills`, `experience`, `interest`, `bio`, `pic_file`) VALUES
-(1, 2, '', '', '', '', '', '', '', 'aboutPic.jpg'),
-(2, 3, 'Soshanguve', 'PHD', 'Employed', 'Java,React,Angular,NodeJS,MySQL Database', '6 Years', 'Coding/Full-Stack', 'team player and hackerthon master', 'Sihle.jpg'),
-(3, 7, 'Hammanskraal', 'Doctrate', 'Employed', 'C#,Java,React,Angular,NodeJS,MySQL Database', '12 Years', 'Full-Stack', ' hackerthon master', 'Kfentse.jpg'),
-(4, 5, 'Kwazulu-Natal', 'Diploma', 'UnEmployed', 'Java,MySQL Database', '0', 'Business Analyst', 'like attending hackerthon', 'Patience.jpg'),
-(5, 6, 'Sandton', 'masters', 'Self-Employed', 'Java,AWS Deploying,MySQL Database,Azure', '2 months', 'Scrum Master', ' hackerthon Master', 'Sneh.jpg'),
-(6, 4, 'Pretoria', 'Diploma', 'UnEmployed', 'Analytical Thinking,Legal Knowledge,AdvocacyTime M', '3 years', 'Criminal Law', ' hackerthon Master', 'Berlinah.jpg'),
-(7, 8, '', '', '', '', '', '', '', ''),
-(8, 9, '', '', '', '', '', '', '', 'Kgaogelo.jpg'),
-(9, 10, '', '', '', '', '', '', '', '');
+INSERT INTO `userprofile` (`user_id`, `location`, `qualification`, `employment_status`, `skills`, `experience`, `interest`, `bio`, `pic_file`, `position`, `company`, `account_id`, `date_created`) VALUES
+(1, '', '', 'Employed', '', '', '', '', 'aboutPic.jpg', 'Tester', 'ICEP', 2, '2023-12-11'),
+(2, 'Soshanguve', 'PHD', 'Employed', 'Java,React,Angular,NodeJS,MySQL Database', '6 Years', 'Coding/Full-Stack', 'team player and hackerthon master', 'Sihle.jpg', 'Developer', 'ABSA', 4, NULL),
+(3, 'Hammanskraal', 'Doctrate', 'Employed', 'C#,Java,React,Angular,NodeJS,MySQL Database', '12 Years', 'Full-Stack', ' hackerthon master', 'Kfentse.jpg', 'Developer', '', 10, NULL),
+(4, 'Kwazulu-Natal', 'Diploma', 'UnEmployed', 'Java,MySQL Database', '0', 'Business Analyst', 'like attending hackerthon', 'Patience.jpg', 'Tester', '', 5, NULL),
+(5, 'Sandton', 'masters', 'Self-Employed', 'Java,AWS Deploying,MySQL Database,Azure', '2 months', 'Scrum Master', ' hackerthon Master', 'Sneh.jpg', 'Tester', '', 6, NULL),
+(6, 'Pretoria', 'Diploma', 'UnEmployed', 'Analytical Thinking,Legal Knowledge,AdvocacyTime M', '3 years', 'Criminal Law', ' hackerthon Master', 'Berlinah.jpg', 'BA', 'ABSA', 3, '2023-10-15'),
+(7, '', '', '', '', '', '', '', '', '', '', NULL, NULL),
+(8, '', '', '', '', '', '', '', 'Kgaogelo.jpg', '', '', NULL, NULL),
+(9, '', '', '', '', '', '', '', '', '', '', NULL, NULL);
 
 --
 -- Indexes for dumped tables
@@ -289,7 +315,15 @@ INSERT INTO `userprofile` (`user_id`, `account_id`, `location`, `qualification`,
 -- Indexes for table `administrator`
 --
 ALTER TABLE `administrator`
-  ADD PRIMARY KEY (`admin_id`);
+  ADD PRIMARY KEY (`admin_id`),
+  ADD KEY `account_id` (`account_id`);
+
+--
+-- Indexes for table `alumni_record`
+--
+ALTER TABLE `alumni_record`
+  ADD PRIMARY KEY (`alumni_rec_id`),
+  ADD KEY `account_id` (`account_id`);
 
 --
 -- Indexes for table `alumni_space_account`
@@ -356,13 +390,15 @@ ALTER TABLE `query`
 -- Indexes for table `tut_alumni`
 --
 ALTER TABLE `tut_alumni`
-  ADD PRIMARY KEY (`alumni_id`);
+  ADD PRIMARY KEY (`alumni_id`),
+  ADD KEY `account_id` (`account_id`);
 
 --
 -- Indexes for table `userprofile`
 --
 ALTER TABLE `userprofile`
-  ADD PRIMARY KEY (`user_id`);
+  ADD PRIMARY KEY (`user_id`),
+  ADD KEY `account_id` (`account_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -372,13 +408,19 @@ ALTER TABLE `userprofile`
 -- AUTO_INCREMENT for table `administrator`
 --
 ALTER TABLE `administrator`
-  MODIFY `admin_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `admin_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `alumni_record`
+--
+ALTER TABLE `alumni_record`
+  MODIFY `alumni_rec_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `alumni_space_account`
 --
 ALTER TABLE `alumni_space_account`
-  MODIFY `account_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `applications`
@@ -445,6 +487,34 @@ ALTER TABLE `tut_alumni`
 --
 ALTER TABLE `userprofile`
   MODIFY `user_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `administrator`
+--
+ALTER TABLE `administrator`
+  ADD CONSTRAINT `administrator_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `alumni_space_account` (`account_id`);
+
+--
+-- Constraints for table `alumni_record`
+--
+ALTER TABLE `alumni_record`
+  ADD CONSTRAINT `alumni_record_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `alumni_space_account` (`account_id`);
+
+--
+-- Constraints for table `tut_alumni`
+--
+ALTER TABLE `tut_alumni`
+  ADD CONSTRAINT `tut_alumni_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `alumni_space_account` (`account_id`);
+
+--
+-- Constraints for table `userprofile`
+--
+ALTER TABLE `userprofile`
+  ADD CONSTRAINT `userprofile_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `alumni_space_account` (`account_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

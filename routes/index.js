@@ -209,7 +209,7 @@ router.put('/api/adminProfile/update/:admin_id', (req, res) => {
   console.log('Received data for updating profile:', receivedData);
   res.status(200).json({ message: 'Data received on the server for updating profile', data: receivedData });
 
-  
+
   const updateProfileSQL = `UPDATE Administrator SET name = ?, surname = ?, email = ?, address = ?, contact_no = ?`;
 
   client.query(
@@ -346,13 +346,13 @@ router.put('/api/profile/get_profile', (req, res) => {
   var user_id = req.body.user_id;
 
   // SQL query to retrieve a user profile by user_id
-//   const getProfileSQL = `
-//   SELECT ta.certificateName, ta.filePath, up.*
-//   FROM Certificates ta
-//   JOIN UserProfile up ON ta.account_id = up.account_id
-// `;
+  //   const getProfileSQL = `
+  //   SELECT ta.certificateName, ta.filePath, up.*
+  //   FROM Certificates ta
+  //   JOIN UserProfile up ON ta.account_id = up.account_id
+  // `;
   const getProfileSQL = `SELECT * FROM UserProfile WHERE account_id = ?`;
-  
+
 
   client.query(getProfileSQL, [user_id], (err, result) => {
     if (err) {
@@ -369,7 +369,7 @@ router.put('/api/profile/get_profile', (req, res) => {
   });
 });
 
-router.get('/api/profile/get_my_certs/:account_id', (req,res) => {
+router.get('/api/profile/get_my_certs/:account_id', (req, res) => {
   var account_id = req.params.account_id;
 
   //slq
@@ -683,7 +683,7 @@ router.delete('/api/jobs/deletejobs', (req, res) => {
               console.log('Job deleted successfully: ');
             });
           } else {
-           // console.log('Job ' + result[i].job_title + ' is not expiring today.');
+            // console.log('Job ' + result[i].job_title + ' is not expiring today.');
           }
         }
         res.json({ message: 'Expired jobs will be deleted' });
@@ -742,13 +742,13 @@ router.post('/api/jobs/applyjob', upload.fields([
 
   if (!req.files) {
     //if no files
-    console.log('Nothing...'+additional_documentFile);
+    console.log('Nothing...' + additional_documentFile);
     insertApplicationSQL = `INSERT INTO Applications (account_id, job_title, job_description,application_status, application_date) VALUES ( ?, ?, ?, ?, ?)`;
     values = [alumni_id, job_title, job_description, 'pending', application_date];
   } else if (!req.files.additional_document) {
     //if only id is added
     const idDocumentFile = req.files['id_document'][0];
-    console.log('Sing id...'+idDocumentFile);
+    console.log('Sing id...' + idDocumentFile);
     const idDocumentFileName = `${applicationId}_${idDocumentFile.originalname}`;
     insertApplicationSQL = `INSERT INTO Applications (account_id, job_title, job_description,application_status, application_date,id_document) VALUES ( ?, ?, ?, ?, ?,?)`;
     values = [alumni_id, job_title, job_description, 'pending', application_date, idDocumentFileName];
@@ -757,7 +757,7 @@ router.post('/api/jobs/applyjob', upload.fields([
   } else if (!req.files.id_document) {
     //if only additional_doc is added
     const additional_documentFile = req.files['additional_document'][0];
-    console.log('Single add...'+additional_documentFile);
+    console.log('Single add...' + additional_documentFile);
     const additional_documentName = `${applicationId}_${additional_documentFile.originalname}`;
     insertApplicationSQL = `INSERT INTO Applications (account_id, job_title, job_description,application_status, application_date,additional_document) VALUES ( ?, ?, ?, ?, ?,?)`;
     values = [alumni_id, job_title, job_description, 'pending', application_date, additional_documentName];
@@ -768,7 +768,7 @@ router.post('/api/jobs/applyjob', upload.fields([
 
     const additional_documentFile = req.files['additional_document'][0];
     const additional_documentName = `${applicationId}_${additional_documentFile.originalname}`;
-    console.log('Both...'+additional_documentFile);
+    console.log('Both...' + additional_documentFile);
 
     insertApplicationSQL = `INSERT INTO Applications (account_id, job_title, job_description,application_status, application_date,id_document,additional_document) VALUES ( ?, ?, ?, ?, ?,?,?)`;
     values = [alumni_id, job_title, job_description, 'pending', application_date, idDocumentFileName, additional_documentName];
@@ -885,7 +885,7 @@ router.get('/api/jobs/trackApp/:account_id', (req, res) => {
     }
   });
 });
-          
+
 
 
 
@@ -1156,7 +1156,7 @@ router.post('/api/upload', upload.single('file_name'), (req, res) => {
     case 'certificate':
       uploadDirectory = 'uploads/docs/certs/';
       sql = 'INSERT INTO Certificates(account_id,certificateName,filePath) values (?,?,?)';
-      values = [req.body.account_id,req.body.certificateName,req.file.originalname];
+      values = [req.body.account_id, req.body.certificateName, req.file.originalname];
       //console.log('Data'+ values)
       break;
 
@@ -1417,19 +1417,19 @@ router.patch('/api/connections/:connection_id/status', (req, res) => {
 
 //NOTIFICATIONS
 //send Notifications
-router.post('/api/notifications/send',(req, res) =>{
+router.post('/api/notifications/send', (req, res) => {
   //get variables
-  const {sender_id, receiver_id, message, date} = req.body;
+  const { sender_id, receiver_id, message, date } = req.body;
 
   //sql
   const sql = 'INSERT INTO NOTIFICATIONS(sender,receiver,message,DATE) VALUES (?,?,?,?)'
 
   //query
-  client.query(sql, [sender_id,receiver_id,message,date], (err, result) => {
-    if(err){
+  client.query(sql, [sender_id, receiver_id, message, date], (err, result) => {
+    if (err) {
       console.error(err);
       res.status(500).send('An error occurred while sending the notifications.');
-    }else{
+    } else {
       console.log('Notification will be sent soon....');
       res.json({ success: true });
     }
@@ -1438,7 +1438,7 @@ router.post('/api/notifications/send',(req, res) =>{
 });
 
 //read my notifications
-router.get('/api/notifications/get_my_notifications/:account_id', (req,res) =>{
+router.get('/api/notifications/get_my_notifications/:account_id', (req, res) => {
   //variables
   const account_id = req.params.account_id;
 
@@ -1464,10 +1464,10 @@ router.get('/api/notifications/get_my_notifications/:account_id', (req,res) =>{
 
 
   //query
-  client.query(sql,[account_id], (err,result) => {
-    if(err){
+  client.query(sql, [account_id], (err, result) => {
+    if (err) {
       return res.status(500).json({ message: 'Internal Server Error' });
-    }else{
+    } else {
       if (result && result.length > 0) {
         res.status(200).json({ myNotifications: result });
       }
@@ -1477,8 +1477,46 @@ router.get('/api/notifications/get_my_notifications/:account_id', (req,res) =>{
 });
 
 
+router.get('/get_all_users', (req, res) => {
 
+  var sql = `select a.account_id, email, role, company, position, employment_status,pic_file as image, concat(substring(name, 1, 1),' ' , surname) as name, DATE_FORMAT(date_created, "%Y-%b-%d") as date_created, TIMESTAMPDIFF(MONTH,date_created,current_date())+1 as current_months
+              from userprofile u, alumni_space_account a, tut_alumni t
+              where u.account_id = a.account_id
+              and a.account_id = t.account_id;`
+  client.query(sql, (err, result) => {
+    if (err) {
+      console.log(err)
+      return res.status(500).json({ message: 'Internal Server Error' });
+    } else {
+      if (result.length > 0) {
+        res.status(200).json({ success: true, result });
+      }
+      else {
+        res.status(200).json({ success: false, message: "Do not have data" });
+      }
+    }
+  })
+})
 
+router.get('/get_user_details/:acount_id', (req, res) => {
+  var sql = `select company_name, company_role, DATE_FORMAT(start_date, "%Y-%b-%d") as start_date, DATE_FORMAT(end_date, "%Y-%b-%d") as end_date,TIMESTAMPDIFF(MONTH,start_date,end_date)+1 as months,TIMESTAMPDIFF(YEAR,start_date,end_date) as years
+              from alumni_record ar, alumni_space_account asa
+              where ar.account_id = asa.account_id
+              and ar.account_id = ?`
+  client.query(sql, req.params.acount_id, (err, result) => {
+    if (err) {
+      console.log(err)
+      return res.status(500).json({ message: 'Internal Server Error' });
+    } else {
+      if (result.length > 0) {
+        res.status(200).json({ success: true, result });
+      }
+      else {
+        res.status(200).json({ success: false, message: "Do not have data" });
+      }
+    }
+  })
+})
 
 module.exports = router;
 
