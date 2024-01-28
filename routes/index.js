@@ -1495,13 +1495,15 @@ router.get('/get_all_users', (req, res) => {
       }
     }
   })
-}) 
+})
 
 router.get('/get_user_details/:acount_id', (req, res) => {
-  var sql = `select company_name, company_role, DATE_FORMAT(start_date, "%Y-%b-%d") as start_date, DATE_FORMAT(end_date, "%Y-%b-%d") as end_date,TIMESTAMPDIFF(MONTH,start_date,end_date)+1 as months,TIMESTAMPDIFF(YEAR,start_date,end_date) as years
+  var sql = `select alumni_rec_id, ar.account_id , company_name, company_role, DATE_FORMAT(start_date, "%Y-%m-%d") as start_date, DATE_FORMAT(end_date, "%Y-%m-%d") as end_date,TIMESTAMPDIFF(MONTH,start_date,end_date)+1 as months,TIMESTAMPDIFF(YEAR,start_date,end_date) as years,TIMESTAMPDIFF(MONTH,start_date,current_date())+1 as months_present
               from alumni_record ar, alumni_space_account asa
               where ar.account_id = asa.account_id
-              and ar.account_id = ?`
+              and ar.account_id = ?
+              order by start_date desc`
+
   client.query(sql, req.params.acount_id, (err, result) => {
     if (err) {
       console.log(err)
@@ -1512,6 +1514,99 @@ router.get('/get_user_details/:acount_id', (req, res) => {
       }
       else {
         res.status(200).json({ success: false, message: "Do not have data" });
+      }
+    }
+  })
+})
+
+router.post('/add_employment', (req, res) => {
+  var body_values = [req.body.company, req.body.position, req.body.start_date, req.body.end_date, req.body.account_id]
+  var sql = `insert into alumni_record(company_name,company_role,start_date,end_date,account_id)
+  values(?, ?,?,?,?)`
+
+  var sqlUpdate = `update userprofile
+  set employment_status = ?,
+      company =?,
+      position=?,
+      date_created =?
+  where account_id = ?`
+  var employment_status = ""
+  if (req.body.end_date != null) {
+    employment_status = "Unemployed"
+  }
+  else {
+    employment_status = "Employed"
+  }
+  client.query(sql, body_values, (err, result) => {
+    if (err) {
+      console.log(err)
+      return res.status(500).json({ message: 'Internal Server Error' });
+    } else {
+      if (result.affectedRows != 0) {
+
+        client.query(sqlUpdate, [employment_status, req.body.company, req.body.position,req.body.start_date, req.body.account_id], (error, rows) => {
+          if (error) console.log(error)
+
+          if (rows.affectedRows != 0) {
+            res.status(200).json({ success: true, rows });
+          }
+          else {
+            res.status(200).json({ success: false, message: "Could not change status" });
+
+          }
+        })
+        // res.status(200).json({ success: true, result });
+      }
+      else {
+        res.status(200).json({ success: false, message: "Do not have data" });
+      }
+    }
+  })
+
+})
+
+router.put('/update_employment/:alumni_rec_id', (req, res) => {
+  var body_values = [req.body.company_name, req.body.company_role, req.body.start_date, req.body.end_date, req.body.alumni_rec_id]
+  var sql = `update  alumni_record
+              set company_name = ?,	
+              company_role = ?,
+              start_date = ?,
+              end_date = ?
+              where alumni_rec_id = ?
+  `
+
+  var sqlUpdate = `update userprofile
+  set employment_status = ?
+  where account_id = ?`
+  var employment_status = ""
+  if (req.body.end_date != null) {
+    employment_status = "Unemployed"
+  }
+  else {
+    employment_status = "Employed"
+  }
+  client.query(sql, body_values, (err, result) => {
+    if (err) {
+      console.log(err)
+      return res.status(500).json({ message: 'Internal Server Error' });
+    } else {
+      if (result.affectedRows != 0) {
+
+        client.query(sqlUpdate, [employment_status, req.body.account_id], (error, rows) => {
+          if (error) console.log(error)
+          if (rows.affectedRows != 0) {
+            res.status(200).json({ success: true, rows });
+          }
+          else {
+            res.status(200).json({ success: false, message: "Could not change status" });
+
+          }
+        })
+
+
+      }
+      else {
+        res.status(200).json({ success: false, message: "Could not update" });
       }
     }
   })
