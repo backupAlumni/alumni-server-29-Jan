@@ -1476,7 +1476,6 @@ router.get('/api/notifications/get_my_notifications/:account_id', (req, res) => 
 
 });
 
-
 router.get('/get_all_users', (req, res) => {
 
   var sql = `select a.account_id, email, role, company, position, employment_status,pic_file as image, concat(substring(name, 1, 1),' ' , surname) as name, DATE_FORMAT(date_created, "%Y-%b-%d") as date_created, TIMESTAMPDIFF(MONTH,date_created,current_date())+1 as current_months
@@ -1496,7 +1495,7 @@ router.get('/get_all_users', (req, res) => {
       }
     }
   })
-})
+}) 
 
 router.get('/get_user_details/:acount_id', (req, res) => {
   var sql = `select company_name, company_role, DATE_FORMAT(start_date, "%Y-%b-%d") as start_date, DATE_FORMAT(end_date, "%Y-%b-%d") as end_date,TIMESTAMPDIFF(MONTH,start_date,end_date)+1 as months,TIMESTAMPDIFF(YEAR,start_date,end_date) as years
