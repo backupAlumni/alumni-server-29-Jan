@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 const indexRoute = require("./routes/index");
-const myNetworkRoute = require("./routes/my-network");
+//const myNetworkRoute = require("./routes/my-network");
 
 //const alumniRoute = require("./routes/alumni");
 //const adminRoute = require("./routes/admin");
