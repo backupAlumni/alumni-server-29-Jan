@@ -1,4 +1,4 @@
-const app = require('express')();
+/*const app = require('express')();
 const httpServer = require('http').createServer(app);
 const io = require('socket.io')(httpServer, {
   cors: { origin: '*' }
@@ -216,4 +216,4 @@ io.on('connection', (socket) => {
 
 module.exports = app;
 
-httpServer.listen(port, () => console.log(`listening on port ${port}`));
+httpServer.listen(port, () => console.log(`listening on port ${port}`));*/
