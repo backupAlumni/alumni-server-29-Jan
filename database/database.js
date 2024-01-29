@@ -23,10 +23,12 @@ module.exports = {
 var mysql = require('mysql');
 
 const client = mysql.createConnection({
-    host: '127.0.0.1',
-    user: 'root',
-    port:"3306",
-    database: 'test',
+    host: 'sql8.freemysqlhosting.net',
+  user: 'sql8680542',
+  port:"3306",
+  password: 'tfwIUKQ15p',
+  database: 'sql8680542',
+
   });
 
   client.on('connection', (connection) => {
