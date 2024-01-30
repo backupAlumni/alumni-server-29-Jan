@@ -816,7 +816,6 @@ router.get('/api/jobs/applications', (req, res) => {
   s.job_title as saved_job_title,
   s.job_description as saved_job_description,
   s.application_date,
-  GROUP_CONCAT(DISTINCT JSON_OBJECT('certificateName', c.certificateName, 'filePath', c.filePath)) as certificates
 FROM
   tut_alumni a
 LEFT JOIN
@@ -825,8 +824,6 @@ LEFT JOIN
   userprofile u ON a.account_id = u.account_id
 LEFT JOIN
   alumni_space_account ac ON a.account_id = ac.account_id
-LEFT JOIN
-  certificates c ON a.account_id = c.account_id
 WHERE
   s.application_status = 'pending'
 GROUP BY
