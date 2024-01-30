@@ -815,7 +815,7 @@ router.get('/api/jobs/applications', (req, res) => {
   s.application_status as applicationStatus,
   s.job_title as saved_job_title,
   s.job_description as saved_job_description,
-  s.application_date,
+  s.application_date
 FROM
   tut_alumni a
 LEFT JOIN
