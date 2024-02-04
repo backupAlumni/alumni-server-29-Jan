@@ -1316,7 +1316,7 @@ router.post('/api/connections', (req, res) => {
 
   // Check if the connection exists
   client.query(
-    'SELECT * FROM Connection WHERE follower_id = ? AND following_id = ?',
+    'SELECT * FROM connection WHERE follower_id = ? AND following_id = ?',
     [follower_id, following_id],
     (err, results) => {
       if (err) {
@@ -1330,7 +1330,7 @@ router.post('/api/connections', (req, res) => {
 
       // Create a new connection
       client.query(
-        'INSERT INTO Connection (follower_id, following_id, status) VALUES (?, ?, ?)',
+        'INSERT INTO connection (follower_id, following_id, status) VALUES (?, ?, ?)',
         [follower_id, following_id, status],
         (err, result) => {
           if (err) {
@@ -1351,7 +1351,7 @@ router.get('/api/connections/followers/:account_id/count', (req, res) => {
 
   // Count the number of followers
   client.query(
-    'SELECT COUNT(*) as followerCount FROM Connection WHERE following_id = ?',
+    'SELECT COUNT(*) as followerCount FROM connection WHERE following_id = ?',
     [account_id],
     (err, results) => {
       if (err) {
@@ -1372,7 +1372,7 @@ router.get('/api/connections/following/:account_id/count', (req, res) => {
 
   // Count the number of following
   client.query(
-    'SELECT COUNT(*) as followingCount FROM Connection WHERE follower_id = ?',
+    'SELECT COUNT(*) as followingCount FROM connection WHERE follower_id = ?',
     [account_id],
     (err, results) => {
       if (err) {
@@ -1394,7 +1394,7 @@ router.patch('/api/connections/:connection_id/status', (req, res) => {
 
   // Update the connection status
   client.query(
-    'UPDATE Connection SET status = ? WHERE connection_id = ?',
+    'UPDATE connection SET status = ? WHERE connection_id = ?',
     [status, connection_id],
     (err, result) => {
       if (err) {
